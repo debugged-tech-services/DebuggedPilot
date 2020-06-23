@@ -7,10 +7,7 @@ from selfdrive.car import create_gas_command
 from selfdrive.car.honda import hondacan
 from selfdrive.car.honda.values import CruiseButtons, CAR, VISUAL_HUD
 from opendbc.can.packer import CANPacker
-from common.params import Params
-params = Params()
-from common.dp import get_last_modified
-from common.dp import common_controller_update, common_controller_ctrl
+from common.dp_common import common_controller_ctrl
 
 VisualAlert = car.CarControl.HUDControl.VisualAlert
 
@@ -76,7 +73,7 @@ def process_hud_alert(hud_alert):
 
 HUDData = namedtuple("HUDData",
                      ["pcm_accel", "v_cruise",  "car",
-                     "lanes", "fcw", "acc_alert", "steer_required", "dashed_lanes"])
+                      "lanes", "fcw", "acc_alert", "steer_required", "dashed_lanes"])
 
 class CarControllerParams():
   def __init__(self, CP):
@@ -101,25 +98,12 @@ class CarController():
     self.params = CarControllerParams(CP)
 
     # dp
-    self.dragon_enable_steering_on_signal = False
-    self.dragon_lat_ctrl = True
-    self.dp_last_modified = None
     self.last_blinker_on = False
-    self.blinker_end_frame = 0
-    self.dragon_blinker_off_timer = 0.
+    self.blinker_end_frame = 0.
 
   def update(self, enabled, CS, frame, actuators, \
              pcm_speed, pcm_override, pcm_cancel_cmd, pcm_accel, \
-             hud_v_cruise, hud_show_lanes, hud_show_car, hud_alert):
-
-    # dp
-    if frame % 500 == 0:
-      modified = get_last_modified()
-      if self.dp_last_modified != modified:
-        self.dragon_lat_ctrl, \
-        self.dragon_enable_steering_on_signal, \
-        self.dragon_blinker_off_timer = common_controller_update()
-        self.dp_last_modified = modified
+             hud_v_cruise, hud_show_lanes, dragonconf, hud_show_car, hud_alert):
 
     P = self.params
 
@@ -170,12 +154,12 @@ class CarController():
     if not enabled:
       self.blinker_end_frame = 0
     if self.last_blinker_on and not blinker_on:
-      self.blinker_end_frame = frame + self.dragon_blinker_off_timer
-    lkas_active = common_controller_ctrl(enabled,
-                                         self.dragon_lat_ctrl,
-                                         self.dragon_enable_steering_on_signal,
+      self.blinker_end_frame = frame + dragonconf.dpSignalOffDelay
+    apply_steer = common_controller_ctrl(enabled,
+                                         dragonconf.dpLatCtrl,
+                                         dragonconf.dpSteeringOnSignal,
                                          blinker_on or frame < self.blinker_end_frame,
-                                         lkas_active)
+                                         apply_steer)
     self.last_blinker_on = blinker_on
 
     # Send steering command.

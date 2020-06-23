@@ -10,8 +10,6 @@ import requests
 import traceback
 import threading
 import subprocess
-from common.realtime import sec_since_boot
-from common.dp import get_last_modified
 
 from selfdrive.swaglog import cloudlog
 from selfdrive.loggerd.config import ROOT
@@ -20,6 +18,7 @@ from common import android
 from common.params import Params
 from common.api import Api
 from common.xattr import getxattr, setxattr
+import cereal.messaging as messaging
 
 UPLOAD_ATTR_NAME = 'user.upload'
 UPLOAD_ATTR_VALUE = b'1'
@@ -235,7 +234,7 @@ class Uploader():
 
     return success
 
-def uploader_fn(exit_event):
+def uploader_fn(exit_event, sm=None):
   cloudlog.info("uploader_fn")
 
   params = Params()
@@ -247,27 +246,23 @@ def uploader_fn(exit_event):
 
   uploader = Uploader(dongle_id, ROOT)
 
-  backoff = 0.1
-
   # dp
-  last_ts = None
-  dp_last_modified = None
-  on_hotspot = False
-  on_wifi = False
-  should_upload = False
-  allow_raw_upload = True
+  if sm is None:
+    sm = messaging.SubMaster(['dragonConf'])
 
+  backoff = 0.1
   while True:
-    ts = sec_since_boot()
-    if last_ts is None or ts - last_ts >= 5.:
-      modified = get_last_modified()
-      if dp_last_modified != modified:
-        on_hotspot = False if (params.get("DragonEnableUploadOnHotspot") == b"1") else is_on_hotspot()
-        on_wifi = False if (params.get("DragonEnableUploadOnMobile") == b"1") else is_on_wifi()
-        allow_raw_upload = (params.get("IsUploadRawEnabled") != b"0")
-        should_upload = on_wifi and not on_hotspot
-        dp_last_modified = modified
-      last_ts = ts
+    allow_raw_upload = (params.get("IsUploadRawEnabled") != b"0")
+    on_hotspot = is_on_hotspot()
+    on_wifi = is_on_wifi()
+
+    sm.update()
+    if hasattr(sm['dragonConf'], "dragonConf"):
+      dragonconf = sm['dragonConf'].dragonConf
+      on_wifi = True if dragonconf.dpUploadOnMobile else on_wifi
+      on_hotspot = False if dragonconf.dpUploadOnHotspot else on_hotspot
+
+    should_upload = on_wifi and not on_hotspot
 
     if exit_event.is_set():
       return
@@ -290,8 +285,8 @@ def uploader_fn(exit_event):
       backoff = min(backoff*2, 120)
     cloudlog.info("upload done, success=%r", success)
 
-def main():
-  uploader_fn(threading.Event())
+def main(sm=None):
+  uploader_fn(threading.Event(), sm)
 
 if __name__ == "__main__":
   main()

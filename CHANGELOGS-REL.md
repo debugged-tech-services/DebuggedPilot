@@ -1,3 +1,52 @@
+dragonpilot 0.7.5
+========================
+* 優化 Lexus GSH 轉向。(感謝 @簡銘佑 測試)
+* Optimize Lexus GSH steering. (Thanks to @簡銘佑)
+* C2 支援自動關機「DragonAutoShutdownAt」參數。(感謝 @cgw1968 建議)
+* C2 to support auto shutdown "DragonAutoShutDownAt" param. (Thanks to @cgw1968)
+* 將剎車狀熊顯示於 dp 資訊欄。
+* Added brake indicator to dp infobar.
+* 加入「方向燈取消控制」延遲控制設。(感謝 @wabes 建議)
+* Added delay config to "Disable Lat Control on Blinker". (Thanks to @wabes)
+* 加入巴西版 2020 Corolla Hybrid 指紋v2。(感謝 @berno22 提供)
+* Added Brazil 2020 Corolla Hybrid FPv2. (Thanks to @berno22) 
+* 加入對 VW MQB/PQ 的支援。(感謝 @dingliangxue 移植)
+* Added support to VW MQB/PQ platform. (Thanks to @dingliangxue)
+* 加入「允許多次自動換道」功能。(感謝 @阿濤 建議)
+* Added "Allow Continuous Auto Lane Change" Toggle. (Thanks to @阿濤)
+* 新增 DragonMaxSpeedLimit 設定值 (mph)，當如果車速高於此值 op 將會停止操控。(感謝 @Anthony 建議)
+* Added DragonMaxSpeedLimit parameter (mph), op will stop controlling when car speed is high than the value. (Thanks to @Anthony)
+* 新增加拿大版 2018 Toyota Sienna LTD 指紋(v2)。(感謝 明峰 提供)
+* Added Canada 2018 Toyota Sienna LTD fingerprint (v2). (Thanks to 明峰)
+* 新增「通過移動網路上傳」開關
+* Added Upload Over Mobile Network toggle.
+* 新增「通過熱點上傳」開關
+* Added Upload Over Hotspot toggle.
+* 新增加拿大版 2018 Toyota Sienna LTD 指紋(v1)。(感謝 明峰 提供)
+* Added Canada 2018 Toyota Sienna LTD fingerprint (v1). (Thanks to 明峰)
+* 新增大陸版 Volkswagen Golf GTI 指紋 (v1)。(感謝 easyeiji 提供)
+* Added China Volkswagen Golf GTI fingerprint (v1). (Thanks to easyeiji)
+* 更新 dp 圖示 (特別感謝 @wabes 的設計與提供)。
+* Updated dp logo, special thanks to @wabes for the design.
+* 簡/繁中文版和 i18n 整合成為單一版本。  
+* Merged zhs/zht/i18n versions into one.
+* 新增大陸版 CAMRY HYBRID 指紋v2。(感謝 @杜子腾)
+* Added China Camery Hybrid FPv2. (Thanks to @杜子腾) 
+* 新增台灣版 Altis HYBRID 指紋v1。(感謝 @Fish)
+* Added Taiwan Altis Hybrid FPv1. (Thanks to @Fish)
+* 新增行駛時關閉畫面功能。
+* Added Screen off while driving feature.
+* 新增倒車時關閉畫面功能。
+* Added Screen off while reversing feature.
+* 新增駕駛介面加入「加速模式」切換鈕。 
+* Added acceleration profile toggle onto driving UI.
+* 新增自定車型功能，取代指紋暫存功能。
+* Replaced fingerprint cache with custom car model selector.
+* 新增可調亮度。
+* Added Brightness changer.
+* 新增部分德語支持。(特別感謝 @arne182 提供)
+* Added partial de_DE language support (Thanks to @arne182)
+
 dragonpilot 0.7.4
 ========================
 * [2020-04-10] 移除所有的第三方應用改為自動下載。

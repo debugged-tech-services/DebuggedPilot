@@ -61,7 +61,7 @@ bool fake_send = false;
 bool loopback_can = false;
 cereal::HealthData::HwType hw_type = cereal::HealthData::HwType::UNKNOWN;
 bool is_pigeon = false;
-
+const uint32_t NO_IGNITION_CNT_MAX = 2 * 60 * 60 * 30;  // turn off charge after 30 hrs
 const float VBATT_START_CHARGING = 11.5;
 const float VBATT_PAUSE_CHARGING = 11.0;
 float voltage_f = 12.5;  // filtered voltage
@@ -81,7 +81,7 @@ void pigeon_init();
 void *pigeon_thread(void *crap);
 
 void *safety_setter_thread(void *s) {
-  #ifndef DragonBTG
+  #ifndef DisableRelay
   // diagnostic only is the default, needed for VIN query
   pthread_mutex_lock(&usb_lock);
   libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::ELM327), 0, NULL, 0, TIMEOUT);
@@ -109,7 +109,6 @@ void *safety_setter_thread(void *s) {
   libusb_control_transfer(dev_handle, 0x40, 0xdc, (uint16_t)(cereal::CarParams::SafetyModel::NO_OUTPUT), 0, NULL, 0, TIMEOUT);
   pthread_mutex_unlock(&usb_lock);
   #endif
-
   char *value;
   size_t value_sz = 0;
 
@@ -339,7 +338,7 @@ void can_recv(PubMaster &pm) {
   pm.send("can", msg);
 }
 
-void can_health(PubMaster &pm, int shutdown_mins) {
+void can_health(PubMaster &pm, int no_ign_cnt_max) {
   int cnt;
   int err;
 
@@ -393,8 +392,7 @@ void can_health(PubMaster &pm, int shutdown_mins) {
   }
 
   voltage_f = VOLTAGE_K * (health.voltage / 1000.0) + (1.0 - VOLTAGE_K) * voltage_f;  // LPF
-
-  #ifndef DragonBTG
+  #ifndef DisableRelay
   // Make sure CAN buses are live: safety_setter_thread does not work if Panda CAN are silent and there is only one other CAN node
   if (health.safety_model == (uint8_t)(cereal::CarParams::SafetyModel::SILENT)) {
     pthread_mutex_lock(&usb_lock);
@@ -402,7 +400,6 @@ void can_health(PubMaster &pm, int shutdown_mins) {
     pthread_mutex_unlock(&usb_lock);
   }
   #endif
-
   bool ignition = ((health.ignition_line != 0) || (health.ignition_can != 0));
 
   if (ignition) {
@@ -413,8 +410,7 @@ void can_health(PubMaster &pm, int shutdown_mins) {
 
 #ifndef __x86_64__
   bool cdp_mode = health.usb_power_mode == (uint8_t)(cereal::HealthData::UsbPowerMode::CDP);
-  uint32_t NO_IGNITION_CNT_MAX = (2 * 60 * shutdown_mins) - 20;  // turn off charge after 30 hrs or DragonShutdownAt Param (-10 seconds, turn off earlier than EON)
-  bool no_ignition_exp = no_ignition_cnt > NO_IGNITION_CNT_MAX;
+  bool no_ignition_exp = no_ignition_cnt > no_ign_cnt_max;
   if ((no_ignition_exp || (voltage_f < VBATT_PAUSE_CHARGING)) && cdp_mode && !ignition) {
     char *disable_power_down = NULL;
     size_t disable_power_down_sz = 0;
@@ -446,7 +442,7 @@ void can_health(PubMaster &pm, int shutdown_mins) {
     libusb_control_transfer(dev_handle, 0xc0, 0xe7, 1, 0, NULL, 0, TIMEOUT);
     pthread_mutex_unlock(&usb_lock);
   }
-  #ifndef DragonBTG
+  #ifndef DisableRelay
   // set safety mode to NO_OUTPUT when car is off. ELM327 is an alternative if we want to leverage athenad/connect
   if (!ignition && (health.safety_model != (uint8_t)(cereal::CarParams::SafetyModel::NO_OUTPUT))) {
     pthread_mutex_lock(&usb_lock);
@@ -658,26 +654,23 @@ void *can_health_thread(void *crap) {
   // health = 8011
   PubMaster pm({"health"});
 
-  int shutdown_mins = 1800;
-  char *enable_auto_shutdown = NULL;
-  size_t enable_auto_shutdown_sz = 0;
-  const int r1 = read_db_value("DragonEnableAutoShutdown", &enable_auto_shutdown, &enable_auto_shutdown_sz);
-  if (r1 == 0 && enable_auto_shutdown[0] == '1') {
-    char *auto_shutdown_at = NULL;
-    size_t auto_shutdown_at_sz = 0;
-    const int r2 = read_db_value("DragonAutoShutdownAt", &auto_shutdown_at, &auto_shutdown_at_sz);
-    if (r2 == 0) {
-      shutdown_mins = atoi(auto_shutdown_at);
-    }
-    if (shutdown_mins <= 0) {
-      shutdown_mins = 1800;
-    }
-    free(auto_shutdown_at);
-  }
-  free(enable_auto_shutdown);
+  SubMaster sm({"dragonConf"});
+  int no_ign_cnt_max = NO_IGNITION_CNT_MAX;
+  int check_cnt = 0;
   // run at 2hz
   while (!do_exit) {
-    can_health(pm, shutdown_mins);
+    // dp - check value every 5 secs
+    if (check_cnt % 10 == 0) {
+      sm.update(1000);
+      if (sm.updated("dragonConf") && sm["dragonConf"].getDragonConf().getDpAutoShutdown()) {
+        no_ign_cnt_max = sm["dragonConf"].getDragonConf().getDpAutoShutdownIn() * 60 * 2 - 10;  // -5 seconds, turn off earlier than EON
+      } else {
+        no_ign_cnt_max = NO_IGNITION_CNT_MAX; // use stock value
+      }
+      check_cnt = 0;
+    }
+    check_cnt++;
+    can_health(pm, no_ign_cnt_max);
     usleep(500*1000);
   }
 
@@ -862,7 +855,7 @@ void *pigeon_thread(void *crap) {
     if (pigeon_needs_init) {
       pigeon_needs_init = false;
       pigeon_init();
-      #ifdef DragonBTG
+      #ifdef DisableRelay
       pthread_mutex_lock(&usb_lock);
       libusb_control_transfer(dev_handle, 0x40, 0xdc, 2, 100, NULL, 0, TIMEOUT);
       pthread_mutex_unlock(&usb_lock);
@@ -900,8 +893,8 @@ void *pigeon_thread(void *crap) {
 int main() {
   int err;
   LOGW("starting boardd");
-  #ifdef DragonBTG
-  LOGW("boardd is running in DragonBTG mode");
+  #ifdef DisableRelay
+  LOGW("boardd is running with relay disabled.");
   #endif
 
   // set process priority

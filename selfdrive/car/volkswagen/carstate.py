@@ -6,7 +6,6 @@ from opendbc.can.parser import CANParser
 from opendbc.can.can_define import CANDefine
 from selfdrive.car.volkswagen.values import DBC, CANBUS, NWL, TRANS, GEAR, BUTTON_STATES, CarControllerParams
 
-
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
@@ -55,7 +54,7 @@ class CarState(CarStateBase):
     # Update gas, brakes, and gearshift.
     ret.gas = pt_cp.vl["Motor_20"]['MO_Fahrpedalrohwert_01'] / 100.0
     ret.gasPressed = ret.gas > 0
-    ret.brake = pt_cp.vl["ESP_05"]['ESP_Bremsdruck'] / 250.0  # FIXME: this is pressure in Bar, not sure what OP expects
+    ret.brake = pt_cp.vl["ESP_05"]['ESP_Bremsdruck'] / 250.0 # FIXME: this is pressure in Bar, not sure what OP expects
     ret.brakePressed = bool(pt_cp.vl["ESP_05"]['ESP_Fahrer_bremst'])
     ret.brakeLights = bool(pt_cp.vl["ESP_05"]['ESP_Status_Bremsdruck'])
 
@@ -332,6 +331,9 @@ class CarState(CarStateBase):
       checks += [("ACC_02", 17)]  # From J428 ACC radar control module
     
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, CANBUS.pt)
+
+  # A single signal is monitored from the camera CAN bus, and then ignored,
+  # so the presence of CAN traffic can be verified with cam_cp.valid.
 
   @staticmethod
   def get_pq_can_parser(CP):

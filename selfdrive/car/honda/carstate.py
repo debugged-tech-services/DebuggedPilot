@@ -167,7 +167,7 @@ class CarState(CarStateBase):
     self.v_cruise_pcm_prev = 0
     self.cruise_mode = 0
 
-    # dp
+    #dp
     self.lkMode = True
 
   def update(self, cp, cp_cam):
@@ -224,8 +224,7 @@ class CarState(CarStateBase):
     ret.steeringAngle = cp.vl["STEERING_SENSORS"]['STEER_ANGLE']
     ret.steeringRate = cp.vl["STEERING_SENSORS"]['STEER_ANGLE_RATE']
 
-    # dp
-    # when user presses LKAS button on steering wheel
+    # dp - when user presses LKAS button on steering wheel
     if self.cruise_setting == 1:
       if cp.vl["SCM_BUTTONS"]["CRUISE_SETTING"] == 0:
         if self.lkMode:

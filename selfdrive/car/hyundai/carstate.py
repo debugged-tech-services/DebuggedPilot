@@ -8,6 +8,9 @@ GearShifter = car.CarState.GearShifter
 
 
 class CarState(CarStateBase):
+  def __init__(self, CP):
+    super().__init__(CP)
+
   def update(self, cp, cp_cam):
     ret = car.CarState.new_message()
 

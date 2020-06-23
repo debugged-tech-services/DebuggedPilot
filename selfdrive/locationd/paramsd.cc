@@ -89,18 +89,6 @@ int main(int argc, char *argv[]) {
 
   // Main loop
   int save_counter = 0;
-
-  // dp, sr learner
-  char* enable_sr_learner_val = NULL;
-  read_db_value("DragonEnableSRLearner", &enable_sr_learner_val, NULL);
-  bool enable_sr_learner = true;
-  if (enable_sr_learner_val && strlen(enable_sr_learner_val) && enable_sr_learner_val[0] == '1') {
-    enable_sr_learner = true;
-  } else {
-    enable_sr_learner = false;
-    learner.sR = sR;
-  }
-
   while (true){
     if (sm.update(100) == 0) continue;
 

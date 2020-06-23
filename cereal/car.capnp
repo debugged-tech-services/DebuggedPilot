@@ -107,14 +107,18 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     startupWhitePanda @82;
     canErrorPersistent @83;
     belowEngageSpeed @84;
-    # dp
-    preLaneChangeLeftALC @85;
-    preLaneChangeRightALC @86;
-    laneChangeALC @87;
-    manualSteeringRequired @88;
-    manualSteeringRequiredBlinkersOn @89;
-    leadCarMoving @90;
-    leadCarDetected @91;
+    noGps @85;
+    focusRecoverActive @86;
+    wrongCruiseMode @87;
+    neosUpdateRequired @88;
+
+    #dp
+    preLaneChangeLeftALC @89;
+    preLaneChangeRightALC @90;
+    laneChangeALC @91;
+    manualSteeringRequired @92;
+    manualSteeringRequiredBlinkersOn @93;
+    leadCarMoving @94;
   }
 }
 
@@ -175,15 +179,15 @@ struct CarState {
   # clutch (manual transmission only)
   clutchPressed @28 :Bool;
 
-  # dp
-  lkMode @37 :Bool;
-
   # which packets this state came from
   canMonoTimes @12: List(UInt64);
 
   # blindspot sensors
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
+
+  # dp
+  lkMode @37 :Bool;
 
   struct WheelSpeeds {
     # optional wheel speeds

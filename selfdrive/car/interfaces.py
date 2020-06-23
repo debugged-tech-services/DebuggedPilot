@@ -9,12 +9,6 @@ from selfdrive.controls.lib.events import Events
 from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.drive_helpers import V_CRUISE_MAX
 
-# dp
-from common.realtime import sec_since_boot
-from common.params import Params, put_nonblocking
-params = Params()
-from common.dp import get_last_modified
-
 GearShifter = car.CarState.GearShifter
 EventName = car.CarEvent.EventName
 MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS # 144 + 4 = 92 mph
@@ -38,14 +32,7 @@ class CarInterfaceBase():
     if CarController is not None:
       self.CC = CarController(self.cp.dbc_name, CP, self.VM)
 
-    # dp
-    self.dragon_toyota_stock_dsu = False
-    self.dragon_enable_steering_on_signal = False
-    self.dragon_allow_gas = False
-    self.ts_last_check = 0.
-    self.dragon_lat_ctrl = True
-    self.dp_last_modified = None
-    self.dp_gear_check = True
+    self.dragonconf = None
 
   @staticmethod
   def calc_accel_override(a_ego, a_target, v_ego, v_target):
@@ -92,28 +79,12 @@ class CarInterfaceBase():
     return ret
 
   # returns a car.CarState, pass in car.CarControl
-  def update(self, c, can_strings):
+  def update(self, c, can_strings, dragonconf):
     raise NotImplementedError
 
   # return sendcan, pass in a car.CarControl
   def apply(self, c):
     raise NotImplementedError
-
-  def dp_load_params(self, car_name):
-    # dp
-    ts = sec_since_boot()
-    if ts - self.ts_last_check >= 5.:
-      modified = get_last_modified()
-      if self.dp_last_modified != modified:
-        self.dragon_lat_ctrl = False if params.get("DragonLatCtrl", encoding='utf8') == "0" else True
-        if self.dragon_lat_ctrl:
-          self.dragon_enable_steering_on_signal = True if (params.get("DragonEnableSteeringOnSignal", encoding='utf8') == "1" and params.get("LaneChangeEnabled", encoding='utf8') == "0") else False
-        self.dragon_toyota_stock_dsu = True if (car_name == 'toyota' and params.get("DragonToyotaStockDSU", encoding='utf8') == "1") else False
-        if not self.dragon_toyota_stock_dsu:
-          self.dragon_allow_gas = True if params.get("DragonAllowGas", encoding='utf8') == "1" else False
-        self.dp_gear_check = False if params.get("DragonEnableGearCheck", encoding='utf8') == "0" else True
-        self.dp_last_modified = modified
-      self.ts_last_check = ts
 
   def create_common_events(self, cs_out, extra_gears=[], gas_resume_speed=-1, pcm_enable=True):
     events = Events()
@@ -122,27 +93,27 @@ class CarInterfaceBase():
       events.add(EventName.doorOpen)
     if cs_out.seatbeltUnlatched:
       events.add(EventName.seatbeltNotLatched)
-    if not self.dragon_toyota_stock_dsu:
-        if cs_out.gearShifter != GearShifter.drive and cs_out.gearShifter not in extra_gears:
-          events.add(EventName.wrongGear)
-        if cs_out.gearShifter == GearShifter.reverse:
-          events.add(EventName.reverseGear)
-    if not cs_out.cruiseState.available:
+    if not self.dragonconf.dpAtl:
+      if cs_out.gearShifter != GearShifter.drive and cs_out.gearShifter not in extra_gears:
+        events.add(EventName.wrongGear)
+      if cs_out.gearShifter == GearShifter.reverse:
+        events.add(EventName.reverseGear)
+    if not cs_out.cruiseState.available and not self.dragonconf.dpAtl:
       events.add(EventName.wrongCarMode)
     if cs_out.espDisabled:
       events.add(EventName.espDisabled)
-    if cs_out.gasPressed and not self.dragon_allow_gas and not self.dragon_toyota_stock_dsu:
+    if cs_out.gasPressed and not self.dragonconf.dpAllowGas and not self.dragonconf.dpAtl:
       events.add(EventName.gasPressed)
     if cs_out.stockFcw:
       events.add(EventName.stockFcw)
     if cs_out.stockAeb:
       events.add(EventName.stockAeb)
-    if cs_out.vEgo > MAX_CTRL_SPEED:
+    if cs_out.vEgo > self.dragonconf.dpMaxCtrlSpeed:
       events.add(EventName.speedTooHigh)
 
-    if not self.dragon_lat_ctrl:
+    if not self.dragonconf.dpLatCtrl:
       events.add(EventName.manualSteeringRequired)
-    elif self.dragon_enable_steering_on_signal and (cs_out.leftBlinker or cs_out.rightBlinker):
+    elif self.dragonconf.dpSteeringOnSignal and (cs_out.leftBlinker or cs_out.rightBlinker):
       events.add(EventName.manualSteeringRequiredBlinkersOn)
     elif cs_out.steerError:
       events.add(EventName.steerUnavailable)
@@ -152,14 +123,15 @@ class CarInterfaceBase():
     # Disable on rising edge of gas or brake. Also disable on brake when speed > 0.
     # Optionally allow to press gas at zero speed to resume.
     # e.g. Chrysler does not spam the resume button yet, so resuming with gas is handy. FIXME!
-    if not self.dragon_toyota_stock_dsu:
-      if not self.dragon_allow_gas:
-        if (cs_out.gasPressed and (not self.CS.out.gasPressed) and cs_out.vEgo > gas_resume_speed) or \
-            (cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill)):
-          events.add(EventName.pedalPressed)
-      else:
-        if cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill):
-          events.add(EventName.pedalPressed)
+    if self.dragonconf.dpAtl:
+      pass
+    elif self.dragonconf.dpAllowGas:
+      if cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill):
+        events.add(EventName.pedalPressed)
+    else:
+      if (cs_out.gasPressed and (not self.CS.out.gasPressed) and cs_out.vEgo > gas_resume_speed) or \
+         (cs_out.brakePressed and (not self.CS.out.brakePressed or not cs_out.standstill)):
+        events.add(EventName.pedalPressed)
 
     # we engage when pcm is active (rising edge)
     if pcm_enable:

@@ -10,7 +10,6 @@ def apply_deadzone(error, deadzone):
     error = 0.
   return error
 
-
 class PIController:
   def __init__(self, k_p, k_i, k_f=1., pos_limit=None, neg_limit=None, rate=100, sat_limit=0.8, convert=None):
     self._k_p = k_p  # proportional gain
@@ -91,7 +90,7 @@ class PIController:
 
 class PIDController:
   def __init__(self, k_p, k_i, k_d, k_f=1., pos_limit=None, neg_limit=None, rate=100, sat_limit=0.8, convert=None):
-    self.enable_long_derivative = False # self.op_params.get('enable_long_derivative', False)
+    self.enable_long_derivative = False
     self._k_p = k_p  # proportional gain
     self._k_i = k_i  # integral gain
     self._k_d = k_d  # derivative gain
@@ -165,7 +164,7 @@ class PIDController:
       # or when i will move towards the sign of the error
       if ((error >= 0 and (control <= self.pos_limit or i < 0.0)) or \
           (error <= 0 and (control >= self.neg_limit or i > 0.0))) and \
-         not freeze_integrator:
+          not freeze_integrator:
         self.id = i
 
     if self.enable_long_derivative:

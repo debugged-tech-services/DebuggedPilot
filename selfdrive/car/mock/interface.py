@@ -5,6 +5,7 @@ from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
+from common.dp_common import common_interface_update
 
 # mocked car interface to work with chffrplus
 TS = 0.01  # 100Hz
@@ -28,16 +29,6 @@ class CarInterface(CarInterfaceBase):
     self.yaw_rate = 0.
     self.yaw_rate_meas = 0.
 
-    # dp
-    # mock override constructor so we need to define here as well.
-    self.dragon_toyota_stock_dsu = False
-    self.dragon_enable_steering_on_signal = False
-    self.dragon_allow_gas = False
-    self.ts_last_check = 0.
-    self.dragon_lat_ctrl = True
-    self.dp_last_modified = None
-    self.dp_gear_check = True
-
   @staticmethod
   def compute_gb(accel, speed):
     return accel
@@ -58,8 +49,7 @@ class CarInterface(CarInterfaceBase):
     return ret
 
   # returns a car.CarState
-  def update(self, c, can_strings):
-    self.dp_load_params('mock')
+  def update(self, c, can_strings, dragonconf):
     # get basic data from phone and gps since CAN isn't connected
     sensors = messaging.recv_sock(self.sensor)
     if sensors is not None:

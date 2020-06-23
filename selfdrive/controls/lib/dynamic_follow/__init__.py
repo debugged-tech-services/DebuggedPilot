@@ -4,22 +4,18 @@ from common.realtime import sec_since_boot
 from selfdrive.controls.lib.drive_helpers import MPC_COST_LONG
 from common.numpy_fast import interp, clip
 from selfdrive.config import Conversions as CV
-from cereal.messaging import SubMaster
+from common.params import Params
 
 from selfdrive.controls.lib.dynamic_follow.auto_df import predict
 from selfdrive.controls.lib.dynamic_follow.support import LeadData, CarData, dfData, dfProfiles
 travis = False
 
-
 # dp
-from common.dp import get_last_modified
-from common.params import Params
 PROFILE_AUTO = 4
 PROFILE_LONG = 3
 PROFILE_NORMAL = 2
 PROFILE_SHORT = 1
 PROFILE_OFF = 0
-
 
 class DynamicFollow:
   def __init__(self, mpc_id):
@@ -28,10 +24,10 @@ class DynamicFollow:
 
     # Model variables
     mpc_rate = 1 / 20.
-    self.model_scales = {'v_ego': [-0.06112159043550491, 37.96522521972656], 'v_lead': [0.0, 35.27671432495117], 'x_lead': [2.4600000381469727, 139.52000427246094]}
+    self.model_scales = {'v_ego': [-0.06112159043550491, 37.96522521972656], 'a_lead': [-3.109330892562866, 3.3612186908721924], 'v_lead': [0.0, 35.27671432495117], 'x_lead': [2.4600000381469727, 141.44000244140625]}
     self.predict_rate = 1 / 4.
-    self.skip_every = round(0.2 / mpc_rate)
-    self.model_input_len = round(35 / mpc_rate)  # int: model input time
+    self.skip_every = round(0.25 / mpc_rate)
+    self.model_input_len = round(45 / mpc_rate)
 
     # Dynamic follow variables
     self.default_TR = 1.8
@@ -40,17 +36,16 @@ class DynamicFollow:
     self.v_ego_retention = 2.5
     self.v_rel_retention = 1.5
 
-    # dp params
-    self.last_ts = 0.
-    self.dp_df_profile = PROFILE_OFF
-    self.dp_last_modified = None
-    self.params = Params()
+    self.sng_TR = 1.8  # reacceleration stop and go TR
+    self.sng_speed = 18.0 * CV.MPH_TO_MS
 
-    self._setup_collector()
     self._setup_changing_variables()
 
-  def _setup_collector(self):
-    self.sm = SubMaster(['liveTracks'])
+    # dp params
+    self.last_ts = 0.
+    self.dp_dynamic_follow = PROFILE_OFF
+    self.dp_last_modified = None
+    self.params = Params()
 
   def _setup_changing_variables(self):
     self.TR = self.default_TR
@@ -64,16 +59,14 @@ class DynamicFollow:
     self.last_cost = 0.0
     self.last_predict_time = 0.0
     self.auto_df_model_data = []
+    self._get_live_params()  # so they're defined just in case
 
   def update(self, CS, libmpc):
     self._get_live_params()
     self._update_car(CS)
     self._get_profiles()
 
-    if self.mpc_id == 1:
-      self._gather_data()
-
-    if not self.lead_data.status or self.dp_df_profile == PROFILE_OFF:
+    if not self.lead_data.status or self.dp_dynamic_follow == PROFILE_OFF:
       self.TR = self.default_TR
     else:
       self._store_df_data()
@@ -85,26 +78,25 @@ class DynamicFollow:
     return self.TR
 
   def _get_profiles(self):
+    """This receives profile change updates from dfManager and runs the auto-df prediction if auto mode"""
     # dp
     # update() gets call every time so we can read profile from param here
-    # as usual, we update every 5 secs
+    # as usual, we update every 3 secs
     ts = sec_since_boot()
-    if self.last_ts is None or ts - self.last_ts >= 5.:
-      modified = get_last_modified()
+    if self.last_ts is None or ts - self.last_ts >= 3.:
+      modified = self.params.get("dp_last_modified", encoding='utf8')
       if self.dp_last_modified != modified:
         try:
-          self.dp_df_profile = int(self.params.get("DragonDynamicFollow", encoding='utf8'))
-          if self.dp_df_profile > 4 or self.dp_df_profile < 0:
-            self.dp_df_profile = 0
+          self.dp_dynamic_follow = int(self.params.get("dp_dynamic_follow", encoding='utf8'))
+          if self.dp_dynamic_follow > 4 or self.dp_dynamic_follow < 0:
+            self.dp_dynamic_follow = 0
         except (TypeError, ValueError):
-          self.dp_df_profile = PROFILE_OFF
+          self.dp_dynamic_follow = PROFILE_OFF
         self.dp_last_modified = modified
       self.last_ts = ts
-    if self.dp_df_profile == PROFILE_AUTO:
-      self._get_pred()  # sets self.model_profile, all other checks are inside function
 
-  def _gather_data(self):
-    self.sm.update(0)
+    if self.dp_dynamic_follow == PROFILE_AUTO:  # todo: find some way to share prediction between the two mpcs to reduce processing overhead
+      self._get_pred()  # sets self.model_profile, all other checks are inside function
 
   def _norm(self, x, name):
     self.x = x
@@ -135,6 +127,7 @@ class DynamicFollow:
     # Store data for auto-df model
     self.auto_df_model_data.append([self._norm(self.car_data.v_ego, 'v_ego'),
                                     self._norm(self.lead_data.v_lead, 'v_lead'),
+                                    self._norm(self.lead_data.a_lead, 'a_lead'),
                                     self._norm(self.lead_data.x_lead, 'x_lead')])
     while len(self.auto_df_model_data) > self.model_input_len:
       del self.auto_df_model_data[0]
@@ -220,18 +213,33 @@ class DynamicFollow:
         return calc_mod
     return None
 
-  def global_profile_mod(self, TR, profile_mod_pos, profile_mod_neg):
-    if self.global_df_mod is not None:  # only apply when not in sng
-      TR *= self.global_df_mod
-      profile_mod_pos *= (1 - self.global_df_mod) + 1
-      profile_mod_neg *= self.global_df_mod
-    return TR, profile_mod_pos, profile_mod_neg
+  def global_profile_mod(self, profile_mod_x, profile_mod_pos, profile_mod_neg, x_vel, y_dist):
+    """
+    This function modifies the y_dist list used by dynamic follow in accordance with global_df_mod
+    It also intelligently adjusts the profile mods at each breakpoint based on the change in TR
+    """
+    if self.global_df_mod is None:
+      return profile_mod_pos, profile_mod_neg, y_dist
+    global_df_mod = 1 - self.global_df_mod
+
+    # Calculate new TRs
+    speeds = [0, self.sng_speed, 18, x_vel[-1]]  # [0, 18 mph, ~40 mph, highest profile mod speed (~78 mph)]
+    mods = [0, 0.1, 0.7, 1]  # how much to limit global_df_mod at each speed, 1 is full effect
+    y_dist_new = [y - (y * global_df_mod * np.interp(x, speeds, mods)) for x, y in zip(x_vel, y_dist)]
+
+    # Calculate how to change profile mods based on change in TR
+    # eg. if df mod is 0.7, then increase positive mod and decrease negative mod
+    calc_profile_mods = [(np.interp(mod_x, x_vel, y_dist) - np.interp(mod_x, x_vel, y_dist_new) + 1) for mod_x in profile_mod_x]
+    profile_mod_pos = [mod_pos * mod for mod_pos, mod in zip(profile_mod_pos, calc_profile_mods)]
+    profile_mod_neg = [mod_neg * ((1 - mod) + 1) for mod_neg, mod in zip(profile_mod_neg, calc_profile_mods)]
+
+    return profile_mod_pos, profile_mod_neg, y_dist_new
 
   def _get_TR(self):
     x_vel = [0.0, 1.8627, 3.7253, 5.588, 7.4507, 9.3133, 11.5598, 13.645, 22.352, 31.2928, 33.528, 35.7632, 40.2336]  # velocities
     profile_mod_x = [2.2352, 13.4112, 24.5872, 35.7632]  # profile mod speeds, mph: [5., 30., 55., 80.]
 
-    if self.dp_df_profile == PROFILE_AUTO:  # decide which profile to use, model profile will be updated before this
+    if self.dp_dynamic_follow == PROFILE_AUTO:  # decide which profile to use, model profile will be updated before this
       # df is 0 = traffic, 1 = relaxed, 2 = roadtrip, 3 = auto
       # dp is 0 = off, 1 = short, 2 = normal, 3 = long, 4 = auto
       # if it's model profile, we need to convert it
@@ -241,7 +249,7 @@ class DynamicFollow:
       else:
         df_profile = self.model_profile + 1
     else:
-      df_profile = self.dp_df_profile
+      df_profile = self.dp_dynamic_follow
 
     if df_profile == PROFILE_LONG:
       y_dist = [1.3978, 1.4132, 1.4318, 1.4536, 1.485, 1.5229, 1.5819, 1.6203, 1.7238, 1.8231, 1.8379, 1.8495, 1.8535]  # TRs
@@ -261,24 +269,23 @@ class DynamicFollow:
     else:
       raise Exception('Unknown profile type: {}'.format(df_profile))
 
+    # Global df mod
+    profile_mod_pos, profile_mod_neg, y_dist = self.global_profile_mod(profile_mod_x, profile_mod_pos, profile_mod_neg, x_vel, y_dist)
+
     # Profile modifications - Designed so that each profile reacts similarly to changing lead dynamics
     profile_mod_pos = interp(self.car_data.v_ego, profile_mod_x, profile_mod_pos)
     profile_mod_neg = interp(self.car_data.v_ego, profile_mod_x, profile_mod_neg)
 
-    sng_TR = 1.8  # reacceleration stop and go TR
-    sng_speed = 18.0 * CV.MPH_TO_MS
-
-    if self.car_data.v_ego > sng_speed:  # keep sng distance until we're above sng speed again
+    if self.car_data.v_ego > self.sng_speed:  # keep sng distance until we're above sng speed again
       self.sng = False
 
-    if (self.car_data.v_ego >= sng_speed or self.df_data.v_egos[0]['v_ego'] >= self.car_data.v_ego) and not self.sng:
+    if (self.car_data.v_ego >= self.sng_speed or self.df_data.v_egos[0]['v_ego'] >= self.car_data.v_ego) and not self.sng:
       # if above 15 mph OR we're decelerating to a stop, keep shorter TR. when we reaccelerate, use sng_TR and slowly decrease
       TR = interp(self.car_data.v_ego, x_vel, y_dist)
-      TR, profile_mod_pos, profile_mod_neg = self.global_profile_mod(TR, profile_mod_pos, profile_mod_neg)  # only within normal driving conditions
     else:  # this allows us to get closer to the lead car when stopping, while being able to have smooth stop and go when reaccelerating
       self.sng = True
-      x = [sng_speed * 0.7, sng_speed]  # decrease TR between 12.6 and 18 mph from 1.8s to defined TR above at 18mph while accelerating
-      y = [sng_TR, interp(sng_speed, x_vel, y_dist)]
+      x = [self.sng_speed * 0.7, self.sng_speed]  # decrease TR between 12.6 and 18 mph from 1.8s to defined TR above at 18mph while accelerating
+      y = [self.sng_TR, interp(self.sng_speed, x_vel, y_dist)]
       TR = interp(self.car_data.v_ego, x, y)
 
     TR_mods = []
@@ -295,9 +302,9 @@ class DynamicFollow:
     if rel_accel_mod is not None:  # if available
       deadzone = 2 * CV.MPH_TO_MS
       if self.lead_data.v_lead - deadzone > self.car_data.v_ego:
-       TR_mods.append(rel_accel_mod)
+        TR_mods.append(rel_accel_mod)
 
-    x = [sng_speed / 5.0, sng_speed]  # as we approach 0, apply x% more distance
+    x = [self.sng_speed / 5.0, self.sng_speed]  # as we approach 0, apply x% more distance
     y = [1.05, 1.0]
     profile_mod_pos *= interp(self.car_data.v_ego, x, y)  # but only for currently positive mods
 
@@ -306,9 +313,10 @@ class DynamicFollow:
 
     if self.car_data.left_blinker or self.car_data.right_blinker and df_profile != self.df_profiles.traffic:
       x = [8.9408, 22.352, 31.2928]  # 20, 50, 70 mph
-      y = [1.0, .75, .65]  # reduce TR when changing lanes
-      TR *= interp(self.car_data.v_ego, x, y)
-    return clip(TR, 0.9, 2.7)
+      y = [1.0, .75, .65]
+      TR *= interp(self.car_data.v_ego, x, y)  # reduce TR when changing lanes
+
+    return float(clip(TR, self.min_TR, 2.7))
 
   def update_lead(self, v_lead=None, a_lead=None, x_lead=None, status=False, new_lead=False):
     self.lead_data.v_lead = v_lead
@@ -329,4 +337,5 @@ class DynamicFollow:
   def _get_live_params(self):
     self.global_df_mod = None #self.op_params.get('global_df_mod', None)
     if self.global_df_mod is not None:
-      self.global_df_mod = np.clip(self.global_df_mod, 0.7, 1.1)
+      self.global_df_mod = clip(self.global_df_mod, 0.85, 1.2)
+    self.min_TR = 0.9  # default

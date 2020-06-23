@@ -1,3 +1,23 @@
+2020-06-22 (0.7.6.1)
+========================
+* 更新至 openpilot 0.7.6.1。 (特別感謝 @rockindy 協助更新)
+* Updated to openpilot 0.7.6.1. (Special thanks to @rockindy for initial merge)
+* 優化並整合 dp 服務。 (所有的設定檔已改名，請重新設定所有的功能)
+* Optimized and integrated several dp services. (Settings have been renamed, please re-config all settings)
+* 完全關閉 steer ratio learner。
+* Completely disabled steer ratio learner.
+* 移除「加速模式」。
+* Removed Accel Profile.
+* 加入本田皓影混電版指紋v1。(感謝 @劉駿)
+* Added Honda Breeze Hybrid FPv1. (Thanks to @劉駿)
+* 加入台灣版 Toyota Prius 4.5 指紋v1。(感謝 @jeekid)
+* Added Taiwan Toyota Prius 4.5 FPv1. (Thanks to @jeekid)
+
+2020-06-18 (0.7.5)
+========================
+* Dynamic Follow 更新模型。(感謝 @ShaneSmiskol 提供代碼、 @cgw1968 測試)
+* Updated Dynamic Follow model. (Special Thanks to @ShaneSmiskol for the feature and @cgw1968 for testing)
+
 2020-05-30 (0.7.5)
 ========================
 * Dynamic Follow 更新至 ShaneSmiskol:stock_additions 0.7.5 版。(感謝 @ShaneSmiskol 提供代碼、 @Wei 測試)

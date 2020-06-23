@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 import gc
 from cereal import car
-from common.realtime import set_realtime_priority, sec_since_boot
+from common.realtime import set_realtime_priority
 from common.params import Params
 import cereal.messaging as messaging
 from selfdrive.controls.lib.events import Events
 from selfdrive.controls.lib.driver_monitor import DriverStatus, MAX_TERMINAL_ALERTS, MAX_TERMINAL_DURATION
 from selfdrive.locationd.calibration_helpers import Calibration
-params = Params()
-from common.dp import get_last_modified
 
 def dmonitoringd_thread(sm=None, pm=None):
   gc.disable()
@@ -23,7 +21,7 @@ def dmonitoringd_thread(sm=None, pm=None):
     pm = messaging.PubMaster(['dMonitoringState'])
 
   if sm is None:
-    sm = messaging.SubMaster(['driverState', 'liveCalibration', 'carState', 'model'])
+    sm = messaging.SubMaster(['dragonConf', 'driverState', 'liveCalibration', 'carState', 'model'])
 
   driver_status = DriverStatus()
   is_rhd = params.get("IsRHD")
@@ -43,37 +41,8 @@ def dmonitoringd_thread(sm=None, pm=None):
   v_cruise_last = 0
   driver_engaged = False
 
-  # dragonpilot
-  last_ts = 0
-  dp_last_modified = None
-  dp_enable_driver_monitoring = True
-
   # 10Hz <- dmonitoringmodeld
   while True:
-    cur_time = sec_since_boot()
-    if cur_time - last_ts >= 5.:
-      modified = get_last_modified()
-      if dp_last_modified != modified:
-        dp_enable_driver_monitoring = False if params.get("DragonEnableDriverMonitoring", encoding='utf8') == "0" else True
-        try:
-          dp_awareness_time = int(params.get("DragonSteeringMonitorTimer", encoding='utf8'))
-        except (TypeError, ValueError):
-          dp_awareness_time = 70.
-        driver_status.awareness_time = 86400 if dp_awareness_time <= 0. else dp_awareness_time * 60.
-        dp_last_modified = modified
-      last_ts = cur_time
-
-    # reset all awareness val and set to rhd region, this will enforce steering monitor.
-    if not dp_enable_driver_monitoring:
-      driver_status.active_monitoring_mode = False
-      driver_status.awareness = 1.
-      driver_status.awareness_active = 1.
-      driver_status.awareness_passive = 1.
-      driver_status.terminal_alert_cnt = 0
-      driver_status.terminal_time = 0
-      driver_status.face_detected = False
-      driver_status.hi_stds = 0
-
     sm.update()
 
     # Handle calibration
@@ -88,6 +57,16 @@ def dmonitoringd_thread(sm=None, pm=None):
       driver_engaged = len(sm['carState'].buttonEvents) > 0 or \
                         v_cruise != v_cruise_last or \
                         sm['carState'].steeringPressed
+
+      if sm.updated['dragonConf']:
+        if not sm['dragonConf'].dpDriverMonitor:
+          driver_status.active_monitoring_mode = False
+          driver_status.face_detected = False
+          if not sm['dragonConf'].dpSteeringMonitor:
+            driver_status.awareness = 1.
+            driver_status.awareness_active = 1.
+            driver_status.awareness_passive = 1.
+
       if driver_engaged:
         driver_status.update(Events(), True, sm['carState'].cruiseState.enabled, sm['carState'].standstill)
       v_cruise_last = v_cruise

@@ -3,7 +3,7 @@ from cereal import car
 from selfdrive.car.chrysler.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
-
+from common.dp_common import common_interface_update
 
 class CarInterface(CarInterfaceBase):
   @staticmethod
@@ -55,14 +55,15 @@ class CarInterface(CarInterfaceBase):
     return ret
 
   # returns a car.CarState
-  def update(self, c, can_strings):
-    self.dp_load_params('chrysler')
+  def update(self, c, can_strings, dragonconf):
     # ******************* do can recv *******************
     self.cp.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
 
     ret = self.CS.update(self.cp, self.cp_cam)
-
+    # dp
+    self.dragonconf = dragonconf
+    ret = common_interface_update(ret) if dragonconf.dpAtl else ret
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
 
     # speeds
@@ -91,6 +92,6 @@ class CarInterface(CarInterfaceBase):
     if (self.CS.frame == -1):
       return [] # if we haven't seen a frame 220, then do not update.
 
-    can_sends = self.CC.update(c.enabled, self.CS, c.actuators, c.cruiseControl.cancel, c.hudControl.visualAlert)
+    can_sends = self.CC.update(c.enabled, self.CS, c.actuators, c.cruiseControl.cancel, c.hudControl.visualAlert, self.dragonconf)
 
     return can_sends

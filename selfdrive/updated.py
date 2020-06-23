@@ -33,7 +33,6 @@ from pathlib import Path
 import fcntl
 import threading
 from cffi import FFI
-from common.dp import is_online
 
 from common.basedir import BASEDIR
 from common.params import Params

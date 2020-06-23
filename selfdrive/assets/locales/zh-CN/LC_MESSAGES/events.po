@@ -1,0 +1,528 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-06-18 10:11+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Rick Lan <ricklan@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh-CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:137
+msgid "openpilot Unavailable"
+msgstr "无法使用 openpilot"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:144
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:151
+msgid "TAKE CONTROL IMMEDIATELY"
+msgstr "即刻接管控制"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:168
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:306
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:332
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:396
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:440
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:488
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:498
+msgid "TAKE CONTROL"
+msgstr "接管控制"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:169
+#, fuzzy
+msgid "Steer Unavailable Below"
+msgstr "横向控制暂时失效，车速低于 "
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:177
+#, fuzzy, python-format
+msgid "Calibration in Progress: %d%%"
+msgstr "正在校准相机中："
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:178
+#, fuzzy
+msgid "Drive Above"
+msgstr "车速请高于"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:191
+msgid "DEBUG ALERT"
+msgstr "除错用警示讯息"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:199
+msgid "Be ready to take over at any time"
+msgstr "请准备好随时接管"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:200
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:216
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:224
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:232
+msgid "Always keep hands on wheel and eyes on road"
+msgstr "将手放在方向盘上并持续监视路况"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:207
+#, fuzzy
+msgid "WARNING: White panda is deprecated"
+msgstr "注意：这个分支未经过测试"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:208
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:248
+msgid "Upgrade to comma two or black panda"
+msgstr "请升级至 comma two 或是使用 black panda"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:215
+msgid "WARNING: This branch is not tested"
+msgstr "注意：这个分支未经过测试"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:223
+msgid "Dashcam mode"
+msgstr "行车记录模式"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:231
+msgid "Dashcam mode for unsupported car"
+msgstr "行车记录模式 (尚未支援车种)"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:239
+msgid "Unsupported Giraffe Configuration"
+msgstr "未支援的 Giraffe 设置"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:240
+msgid "Visit comma.ai/tg"
+msgstr "请查阅 comma.ai/tg"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:247
+msgid "White Panda Is No Longer Supported"
+msgstr "不再支持 White Panda"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:251
+msgid "White panda is no longer supported"
+msgstr "不再支持 White panda"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:256
+msgid "Stock LKAS is turned on"
+msgstr "原厂 LKAS 已开启"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:257
+msgid "Turn off stock LKAS to engage"
+msgstr "需关闭原厂 LKAS 才能启用"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:266
+msgid "Community Feature Detected"
+msgstr "检测到社群开发功能"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:267
+msgid "Enable Community Features in Developer Settings"
+msgstr "请至开发人员设定裡启用社群开发功能"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:274
+msgid "Dashcam Mode"
+msgstr "行车记录模式"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:275
+msgid "Car Unrecognized"
+msgstr "无法辨识车款"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:282
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:290
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:298
+msgid "BRAKE!"
+msgstr "刹车！"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:283
+#, fuzzy
+msgid "Stock AEB: Risk of Collision"
+msgstr "有碰撞的风险"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:291
+#, fuzzy
+msgid "Stock FCW: Risk of Collision"
+msgstr "有碰撞的风险"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:299
+msgid "Risk of Collision"
+msgstr "有碰撞的风险"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:307
+msgid "Lane Departure Detected"
+msgstr "偏离车道"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:314
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:630
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:631
+msgid "CAN Error: Check Connections"
+msgstr "CAN 讯号错误：请检查线路"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:324
+msgid "Vehicle Parameter Identification Failed"
+msgstr "车子参数识别失败"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:333
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:489
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:492
+msgid "Steering Temporarily Unavailable"
+msgstr "横向控制暂时失效"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:340
+msgid "KEEP EYES ON ROAD: Driver Distracted"
+msgstr "注意路况：驾驶分心"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:348
+msgid "KEEP EYES ON ROAD"
+msgstr "注意路况"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:349
+msgid "Driver Appears Distracted"
+msgstr "驾驶分心"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:356
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:380
+msgid "DISENGAGE IMMEDIATELY"
+msgstr "立即解除"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:357
+msgid "Driver Was Distracted"
+msgstr "驾驶分心"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:364
+msgid "TOUCH STEERING WHEEL: No Face Detected"
+msgstr "请触碰方向盘：未侦测到驾驶面容"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:372
+msgid "TOUCH STEERING WHEEL"
+msgstr "请触碰方向盘"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:373
+msgid "Driver Is Unresponsive"
+msgstr "驾驶没有反应"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:381
+msgid "Driver Was Unresponsive"
+msgstr "驾驶没有反应"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:388
+msgid "CHECK DRIVER FACE VISIBILITY"
+msgstr "请检查驾驶面部的可见度"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:389
+msgid "Driver Monitor Model Output Uncertain"
+msgstr "驾驶监控模型判断不明确"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:397
+msgid "Resume Driving Manually"
+msgstr "请自行恢復驾驶"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:404
+msgid "STOPPED"
+msgstr "已停止"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:405
+msgid "Press Resume to Move"
+msgstr "请按 RES 继续"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:416
+msgid "Steer Left to Start Lane Change"
+msgstr "请往左打方向盘切换至左车道"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:417
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:425
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:433
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:736
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:744
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:752
+msgid "Monitor Other Vehicles"
+msgstr "请注意其它车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:424
+msgid "Steer Right to Start Lane Change"
+msgstr "请往右打方向盘切换至右车道"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:432
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:751
+msgid "Changing Lane"
+msgstr "切换车道中"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:441
+msgid "Turn Exceeds Steering Limit"
+msgstr "弯道超过横向操控限制"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:466
+msgid "Brake Hold Active"
+msgstr "驻车煞车已启用"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:471
+msgid "Park Brake Engaged"
+msgstr "电子驻车已启动"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:476
+msgid "Pedal Pressed During Attempt"
+msgstr "启用时侦测到驾驶踩踏油门/刹车"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:482
+msgid "Main Switch Off"
+msgstr "主开关已关闭"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:499
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:502
+msgid "Vision Model Output Uncertain"
+msgstr "视觉模型判断不明确"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:506
+msgid "Out of Storage Space"
+msgstr "存储空间不足"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:511
+msgid "Speed Too Low"
+msgstr "车速过慢"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:516
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:520
+msgid "NEOS Update Required"
+msgstr "NEOS 需要更新"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:517
+msgid "Please Wait for Update"
+msgstr "更新中请稍候"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:526
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:530
+msgid "No Data from Device Sensors"
+msgstr "未收到装置传感器数据"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:527
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:536
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:613
+msgid "Reboot your Device"
+msgstr "请重启装置"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:535
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:539
+msgid "Speaker not found"
+msgstr "找不到音效装置"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:543
+msgid "Distraction Level Too High"
+msgstr "驾驶分心太多次"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:547
+msgid "System Overheated"
+msgstr "系统过热"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:548
+msgid "System overheated"
+msgstr "系统过热"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:552
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:553
+msgid "Gear not D"
+msgstr "不在 D 档位"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:557
+msgid "Calibration Invalid: Reposition Device and Recalibrate"
+msgstr "校准无效：请将装置放于新的位置并重新校准"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:558
+msgid "Calibration Invalid: Reposition Device & Recalibrate"
+msgstr "校准无效：请将装置放于新的位置并重新校准"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:562
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:564
+msgid "Calibration in Progress"
+msgstr "正在校准中"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:568
+msgid "Door Open"
+msgstr "车门开启"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:569
+msgid "Door open"
+msgstr "车门未关"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:573
+msgid "Seatbelt Unlatched"
+msgstr "安全带未繫"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:574
+msgid "Seatbelt unlatched"
+msgstr "安全带未繫"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:578
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:579
+msgid "ESP Off"
+msgstr "ESP 关闭"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:583
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:584
+msgid "Low Battery"
+msgstr "电量过低"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:588
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:589
+msgid "Communication Issue between Processes"
+msgstr "行程间出现通讯问题"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:594
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:595
+msgid "Radar Communication Issue"
+msgstr "雷达通讯出现问题"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:600
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:601
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:605
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:606
+msgid "Radar Error: Restart the Car"
+msgstr "雷达讯号错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:610
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:616
+msgid "Low Memory: Reboot Your Device"
+msgstr "记忆体不足：请重启您的装置"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:612
+msgid "RAM Critically Low"
+msgstr "记忆体严重不足"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:621
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:622
+msgid "Controls Failed"
+msgstr "控制发生错误"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:626
+msgid "Controls Mismatch"
+msgstr "控制不匹配"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:635
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:641
+msgid "LKAS Fault: Restart the Car"
+msgstr "LKAS 错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:637
+msgid "LKAS Fault: Restart the car to engage"
+msgstr "LKAS 错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:645
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:651
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:729
+msgid "Cruise Fault: Restart the Car"
+msgstr "巡航系统错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:647
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:725
+msgid "Cruise Fault: Restart the car to engage"
+msgstr "巡航系统错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:655
+msgid "Gas Fault: Restart the Car"
+msgstr "油门错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:656
+msgid "Gas Error: Restart the Car"
+msgstr "油门错误：请重新发动车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:660
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:661
+msgid "Reverse Gear"
+msgstr "切换至倒车档"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:665
+msgid "Cruise Is Off"
+msgstr "巡航系统关闭"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:669
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:670
+msgid "Planner Solution Error"
+msgstr "Planner Solution 错误"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:674
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:676
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:680
+msgid "Harness Malfunction"
+msgstr "Harness 故障"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:677
+msgid "Please Check Hardware"
+msgstr "请检查硬体"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:685
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:694
+msgid "openpilot Canceled"
+msgstr "openpilot 已取消"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:686
+msgid "No close lead car"
+msgstr "前方没有车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:689
+msgid "No Close Lead Car"
+msgstr "前方没有车辆"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:695
+msgid "Speed too low"
+msgstr "车速过慢"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:702
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:707
+msgid "Speed Too High"
+msgstr "车速过快"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:703
+msgid "Slow down to resume operation"
+msgstr "请减速后再启用"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:708
+msgid "Slow down to engage"
+msgstr "请减速后再启用"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:715
+msgid "Please connect to Internet"
+msgstr "请连接网路"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:716
+msgid "An Update Check Is Required to Engage"
+msgstr "需检查更新后才能启用"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:719
+msgid "Please Connect to Internet"
+msgstr "请连接网路"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:735
+#, fuzzy
+msgid "Left ALC will start in 3s"
+msgstr "准备自动切至左车道"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:743
+#, fuzzy
+msgid "Right ALC will start in 3s"
+msgstr "准备自动切至右车道"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:759
+msgid "STEERING REQUIRED: Lane Keeping OFF"
+msgstr "请接管方向盘：车道维持关闭"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:767
+msgid "STEERING REQUIRED: Blinkers ON"
+msgstr "请接管方向盘：方向灯开启"
+
+#: /home/dev/prj/dragonpilot/selfdrive/controls/lib/events.py:775
+msgid "Lead Car Is Moving"
+msgstr "前方车辆车移动中"
+
+#~ msgid "DISENGAGEMENT REQUIRED"
+#~ msgstr "请马上解除"
+
+#~ msgid "Not in Geofenced Area"
+#~ msgstr "不在地理围栏区域之内"
+
+#~ msgid "Calibration Needs Data. Upload Drive, Try Again"
+#~ msgstr "校正需要数据，请上传您的行车数据后再重试一次"
+
+#~ msgid "Cruise is Off"
+#~ msgstr "巡航系统关闭"
+
+#~ msgid "Lead Car Detected"
+#~ msgstr "侦测到前方车辆"

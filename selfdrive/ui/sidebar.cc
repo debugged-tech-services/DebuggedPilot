@@ -20,18 +20,19 @@ static void ui_draw_sidebar_home_button(UIState *s) {
   bool homeActive = s->active_app == cereal::UiLayoutState::App::HOME;
   const int home_btn_xr = !s->scene.uilayout_sidebarcollapsed ? home_btn_x : -(sbr_w);
 
-  if (s->dragon_updating) {
+  ui_draw_image(s->vg, home_btn_xr, home_btn_y, home_btn_w, home_btn_h, s->img_button_home, homeActive ? 1.0f : 0.65f);
+  if (s->scene.dpIsUpdating) {
     nvgBeginPath(s->vg);
     nvgCircle(s->vg, home_btn_xr + home_btn_w/2, home_btn_y + home_btn_h/2, 90);
     nvgFillColor(s->vg, nvgRGBA(255, 255, 255, s->scene.alert_rate));
     nvgFill(s->vg);
 
     nvgFillColor(s->vg, nvgRGBA(0, 0, 0, s->scene.alert_rate));
-    nvgFontSize(s->vg, (strcmp(s->dragon_locale, "zh-TW") == 0? 60 : strcmp(s->dragon_locale, "zh-CN") == 0? 60 : 46));
+    nvgFontSize(s->vg, s->scene.dpLocale == "zh-TW"? 60 : s->scene.dpLocale == "zh-CN"? 60 : 46);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, home_btn_xr, home_btn_y + home_btn_h/2, home_btn_w,
-      (strcmp(s->dragon_locale, "zh-TW") == 0? "更新中" : strcmp(s->dragon_locale, "zh-CN") == 0? "更新中" : "UPDATING"),
+      s->scene.dpLocale == "zh-TW"? "更新中" : s->scene.dpLocale == "zh-CN"? "更新中" : "UPDATING",
       NULL);
 
     s->scene.alert_rate += 5*s->scene.alert_type;
@@ -39,8 +40,6 @@ static void ui_draw_sidebar_home_button(UIState *s) {
     if (s->scene.alert_rate <= 0 || s->scene.alert_rate >= 255) {
       s->scene.alert_type *= -1;
     }
-  } else {
-    ui_draw_image(s->vg, home_btn_xr, home_btn_y, home_btn_w, home_btn_h, s->img_button_home, homeActive ? 1.0f : 0.65f);
   }
 }
 
@@ -65,12 +64,12 @@ static void ui_draw_sidebar_ip_addr(UIState *s) {
   const int network_ip_y = 255;
 
   char network_ip_str[15];
-  snprintf(network_ip_str, sizeof(network_ip_str), "%s", s->scene.ipAddr);
+//  snprintf(network_ip_str, sizeof(network_ip_str), "%s", s->scene.dpIpAddr);
   nvgFillColor(s->vg, COLOR_WHITE);
   nvgFontSize(s->vg, 34);
   nvgFontFaceId(s->vg, s->font_sans_regular);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, network_ip_str, NULL);
+  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, s->scene.dpIpAddr.c_str(), NULL);
 }
 
 static void ui_draw_sidebar_battery_text(UIState *s) {
@@ -179,8 +178,7 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
   const int temp_y_offset = 0;
   snprintf(temp_value_str, sizeof(temp_value_str), "%d", s->scene.paTemp);
   snprintf(temp_value_unit, sizeof(temp_value_unit), "%s", "°C");
-  snprintf(temp_label_str, sizeof(temp_label_str), "%s",
-  (strcmp(s->dragon_locale, "zh-TW") == 0? "溫度" : strcmp(s->dragon_locale, "zh-CN") == 0? "温度" : "TEMP"));
+  snprintf(temp_label_str, sizeof(temp_label_str), "%s", s->scene.dpLocale == "zh-TW"? "溫度" : s->scene.dpLocale == "zh-CN"? "温度" : "TEMP");
   strcat(temp_value_str, temp_value_unit);
 
   ui_draw_sidebar_metric(s, temp_label_str, temp_value_str, temp_severity_map[s->scene.thermalStatus], temp_y_offset, NULL);
@@ -193,7 +191,7 @@ static void ui_draw_sidebar_panda_metric(UIState *s) {
 
   if (s->scene.hwType == cereal::HealthData::HwType::UNKNOWN) {
     panda_severity = 2;
-    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "NO\nVEHICLE");
+    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "VEHICLE\nNO");
   } else {
     if (s->started){
       if (s->scene.satelliteCount < 6) {
@@ -211,16 +209,16 @@ static void ui_draw_sidebar_panda_metric(UIState *s) {
 
   ui_draw_sidebar_metric(s, NULL, NULL, panda_severity, panda_y_offset, panda_message_str);
 }
+
 static void ui_draw_sidebar_connectivity(UIState *s) {
-  if (s->scene.athenaStatus == NET_DISCONNECTED) {
-    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158,
-    (strcmp(s->dragon_locale, "zh-TW") == 0? "CONNECT\n已離線" : strcmp(s->dragon_locale, "zh-CN") == 0? "CONNECT\n已离线" : "CONNECT\nOFFLINE"));
+  if (!s->scene.dpAthenad) {
+    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158, "CONNECT\nDISABLED");
+  } else if (s->scene.athenaStatus == NET_DISCONNECTED) {
+    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158, "CONNECT\nOFFLINE");
   } else if (s->scene.athenaStatus == NET_CONNECTED) {
-    ui_draw_sidebar_metric(s, NULL, NULL, 0, 180+158,
-    (strcmp(s->dragon_locale, "zh-TW") == 0? "CONNECT\n已連線" : strcmp(s->dragon_locale, "zh-CN") == 0? "CONNECT\n已连线" : "CONNECT\nONLINE"));
+    ui_draw_sidebar_metric(s, NULL, NULL, 0, 180+158, "CONNECT\nONLINE");
   } else {
-    ui_draw_sidebar_metric(s, NULL, NULL, 2, 180+158,
-    (strcmp(s->dragon_locale, "zh-TW") == 0? "CONNECT\n錯誤" : strcmp(s->dragon_locale, "zh-CN") == 0? "CONNECT\n错误" : "CONNECT\nERROR"));
+    ui_draw_sidebar_metric(s, NULL, NULL, 2, 180+158, "CONNECT\nERROR");
   }
 }
 

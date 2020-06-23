@@ -3,8 +3,8 @@ import os
 import sys
 import threading
 import capnp
-from common.params import Params
 from selfdrive.version import version, dirty, origin, branch
+from common.params import Params
 uniqueID = Params().get('DongleId', None)
 
 from selfdrive.swaglog import cloudlog

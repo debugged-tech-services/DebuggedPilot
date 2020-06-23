@@ -5,10 +5,7 @@ from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.toyota.values import CAR, DBC, STEER_THRESHOLD, TSS2_CAR, NO_STOP_TIMER_CAR
-from common.realtime import sec_since_boot
-from common.params import Params
-from common.dp import get_last_modified
-params = Params()
+
 
 class CarState(CarStateBase):
   def __init__(self, CP):
@@ -25,21 +22,7 @@ class CarState(CarStateBase):
     self.needs_angle_offset = CP.carFingerprint not in TSS2_CAR or CP.carFingerprint in [CAR.LEXUS_ISH]
     self.angle_offset = 0.
 
-    # dp
-    self.dragon_toyota_stock_dsu = False
-    self.ts_last_check = 0.
-    self.last_modifed = None
-
   def update(self, cp, cp_cam):
-    # dp
-    ts = sec_since_boot()
-    if ts - self.ts_last_check >= 5.:
-      modified = get_last_modified()
-      if self.last_modifed != modified:
-        self.dragon_toyota_stock_dsu = True if params.get("DragonToyotaStockDSU", encoding='utf8') == "1" else False
-        self.last_modifed = modified
-      self.ts_last_check = ts
-
     ret = car.CarState.new_message()
 
     ret.doorOpen = any([cp.vl["SEATS_DOORS"]['DOOR_OPEN_FL'], cp.vl["SEATS_DOORS"]['DOOR_OPEN_FR'],
@@ -121,8 +104,6 @@ class CarState(CarStateBase):
 
     if self.CP.carFingerprint == CAR.PRIUS:
       ret.genericToggle = cp.vl["AUTOPARK_STATUS"]['STATE'] != 0
-    elif self.CP.carFingerprint in [CAR.LEXUS_ISH, CAR.LEXUS_GSH]:
-      ret.genericToggle = bool(cp.vl["LIGHT_STALK_ISH"]['AUTO_HIGH_BEAM'])
     else:
       ret.genericToggle = bool(cp.vl["LIGHT_STALK"]['AUTO_HIGH_BEAM'])
     ret.stockAeb = bool(cp_cam.vl["PRE_COLLISION"]["PRECOLLISION_ACTIVE"] and cp_cam.vl["PRE_COLLISION"]["FORCE"] < -1e-5)
@@ -134,15 +115,6 @@ class CarState(CarStateBase):
     if self.CP.carFingerprint in TSS2_CAR:
       ret.leftBlindspot = cp.vl["BSM"]['L_ADJACENT'] == 1
       ret.rightBlindspot = cp.vl["BSM"]['R_ADJACENT'] == 1
-
-    # dp
-    if self.dragon_toyota_stock_dsu and ret.cruiseState.available:
-      enable_acc = True
-      if ret.gearShifter in [car.CarState.GearShifter.reverse, car.CarState.GearShifter.park]:
-        enable_acc = False
-      if ret.seatbeltUnlatched or ret.doorOpen:
-        enable_acc = False
-      ret.cruiseState.enabled = enable_acc
 
     return ret
 
