@@ -14,3 +14,4 @@ if [ $1 -eq 0 ]; then
   git reset --hard @{u}
   git clean -xdf
 fi
+reboot
