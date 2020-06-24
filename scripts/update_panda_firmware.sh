@@ -6,4 +6,4 @@ export PATH=/usr/local/bin:/data/data/com.termux/files/usr/bin:/data/data/com.te
 export PYTHONPATH=/data/openpilot
 printf %s "1" > /data/params/d/DragonUpdating
 rm /data/openpilot/panda/board/obj/panda.bin
-cd /data/openpilot/panda ; pkill -f boardd ; python -c "from panda import Panda; Panda().flash()" && reboot
+cd /data/openpilot/panda || exit ; pkill -f boardd ; python -c "from panda import Panda; Panda().flash()" && reboot

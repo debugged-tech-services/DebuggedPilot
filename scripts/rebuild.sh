@@ -6,7 +6,7 @@ export PATH=/usr/local/bin:/data/data/com.termux/files/usr/bin:/data/data/com.te
 printf %s "1" > /data/params/d/DragonUpdating
 cd /data/openpilot || exit
 #git reset --hard @{u}
-#git clean -xdf
+git clean -xdf
 rm -fr /tmp/scons_cache/
 find . -type f -name '*.py[co]' -delete -o -type d -name __pycache__ -delete
 scons --clean
