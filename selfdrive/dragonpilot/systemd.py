@@ -156,8 +156,11 @@ def confd_thread():
         dashcam_next_frame = 0
 
       if sm['thermal'].freeSpace < DASHCAM_FREESPACE_LIMIT:
-        files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
-        os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))
+        try:
+          files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
+          os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))
+        except IndexError:
+          pass
     '''
     ===================================================
     auto shutdown every 30 secs
