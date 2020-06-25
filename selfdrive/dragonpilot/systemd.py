@@ -15,10 +15,10 @@ from selfdrive.thermald.power_monitoring import set_battery_charging, get_batter
 params = Params()
 
 DASHCAM_VIDEOS_PATH = '/sdcard/dashcam/'
-DASHCAM_DURATION = 60 # max is 180
-DASHCAM_BIT_RATES = 2560000 # max is 4000000
+DASHCAM_DURATION = 180 # max is 180
+DASHCAM_BIT_RATES = 4000000 # max is 4000000
 DASHCAM_MAX_SIZE_PER_FILE = DASHCAM_BIT_RATES/8*DASHCAM_DURATION # 2.56Mbps / 8 * 60 = 19.2MB per 60 seconds
-DASMCAM_FREESPACE_LIMIT = 0.15 # we start cleaning up footage when freespace is below 15%
+DASHCAM_FREESPACE_LIMIT = 0.15 # we start cleaning up footage when freespace is below 15%
 
 def confd_thread():
   sm = messaging.SubMaster(['thermal'])
@@ -93,7 +93,7 @@ def confd_thread():
     '''
     if frame == 0:
       put_nonblocking('dp_is_updating', '0')
-    elif frame % 10 == 0:
+    elif frame % 5 == 0:
       val = params.get('dp_is_updating', encoding='utf8').rstrip('\x00')
       setattr(msg.dragonConf, get_struct_name('dp_is_updating'), to_struct_val('dp_is_updating', val))
     '''
@@ -108,6 +108,13 @@ def confd_thread():
     we can have some logic here
     ===================================================
     '''
+    if msg.dragonConf.dpAtl:
+      msg.dragonConf.dpAllowGas = True
+      msg.dragonConf.dpDynamicFollow = 0
+      msg.dragonConf.dpSlowOnCurve = True
+    if msg.dragonConf.dpSteeringMonitor:
+      put_nonblocking('dp_uploader', '0')
+      msg.dragonConf.dpUploader = False
     if msg.dragonConf.dpAppWaze:
       msg.dragonConf.dpDrivingUi = False
     if not msg.dragonConf.dpDriverMonitor:
@@ -148,7 +155,7 @@ def confd_thread():
       else:
         dashcam_next_frame = 0
 
-      if sm['thermal'].freeSpace < DASMCAM_FREESPACE_LIMIT:
+      if sm['thermal'].freeSpace < DASHCAM_FREESPACE_LIMIT:
         files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
         os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))
     '''

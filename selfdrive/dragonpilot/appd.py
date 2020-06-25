@@ -50,11 +50,12 @@ class App():
     # main activity
     self.activity = activity
     # read enable param
-    self.enable_param = get_struct_name(enable_param) if enable_param is not None else None
+    self.enable_struct = get_struct_name(enable_param) if enable_param is not None else None
     # read auto run param
-    self.auto_run_param = get_struct_name(auto_run_param) if auto_run_param is not None else None
+    self.auto_run_struct = get_struct_name(auto_run_param) if auto_run_param is not None else None
     # read manual run param
-    self.manual_ctrl_param = get_struct_name(manual_ctrl_param) if manual_ctrl_param is not None else None
+    self.manual_ctrl_param = manual_ctrl_param if manual_ctrl_param is not None else None
+    self.manual_ctrl_struct = get_struct_name(manual_ctrl_param) if manual_ctrl_param is not None else None
     # if it's a service app, we do not kill if device is too hot
     self.app_type = app_type
     # app permissions
@@ -129,7 +130,7 @@ class App():
     return None
 
   def init_vars(self, dragonconf):
-    self.is_enabled = getattr(dragonconf, self.enable_param)
+    self.is_enabled = getattr(dragonconf, self.enable_struct)
 
     if self.is_enabled:
       local_version = self.get_local_version()
@@ -147,8 +148,8 @@ class App():
     else:
       self.uninstall_app()
 
-    if self.manual_ctrl_param is not None and getattr(dragonconf, self.manual_ctrl_param) != self.MANUAL_IDLE:
-      put_nonblocking(self.manual_ctrl_param, self.MANUAL_IDLE)
+    if self.manual_ctrl_param is not None and getattr(dragonconf, self.manual_ctrl_struct) != self.MANUAL_IDLE:
+      put_nonblocking(self.manual_ctrl_param, str(self.MANUAL_IDLE))
     self.init = True
 
   def read_params(self, dragonconf):
@@ -156,7 +157,7 @@ class App():
       self.init_vars(dragonconf)
 
     self.last_is_enabled = self.is_enabled
-    self.is_enabled = False if self.enable_param is None else getattr(dragonconf, self.enable_param)
+    self.is_enabled = False if self.enable_struct is None else getattr(dragonconf, self.enable_struct)
 
     if self.is_installed:
       if self.is_enabled:
@@ -165,9 +166,9 @@ class App():
           self.is_auto_runnable = True
           self.manual_ctrl_status = self.MANUAL_IDLE
         else:
-          self.manual_ctrl_status = self.MANUAL_IDLE if self.manual_ctrl_param is None else getattr(dragonconf, self.manual_ctrl_param)
+          self.manual_ctrl_status = self.MANUAL_IDLE if self.manual_ctrl_param is None else getattr(dragonconf, self.manual_ctrl_struct)
           if self.manual_ctrl_status == self.MANUAL_IDLE:
-            self.is_auto_runnable = False if self.auto_run_param is None else getattr(dragonconf, self.auto_run_param)
+            self.is_auto_runnable = False if self.auto_run_struct is None else getattr(dragonconf, self.auto_run_struct)
       else:
         if self.last_is_enabled:
           self.uninstall_app()

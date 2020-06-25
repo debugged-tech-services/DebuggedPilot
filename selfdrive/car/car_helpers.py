@@ -1,5 +1,5 @@
 import os
-from common.params import Params
+from common.params import Params, put_nonblocking
 from common.basedir import BASEDIR
 from selfdrive.car.fingerprints import eliminate_incompatible_cars, all_known_cars
 from selfdrive.car.vin import get_vin, VIN_UNKNOWN
@@ -159,6 +159,7 @@ def fingerprint(logcan, sendcan, has_relay):
     source = car.CarParams.FingerprintSource.fixed
 
   cloudlog.warning("fingerprinted %s", car_fingerprint)
+  put_nonblocking('dp_car_detected', car_fingerprint)
   return car_fingerprint, finger, vin, car_fw, source
 
 
