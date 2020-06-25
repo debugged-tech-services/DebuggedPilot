@@ -5,7 +5,6 @@ import cereal
 import cereal.messaging as messaging
 ThermalStatus = cereal.log.ThermalData.ThermalStatus
 from selfdrive.swaglog import cloudlog
-from common.realtime import sec_since_boot
 from common.params import Params, put_nonblocking
 params = Params()
 from math import floor
@@ -328,16 +327,17 @@ def main():
   stop_delay = None
   allow_auto_run = True
   last_thermal_status = None
-  start_ts = sec_since_boot()
   init_done = False
 
   while 1: #has_enabled_apps:
     if not init_done:
-      if sec_since_boot() - start_ts >= 10:
+      if frame >= 10:
         init_apps(apps)
         init_done = True
     else:
       sm.update(1000)
+      if not sm.updated['dragonConf']:
+        continue
       enabled_apps = []
       has_fullscreen_apps = False
       for app in apps:
@@ -415,8 +415,8 @@ def main():
           app.manually_ctrled = False
 
       last_started = started
-      frame += 3
-    time.sleep(3)
+    frame += 1
+    time.sleep(1)
 
 def system(cmd):
   try:
