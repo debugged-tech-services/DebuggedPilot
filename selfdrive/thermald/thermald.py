@@ -192,16 +192,16 @@ def thermald_thread():
   pm = PowerMonitoring()
   no_panda_cnt = 0
 
+  if params.get('dp_full_speed_fan') == b'1':
+    setup_eon_fan()
+    handle_fan = handle_fan_eon
+
   while 1:
     sm.update()
     health = messaging.recv_sock(health_sock, wait=True)
     location = messaging.recv_sock(location_sock)
     location = location.gpsLocation if location else None
     msg = read_thermal()
-
-    if handle_fan is None and not is_uno and sm['dragonConf'].dpFullSpeedFan:
-      setup_eon_fan()
-      handle_fan = handle_fan_eon
 
     if health is not None:
       usb_power = health.health.usbPowerMode != log.HealthData.UsbPowerMode.client

@@ -12,6 +12,7 @@ import re
 import os
 from common.android import getprop
 from selfdrive.thermald.power_monitoring import set_battery_charging, get_battery_charging
+from math import floor
 params = Params()
 
 DASHCAM_VIDEOS_PATH = '/sdcard/dashcam/'
@@ -50,7 +51,10 @@ def confd_thread():
     ===================================================
     '''
     if frame % 3 == 0:
-      modified = params.get('dp_last_modified', encoding='utf8').rstrip('\x00')
+      try:
+        modified = params.get('dp_last_modified', encoding='utf8').rstrip('\x00')
+      except AttributeError:
+        modified = str(floor(time.time()))
       if last_modified != modified:
         update_params = True
       last_modified = modified
@@ -60,16 +64,23 @@ def confd_thread():
     ===================================================
     '''
     for conf in confs:
-      if update_params and conf.get('set_param_only') is None:
+      conf_type = conf.get('conf_type')
+      if update_params and 'param' in conf_type and 'struct' in conf_type:
         update_this_conf = True
-        dependencies = conf.get('depends')
-        # if has dependency and the depend param val is not in depend_vals, we dont update that conf val
-        # this should reduce chance of reading all params
-        if dependencies is not None:
-          for dependency in dependencies:
-            if getattr(msg.dragonConf, get_struct_name(dependency['name'])) not in dependency['vals']:
-              update_this_conf = False
-              break
+
+        update_once = conf.get('update_once')
+        if update_once is not None and update_once is True and frame > 0:
+          update_this_conf = False
+
+        if update_this_conf:
+          dependencies = conf.get('depends')
+          # if has dependency and the depend param val is not in depend_vals, we dont update that conf val
+          # this should reduce chance of reading all params
+          if dependencies is not None:
+            for dependency in dependencies:
+              if getattr(msg.dragonConf, get_struct_name(dependency['name'])) not in dependency['vals']:
+                update_this_conf = False
+                break
         if update_this_conf:
           val = params.get(conf['name'], encoding='utf8').rstrip('\x00')
           setattr(msg.dragonConf, get_struct_name(conf['name']), to_struct_val(conf['name'], val))
@@ -112,9 +123,6 @@ def confd_thread():
       msg.dragonConf.dpAllowGas = True
       msg.dragonConf.dpDynamicFollow = 0
       msg.dragonConf.dpSlowOnCurve = True
-    if msg.dragonConf.dpSteeringMonitor:
-      put_nonblocking('dp_uploader', '0')
-      msg.dragonConf.dpUploader = False
     if msg.dragonConf.dpAppWaze:
       msg.dragonConf.dpDrivingUi = False
     if not msg.dragonConf.dpDriverMonitor:

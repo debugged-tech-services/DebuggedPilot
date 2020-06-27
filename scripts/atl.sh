@@ -7,6 +7,7 @@ export PYTHONPATH=/data/openpilot
 echo -n 1 > /data/params/d/dp_is_updating
 if [ $1 -eq 1 ]; then
   printf %s "1" > /data/params/d/dp_atl
+  printf %s "0" > /data/params/d/dp_uploader
 fi
 if [ $1 -eq 0 ]; then
   printf %s "0" > /data/params/d/dp_atl

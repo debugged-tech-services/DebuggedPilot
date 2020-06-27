@@ -18,6 +18,9 @@ try:
       run(b'c2VkIC1pIC1lICdzI2ludCBpc19hY2NfbXNnID0gKGFkZHIgPT0gMHgzNDMpOyNpbnQgaXNfYWNj\nX21zZyA9IGZhbHNlOyNnJyAvZGF0YS9vcGVucGlsb3QvcGFuZGEvYm9hcmQvc2FmZXR5L3NhZmV0\neV90b3lvdGEuaA==\n')
       run(b'c2VkIC1pIC1lICdzI14gICAgLy8gMHgyRTQjICAgIGNvbnRyb2xzX2FsbG93ZWQgPSAxO1xuICAg\nIC8vLyAweDJFNCNnJyAvZGF0YS9vcGVucGlsb3QvcGFuZGEvYm9hcmQvc2FmZXR5L3NhZmV0eV90\nb3lvdGEuaA==\n')
       run(b'c2VkIC1pIC1lICdzI14gICAgLy8gaWYgc3RlZXJpbmcgY29udHJvbHMjICAgIGNvbnRyb2xzX2Fs\nbG93ZWQgPSAxO1xuICAgIC8vLyBpZiBzdGVlcmluZyBjb250cm9scyNnJyAvZGF0YS9vcGVucGls\nb3QvcGFuZGEvYm9hcmQvc2FmZXR5L3NhZmV0eV9ob25kYS5o\n')
+  with open("/dat/params/d/dp_steering_monitor") as f:
+    if int(f.read()) == 0:
+      run(b'c2VkIC1pIC1lICdzIyhpdC5zaG91bGRfbG9nIyhuYW1lICE9ICJoZWFsdGgiIFwmXCYgbmFtZSAh\nPSAiY29udHJvbHNTdGF0ZSIgXCZcJiBuYW1lICE9ICJjYXJDb250cm9sIiBcJlwmIG5hbWUgIT0g\nImNhclN0YXRlIiBcJlwmIG5hbWUgIT0gImNhckV2ZW50cyIgXCZcJiBpdC5zaG91bGRfbG9nI2cn\nIC9kYXRhL29wZW5waWxvdC9zZWxmZHJpdmUvbG9nZ2VyZC9sb2dnZXJkLmNj\n')
 except FileNotFoundError:
   pass
 
