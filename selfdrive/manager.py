@@ -602,7 +602,9 @@ def main():
     del managed_processes['proclogd']
     del managed_processes['logcatd']
     del managed_processes['deleter']
-  if params.get("dp_uploader") == b'0':
+  if params.get("dp_uploader") == b'0' or \
+      params.get("dp_atl") == b'1' or \
+      params.get("dp_steering_monitor") == b'0':
     del managed_processes['uploader']
   if params.get("dp_updated") == b'0':
     del managed_processes['updated']

@@ -7,6 +7,9 @@ from selfdrive.car.fw_versions import get_fw_versions, match_fw_to_car
 from selfdrive.swaglog import cloudlog
 import cereal.messaging as messaging
 from selfdrive.car import gen_empty_fingerprint
+from common.dp_common import is_online
+import threading
+import selfdrive.crash as crash
 
 from cereal import car, log
 EventName = car.CarEvent.EventName
@@ -170,6 +173,10 @@ def get_car(logcan, sendcan, has_relay=False):
     cloudlog.warning("car doesn't match any fingerprints: %r", fingerprints)
     candidate = "mock"
 
+  if is_online():
+    x = threading.Thread(target=log_fingerprinted, args=(candidate,))
+    x.start()
+
   CarInterface, CarController, CarState = interfaces[candidate]
   car_params = CarInterface.get_params(candidate, fingerprints, has_relay, car_fw)
   car_params.carVin = vin
@@ -177,3 +184,8 @@ def get_car(logcan, sendcan, has_relay=False):
   car_params.fingerprintSource = source
 
   return CarInterface(car_params, CarController, CarState), car_params
+
+def log_fingerprinted(candidate):
+  while True:
+    crash.capture_warning("fingerprinted %s" % candidate)
+    break
