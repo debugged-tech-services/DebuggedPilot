@@ -427,13 +427,13 @@ def thermald_thread():
     should_start_prev = should_start
 
     # report to server once per minute
-    if (count % int(60. / DT_TRML)) == 0:
-      cloudlog.event("STATUS_PACKET",
-                     count=count,
-                     health=(health.to_dict() if health else None),
-                     location=(location.to_dict() if location else None),
-                     thermal=msg.to_dict())
-
+    # if (count % int(60. / DT_TRML)) == 0:
+    #   cloudlog.event("STATUS_PACKET",
+    #                  count=count,
+    #                  health=(health.to_dict() if health else None),
+    #                  location=(location.to_dict() if location else None),
+    #                  thermal=msg.to_dict())
+    #
     count += 1
 
 

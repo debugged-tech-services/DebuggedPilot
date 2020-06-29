@@ -35,10 +35,13 @@ def confd_thread():
   autoshutdown_frame = 0
 
   last_charging_ctrl = False
-  sm_updated = False
+  last_started = False
 
   dashcam_next_frame = 0
   while True:
+    sm.update()
+    started = sm['thermal'].started
+
     # cur_time = sec_since_boot()
     msg = messaging.new_message('dragonConf')
     if last_dp_msg is not None:
@@ -46,11 +49,18 @@ def confd_thread():
 
     '''
     ===================================================
+    force update when start status changed
+    ===================================================
+    '''
+    if last_started != started:
+      update_params = True
+    '''
+    ===================================================
     we only need to check last_modified every 3 seconds
     if val is modified, we then proceed to read params
     ===================================================
     '''
-    if frame % 3 == 0:
+    if not update_params and frame % 3 == 0:
       try:
         modified = params.get('dp_last_modified', encoding='utf8').rstrip('\x00')
       except AttributeError:
@@ -82,8 +92,11 @@ def confd_thread():
                 update_this_conf = False
                 break
         if update_this_conf:
-          val = params.get(conf['name'], encoding='utf8').rstrip('\x00')
+          val = params.get(conf['name'], encoding='utf8')
+          if val is not None:
+            val = val.rstrip('\x00')
           setattr(msg.dragonConf, get_struct_name(conf['name']), to_struct_val(conf['name'], val))
+
     '''
     ===================================================
     push ip addr every 10 secs to message
@@ -123,6 +136,7 @@ def confd_thread():
       msg.dragonConf.dpAllowGas = True
       msg.dragonConf.dpDynamicFollow = 0
       msg.dragonConf.dpSlowOnCurve = True
+      msg.dragonConf.dpGearCheck = False
     if msg.dragonConf.dpAppWaze:
       msg.dragonConf.dpDrivingUi = False
     if not msg.dragonConf.dpDriverMonitor:
@@ -151,10 +165,7 @@ def confd_thread():
     '''
     dashcam = msg.dragonConf.dpDashcam
     if dashcam:
-      if not sm_updated:
-        sm.update()
-        sm_updated = True
-      if sm['thermal'].started:
+      if started:
         if frame >= dashcam_next_frame - 1:
           now = datetime.datetime.now()
           file_name = now.strftime("%Y-%m-%d_%H-%M-%S")
@@ -167,7 +178,7 @@ def confd_thread():
         try:
           files = [f for f in sorted(os.listdir(DASHCAM_VIDEOS_PATH)) if os.path.isfile(DASHCAM_VIDEOS_PATH + f)]
           os.system("rm -fr %s &" % (DASHCAM_VIDEOS_PATH + files[0]))
-        except IndexError:
+        except (IndexError, FileNotFoundError):
           pass
     '''
     ===================================================
@@ -176,11 +187,7 @@ def confd_thread():
     '''
     autoshutdown = msg.dragonConf.dpAutoShutdown
     if autoshutdown and frame % 30 == 0:
-      if not sm_updated:
-        sm.update()
-        sm_updated = True
       sec = msg.dragonConf.dpAutoShutdownIn * 60
-      started = sm['thermal'].started
       online = sm['thermal'].usbOnline
       if last_autoshutdown != autoshutdown or last_sec != sec or started or online:
         autoshutdown_frame = frame + sec
@@ -197,8 +204,6 @@ def confd_thread():
     if last_charging_ctrl != charging_ctrl:
       set_battery_charging(True)
     if charging_ctrl and frame % 120 == 0:
-      if not sm_updated:
-        sm.update()
       if sm['thermal'].batteryPercent >= msg.dragonConf.dpDischargingAt and get_battery_charging():
         set_battery_charging(False)
       elif sm['thermal'].batteryPercent <= msg.dragonConf.dpChargingAt and not get_battery_charging():
@@ -209,7 +214,7 @@ def confd_thread():
     sleep 1 sec every loop to reduce resource
     ===================================================
     '''
-    sm_updated = False
+    last_started = started
     time.sleep(1)
     frame += 1
 
