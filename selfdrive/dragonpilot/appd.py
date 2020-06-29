@@ -14,7 +14,6 @@ from common.dp_common import is_online
 from common.dp_conf import get_struct_name
 
 is_online = is_online()
-is_cnpmjs_src = "cnpmjs" in subprocess.check_output(["git", "-C", "/data/openpilot", "config", "--get", "remote.origin.url"]).decode('utf8').rstrip()
 auto_update = params.get("dp_app_auto_update", encoding='utf8') == "1"
 
 class App():
@@ -62,6 +61,8 @@ class App():
     # app options
     self.opts = opts
 
+    self.own_apk = "/sdcard/apks/" + self.app + ".apk"
+    self.has_own_apk = os.path.exists(self.own_apk)
     self.is_installed = False
     self.is_enabled = False
     self.last_is_enabled = False
@@ -74,8 +75,7 @@ class App():
   def get_remote_version(self):
     apk = self.app + ".apk"
     try:
-      url = ("https://github.com.cnpmjs.org/dragonpilot-community/apps/raw/%s/VERSION" % apk) if is_cnpmjs_src else \
-        ("https://raw.githubusercontent.com/dragonpilot-community/apps/%s/VERSION" % apk)
+      url = "https://raw.githubusercontent.com/dragonpilot-community/apps/%s/VERSION" % apk
       return subprocess.check_output(["curl", "-H", "'Cache-Control: no-cache'", "-s", url], stderr=subprocess.STDOUT, shell=True).decode('utf8').rstrip()
     except subprocess.CalledProcessError as e:
       pass
@@ -91,33 +91,39 @@ class App():
       pass
 
   def update_app(self):
-    apk = self.app + ".apk"
-    apk_path = "/sdcard/" + apk
-    try:
-      os.remove(apk_path)
-    except (OSError, FileNotFoundError) as e:
-      pass
+    put_nonblocking('dp_is_updating', '1')
+    if self.has_own_apk:
+      try:
+        subprocess.check_output(["pm","install","-r",self.own_apk])
+        self.is_installed = True
+      except subprocess.CalledProcessError as e:
+        self.is_installed = False
+    else:
+      apk = self.app + ".apk"
+      apk_path = "/sdcard/" + apk
+      try:
+        os.remove(apk_path)
+      except (OSError, FileNotFoundError) as e:
+        pass
 
-    self.uninstall_app()
-    # if local_version is not None:
-    #   try:
-    #     subprocess.check_output(["pm","uninstall", self.app], stderr=subprocess.STDOUT, shell=True)
-    #   except subprocess.CalledProcessError as e:
-    #     pass
-    try:
-      put_nonblocking('dp_is_updating', '1')
-      url = ("https://github.com.cnpmjs.org/dragonpilot-community/apps/blob/%s/%s" % (apk, apk)) if is_cnpmjs_src else \
-        ("https://raw.githubusercontent.com/dragonpilot-community/apps/%s/%s" % (apk, apk))
-      subprocess.check_output(["curl","-o", apk_path,"-LJO", url])
-      subprocess.check_output(["pm","install","-r",apk_path])
-      self.is_installed = True
-    except subprocess.CalledProcessError as e:
-      self.is_installed = False
+      self.uninstall_app()
+      # if local_version is not None:
+      #   try:
+      #     subprocess.check_output(["pm","uninstall", self.app], stderr=subprocess.STDOUT, shell=True)
+      #   except subprocess.CalledProcessError as e:
+      #     pass
+      try:
+        url = "https://raw.githubusercontent.com/dragonpilot-community/apps/%s/%s" % (apk, apk)
+        subprocess.check_output(["curl","-o", apk_path,"-LJO", url])
+        subprocess.check_output(["pm","install","-r",apk_path])
+        self.is_installed = True
+      except subprocess.CalledProcessError as e:
+        self.is_installed = False
+      try:
+        os.remove(apk_path)
+      except (OSError, FileNotFoundError) as e:
+        pass
     put_nonblocking('dp_is_updating', '0')
-    try:
-      os.remove(apk_path)
-    except (OSError, FileNotFoundError) as e:
-      pass
 
   def get_local_version(self):
     try:
@@ -136,7 +142,10 @@ class App():
       if local_version is not None:
         self.is_installed = True
 
-      if is_online:
+      if self.has_own_apk and not self.is_installed:
+        self.update_app()
+
+      elif is_online:
         remote_version = local_version
         if local_version is not None and auto_update:
           remote_version = self.get_remote_version()
