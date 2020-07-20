@@ -502,6 +502,15 @@ EVENTS = {
     ET.NO_ENTRY: NoEntryAlert(_("Vision Model Output Uncertain")),
   },
 
+  EventName.plannerError: {
+    ET.WARNING: Alert(
+      _("TAKE CONTROL"),
+      _("Planner Solution Error"),
+      AlertStatus.userPrompt, AlertSize.mid,
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+    ET.NO_ENTRY: NoEntryAlert(_("Planner Solution Error")),
+  },
+  
   EventName.outOfSpace: {
     ET.NO_ENTRY: NoEntryAlert(_("Out of Storage Space"),
                               duration_hud_alert=0.),
@@ -663,11 +672,6 @@ EVENTS = {
 
   EventName.cruiseDisabled: {
     ET.IMMEDIATE_DISABLE: ImmediateDisableAlert(_("Cruise Is Off")),
-  },
-
-  EventName.plannerError: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert(_("Planner Solution Error")),
-    ET.NO_ENTRY: NoEntryAlert(_("Planner Solution Error")),
   },
 
   EventName.relayMalfunction: {
