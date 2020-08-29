@@ -175,6 +175,8 @@ def fingerprint(logcan, sendcan, has_relay):
             car_fingerprint = "TOYOTA COROLLA TSS2 2019"
           if any(("TOYOTA COROLLA HYBRID TSS2 2019" in c) for c in candidate_cars[b]):
             car_fingerprint = "TOYOTA COROLLA HYBRID TSS2 2019"
+          if any(("HYUNDAI IONIQ ELECTRIC LIMITED 2019" in c) for c in candidate_cars[b]):
+            car_fingerprint = "HYUNDAI IONIQ ELECTRIC LIMITED 2019"
 
     # bail if no cars left or we've been waiting for more than 2s
     failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200

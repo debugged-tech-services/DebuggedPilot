@@ -150,10 +150,7 @@ class Planner():
       if self.mpc2.prev_lead_status and lead2_check:
         solutions['mpc2'] = self.mpc2.v_mpc
       if self.mpc_model.valid and model_enabled:
-        if self.mpc_model.v_mpc > 13.0:
-          solutions['model'] = NO_CURVATURE_SPEED
-        else:
-          solutions['model'] = self.mpc_model.v_mpc + mpc_offset
+        solutions['model'] = self.mpc_model.v_mpc + mpc_offset
       solutions['cruise'] = self.v_cruise
 
       slowest = min(solutions, key=solutions.get)
