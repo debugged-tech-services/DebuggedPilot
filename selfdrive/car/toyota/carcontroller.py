@@ -254,24 +254,24 @@ class CarController():
     for (addr, ecu, cars, bus, fr_step, vl) in STATIC_MSGS:
       if frame % fr_step == 0 and ecu in self.fake_ecus and CS.CP.carFingerprint in cars:
         
-        # special cases
-        if fr_step == 5 and ecu == Ecu.fwdCamera and bus == 1:
-          #print(addr)
-          cnt = int(((frame / 5) % 7) + 1) << 5
-          vl = bytes([cnt]) + vl
-        elif addr in (0x489, 0x48a) and bus == 0:
-          #print(addr)
-          # add counter for those 2 messages (last 4 bits)
-          cnt = int((frame/100)%0xf) + 1
-          if addr == 0x48a:
-            # 0x48a has a 8 preceding the counter
-            cnt += 1 << 7
-          vl += bytes([cnt])
+        ## special cases
+        #if fr_step == 5 and ecu == Ecu.fwdCamera and bus == 1:
+        #  #print(addr)
+        #  cnt = int(((frame / 5) % 7) + 1) << 5
+        #  vl = bytes([cnt]) + vl
+        #elif addr in (0x489, 0x48a) and bus == 0:
+        #  #print(addr)
+        #  # add counter for those 2 messages (last 4 bits)
+        #  cnt = int((frame/100)%0xf) + 1
+        #  if addr == 0x48a:
+        #    # 0x48a has a 8 preceding the counter
+        #    cnt += 1 << 7
+        #  vl += bytes([cnt])
           
         can_sends.append(make_can_msg(addr, vl, bus))
 
     # Enable blindspot debug mode once
-    if frame > 1000 and not (CS.CP.carFingerprint in TSS2_CAR or CS.CP.carFingerprint == CAR.CAMRY): # 10 seconds after start and not a tss2 car
+    if frame > 1000 and not (CS.CP.carFingerprint in TSS2_CAR or CS.CP.carFingerprint == CAR.CAMRY or CS.CP.carFingerprint == CAR.CAMRYH): # 10 seconds after start and not a tss2 car
       if BLINDSPOTALWAYSON:
         self.blindspot_blink_counter_left += 1
         self.blindspot_blink_counter_right += 1

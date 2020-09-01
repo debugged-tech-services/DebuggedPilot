@@ -14,6 +14,7 @@ from selfdrive.swaglog import cloudlog, add_logentries_handler
 from common.basedir import BASEDIR, PARAMS
 from common.android import ANDROID
 from common.op_params import opParams
+from common.travis_checker import travis
 op_params = opParams()
 
 traffic_lights = op_params.get('traffic_lights')
@@ -165,7 +166,8 @@ import cereal
 import cereal.messaging as messaging
 
 from common.params import Params
-import selfdrive.crash as crash
+if not travis:
+  import selfdrive.crash as crash
 from selfdrive.registration import register
 from selfdrive.version import version, dirty
 from selfdrive.loggerd.config import ROOT
@@ -430,8 +432,9 @@ def manager_init(should_register=True):
     os.environ['CLEAN'] = '1'
 
   cloudlog.bind_global(dongle_id=dongle_id, version=version, dirty=dirty, is_eon=True)
-  crash.bind_user(id=dongle_id)
-  crash.bind_extra(version=version, dirty=dirty, is_eon=True)
+  if not travis:
+    crash.bind_user(id=dongle_id)
+    crash.bind_extra(version=version, dirty=dirty, is_eon=True)
 
   os.umask(0)
   try:
@@ -611,7 +614,8 @@ def main():
     manager_thread()
   except Exception:
     traceback.print_exc()
-    crash.capture_exception()
+    if not travis:
+      crash.capture_exception()
   finally:
     cleanup_all_processes(None, None)
 

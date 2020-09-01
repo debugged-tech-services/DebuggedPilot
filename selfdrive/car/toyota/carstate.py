@@ -124,7 +124,7 @@ class CarState(CarStateBase):
     if self.sport_on == 0 and self.econ_on == 0:
       self.gasbuttonstatus = 0
     msg = messaging_arne.new_message('arne182Status')
-    if frame > 999 and not (self.CP.carFingerprint in TSS2_CAR):
+    if frame > 999 and not (self.CP.carFingerprint in TSS2_CAR or self.CP.carFingerprint == CAR.CAMRY or self.CP.carFingerprint == CAR.CAMRYH):
       if cp.vl["DEBUG"]['BLINDSPOTSIDE']==65: #Left
         if cp.vl["DEBUG"]['BLINDSPOTD1'] != self.leftblindspotD1:
           self.leftblindspotD1 = cp.vl["DEBUG"]['BLINDSPOTD1']
