@@ -84,7 +84,7 @@ class opParams:
                         'rsa_max_speed': Param(24.5, VT.number, 'Speed limit to ignore RSA in m/s'),
                         'smart_speed': Param(True, bool, 'Whether to use Smart Speed for drives above smart_speed_max_vego'),
                         'smart_speed_max_vego': Param(26.8, VT.number, 'Speed limit to ignore Smartspeed in m/s'),
-                        'spairrowtuning': Param(False, bool, 'Better Tuning for Corolla'),
+                        'spairrowtuning': Param(False, bool, 'INDI Tuning for Corolla'),
                         'speed_offset': Param(0, VT.number, 'Speed limit offset in m/s', live=True),
                         'traffic_light_alerts': Param(False, bool, "Switch off the traffic light alerts"),
                         'traffic_lights': Param(False, bool, "Should Openpilot stop for traffic lights"),
@@ -95,6 +95,8 @@ class opParams:
                         'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
                         'autoUpdate': Param(True, bool, 'Whether to auto-update'),
+                        'corolla_tss2_d_tuning': Param(True, bool, 'lateral spairrowtuning using PID w/ true derivative'),
+                        'lat_d': Param(9.0, VT.number, 'The lateral derivative gain, default is 9.0 for TSS2 Corolla. This is active at all speeds', live=True),
                         'ludicrous_mode': Param(False, bool, 'Double overall acceleration!')}
 
     self._params_file = '/data/op_params.json'

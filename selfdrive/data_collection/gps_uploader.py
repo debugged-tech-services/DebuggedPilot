@@ -3,6 +3,7 @@ import json
 import string
 import random
 import os
+import datetime
 from common.params import Params
 from common.op_params import opParams
 op_params = opParams()
@@ -42,6 +43,8 @@ def upload_data():
         ftp.storbinary("STOR /{}/{}".format(username, filename), f)
       ftp.quit()
       os.remove(filepath)
+      t = datetime.datetime.utcnow().isoformat()
+      params.put("LastUpdateTime", t.encode('utf8'))
       return True
     except:
       return False
