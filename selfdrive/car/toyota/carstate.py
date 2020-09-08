@@ -202,7 +202,6 @@ class CarState(CarStateBase):
       else:
         self.low_speed_lockout = cp.vl["PCM_CRUISE_2"]['LOW_SPEED_LOCKOUT'] == 2
     ret.cruiseState.available = self.main_on
-    v_cruise_pcm_max = ret.cruiseState.speed
     if self.CP.carFingerprint in TSS2_CAR:
       minimum_set_speed = 27.0
     elif self.CP.carFingerprint == CAR.RAV4:
@@ -212,6 +211,11 @@ class CarState(CarStateBase):
     maximum_set_speed = 169.0
     if self.CP.carFingerprint == CAR.LEXUS_RXH:
       maximum_set_speed = 177.0
+    v_cruise_pcm_max = ret.cruiseState.speed
+    if v_cruise_pcm_max < minimum_set_speed:
+      minimum_set_speed = v_cruise_pcm_max
+    if v_cruise_pcm_max > maximum_set_speed:
+      maximum_set_speed = v_cruise_pcm_max
     speed_range = maximum_set_speed-minimum_set_speed
     if bool(cp.vl["PCM_CRUISE"]['CRUISE_ACTIVE']) and not self.pcm_acc_active and self.v_cruise_pcmlast != ret.cruiseState.speed:
       if ret.vEgo < 12.5:

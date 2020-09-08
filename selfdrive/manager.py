@@ -419,7 +419,8 @@ def manager_init(should_register=True):
     if reg_res:
       dongle_id = reg_res
     else:
-      raise Exception("server registration failed")
+      cloudlog.info("server registration failed")
+      dongle_id = "0000000000000000"
   else:
     dongle_id = "c"*16
 

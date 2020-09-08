@@ -35,6 +35,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.pid.kiV = [0.001, 0.003, 0.005]
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
     ret.lateralTuning.pid.kfV = [0.00002, 0.00003, 0.00005]
+    ret.lateralTuning.pid.kdBP, ret.lateralTuning.pid.kdV = [[0.], [0.]]
 
     if candidate == CAR.SANTA_FE:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
