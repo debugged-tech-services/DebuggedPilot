@@ -95,7 +95,7 @@ class opParams:
                         'use_virtual_middle_line': Param(False, bool, 'For roads over 4m wide, hug right. For roads under 2m wide, hug left.'),
                         'uniqueID': Param(None, [type(None), str], 'User\'s unique ID'),
                         'autoUpdate': Param(True, bool, 'Whether to auto-update'),
-                        'corolla_tss2_d_tuning': Param(True, bool, 'lateral spairrowtuning using PID w/ true derivative'),
+                        'corolla_tss2_d_tuning': Param(False, bool, 'lateral tuning using PID w/ true derivative'),
                         'lat_d': Param(9.0, VT.number, 'The lateral derivative gain, default is 9.0 for TSS2 Corolla. This is active at all speeds', live=True),
                         'ludicrous_mode': Param(False, bool, 'Double overall acceleration!')}
 
