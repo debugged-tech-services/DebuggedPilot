@@ -31,7 +31,8 @@ class CarController():
     apply_steer = new_steer;
     self.steer_rate_limited = False # new_steer != apply_steer
 
-    # moving_fast = CS.out.vEgo > CS.CP.minSteerSpeed  # for status message
+    moving_fast = True
+    #moving_fast = CS.out.vEgo > CS.CP.minSteerSpeed  # for status message
     # if CS.out.vEgo > (CS.CP.minSteerSpeed - 0.5):  # for command high bit
     #   self.gone_fast_yet = True
     # elif self.car_fingerprint in (CAR.PACIFICA_2019_HYBRID, CAR.JEEP_CHEROKEE_2019):
