@@ -32,6 +32,7 @@ class CarController():
     self.steer_rate_limited = False # new_steer != apply_steer
 
     moving_fast = True
+    self.gone_fast_yet = True
     #moving_fast = CS.out.vEgo > CS.CP.minSteerSpeed  # for status message
     # if CS.out.vEgo > (CS.CP.minSteerSpeed - 0.5):  # for command high bit
     #   self.gone_fast_yet = True
