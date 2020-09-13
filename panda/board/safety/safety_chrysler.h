@@ -61,6 +61,7 @@ const int CHRYSLER_RX_CHECK_LEN = sizeof(chrysler_rx_checks) / sizeof(chrysler_r
 // }
 
 static int chrysler_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
+  controls_allowed = 1;
   (void)to_push;
   return 1;
 
@@ -119,6 +120,7 @@ static int chrysler_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 }
 
 static int chrysler_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
+  controls_allowed = 1;
   (void)to_send;
   return 1;
 
