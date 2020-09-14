@@ -142,7 +142,9 @@ class PathPlanner():
                        ((sm['carState'].steeringTorque > 0 and self.lane_change_direction == LaneChangeDirection.left and not sm['carState'].leftBlindspot) or \
                         (sm['carState'].steeringTorque < 0 and self.lane_change_direction == LaneChangeDirection.right and not sm['carState'].rightBlindspot))) or \
                        (not self.alca_nudge_required and self.blindspotTrueCounterleft > self.blindspotwait and self.lane_change_direction == LaneChangeDirection.left) or \
-                       (not self.alca_nudge_required and self.blindspotTrueCounterright > self.blindspotwait and self.lane_change_direction == LaneChangeDirection.right)
+                       (not self.alca_nudge_required and self.blindspotTrueCounterright > self.blindspotwait and self.lane_change_direction == LaneChangeDirection.right))
+      if not self.alca_nudge_required:
+        torque_applied = True
 
       #blindspot_detected = ((sm['carState'].leftBlindspot and self.lane_change_direction == LaneChangeDirection.left) or
       #                      (sm['carState'].rightBlindspot and self.lane_change_direction == LaneChangeDirection.right))
