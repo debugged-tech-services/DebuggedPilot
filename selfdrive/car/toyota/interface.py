@@ -46,7 +46,7 @@ class CarInterface(CarInterfaceBase):
       ret.longitudinalTuning.kpV = [0.4, 0.36, 0.325]  # braking tune from rav4h
       ret.longitudinalTuning.kiV = [0.195, 0.10]
 
-    if candidate not in [CAR.PRIUS_2019, CAR.PRIUS, CAR.RAV4, CAR.RAV4H, CAR.COROLLA]: # These cars use LQR/INDI
+    if candidate not in [CAR.PRIUS_2019, CAR.PRIUS, CAR.RAV4, CAR.RAV4H, CAR.COROLLA, CAR.PRIUS_TSS2] and not spairrowtuning: # These cars use LQR/INDI
       ret.lateralTuning.init('pid')
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kfBP = [[0.], [0.], [0.]]
       ret.lateralTuning.pid.kdBP, ret.lateralTuning.pid.kdV = [[0.], [0.]]
@@ -250,15 +250,13 @@ class CarInterface(CarInterfaceBase):
           break
 
 
-    elif candidate in [CAR.COROLLA_TSS2, CAR.COROLLAH_TSS2]:
+    elif candidate == CAR.COROLLA_TSS2:
       stop_and_go = True
       ret.safetyParam = 73
       ret.wheelbase = 2.63906
       ret.steerRatio = 13.9
       tire_stiffness_factor = 0.444  # not optimized yet
-      ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
       ret.mass = 3060. * CV.LB_TO_KG + STD_CARGO_KG
-      ret.lateralTuning.pid.kfV = [0.00007818594]
       if spairrowtuning:
         ret.steerActuatorDelay = 0.60
         ret.steerRatio = 15.33
@@ -272,14 +270,45 @@ class CarInterface(CarInterfaceBase):
         ret.lateralTuning.indi.outerLoopGain = 15.0
         ret.lateralTuning.indi.timeConstant = 5.5
         ret.lateralTuning.indi.actuatorEffectiveness = 6.0
-
-      if corolla_tss2_d_tuning:
-        ret.steerActuatorDelay = 0.40
-        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
-        ret.lateralTuning.pid.kdBP = [0.]
-        ret.lateralTuning.pid.kdV = [9.0]
-        ret.lateralTuning.pid.kf = 0.00007818594
-
+      else:
+        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
+        ret.lateralTuning.pid.kfV = [0.00007818594]
+        if corolla_tss2_d_tuning:
+          ret.steerActuatorDelay = 0.40
+          ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
+          ret.lateralTuning.pid.kdV = [9.0]
+          ret.lateralTuning.pid.kfV = [0.00007818594]
+        
+    elif candidate == CAR.COROLLAH_TSS2:
+      ret.longitudinalTuning.kpV = [0.25, 0.3, 0.325]  # braking tune from rav4h
+      ret.longitudinalTuning.kiV = [0.068, 0.10]
+      stop_and_go = True
+      ret.safetyParam = 73
+      ret.wheelbase = 2.63906
+      ret.steerRatio = 13.9
+      tire_stiffness_factor = 0.444  # not optimized yet
+      ret.mass = 3060. * CV.LB_TO_KG + STD_CARGO_KG
+      if spairrowtuning:
+        ret.steerActuatorDelay = 0.60
+        ret.steerRatio = 15.33
+        ret.steerLimitTimer = 5.0
+        tire_stiffness_factor = 0.996  # not optimized yet
+        #ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kpV = [[0.0, 15.5, 21.0, 29.0], [0.13, 0.39, 0.39, 0.6]]
+        #ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kiV = [[0.0, 15.5, 21.0, 29.0], [0.005, 0.015, 0.015, 0.1]]
+        #ret.lateralTuning.pid.kfBP, ret.lateralTuning.pid.kfV = [[0.0, 15.5, 21.0, 29.0], [0.00009, 0.00015, 0.00015, 0.00007818594]]
+        ret.lateralTuning.init('indi')
+        ret.lateralTuning.indi.innerLoopGain = 6
+        ret.lateralTuning.indi.outerLoopGain = 15.0
+        ret.lateralTuning.indi.timeConstant = 5.5
+        ret.lateralTuning.indi.actuatorEffectiveness = 6.0
+      else:
+        ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.5], [0.1]]
+        ret.lateralTuning.pid.kfV = [0.00007818594]
+        if corolla_tss2_d_tuning:
+          ret.steerActuatorDelay = 0.40
+          ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.6], [0.1]]
+          ret.lateralTuning.pid.kdV = [9.0]
+        
     elif candidate in [CAR.LEXUS_ES_TSS2, CAR.LEXUS_ESH_TSS2]:
       stop_and_go = True
       ret.safetyParam = 73
