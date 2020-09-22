@@ -295,7 +295,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
    printf("ERROR PARSING OPPARAMS JSON!\n");
    s->scene.dfButtonStatus = 0;
  }
-  s->scene.mlButtonEnabled = true;
+  s->scene.mlButtonEnabled = false;
 
   s->rgb_width = back_bufs.width;
   s->rgb_height = back_bufs.height;
