@@ -67,6 +67,9 @@ def create_lkas_hud(packer, gear, lkas_active, hud_alert, hud_count, lkas_car_mo
 
 def create_lkas_command(packer, apply_steer, moving_fast, frame):
   # LKAS_COMMAND 0x292 (658) Lane-keeping signal to turn the wheel.
+  if moving_fast == 0:
+    apply_steer = 0
+    
   values = {
     "LKAS_STEERING_TORQUE": apply_steer,
     "LKAS_HIGH_TORQUE": int(moving_fast),
