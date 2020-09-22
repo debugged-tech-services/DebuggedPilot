@@ -118,9 +118,9 @@ static int chrysler_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
 
 static int chrysler_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
 
-  controls_allowed = true;
+  controls_allowed = 1;
   return 1;
-  
+
   // int tx = 1;
   // int addr = GET_ADDR(to_send);
 
@@ -185,7 +185,7 @@ static int chrysler_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
   //   }
   // }
 
-  return tx;
+  //return tx;
 }
 
 static int chrysler_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_fwd) {
