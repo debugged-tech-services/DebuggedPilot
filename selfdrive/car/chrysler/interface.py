@@ -20,6 +20,8 @@ class CarInterface(CarInterfaceBase):
     ret.carName = "chrysler"
     ret.safetyModel = car.CarParams.SafetyModel.chrysler
 
+    tire_stiffness_factor = 1.0;
+
     # Chrysler port is a community feature, since we don't own one to test
     ret.communityFeature = True
 
@@ -47,13 +49,18 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1828.0 + STD_CARGO_KG # 2013 V-6 RWD
       # ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
       ret.steerActuatorDelay =  0.01
-      ret.steerRateCost = 0.1
+      ret.steerRateCost = 0.02
       ret.steerLimitTimer = 0.8
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGain = 1.82
-      ret.lateralTuning.indi.outerLoopGain = 0.92
-      ret.lateralTuning.indi.timeConstant = 1000.0
-      ret.lateralTuning.indi.actuatorEffectiveness = 1.4971
+      # ret.lateralTuning.indi.innerLoopGain = 1.88
+      # ret.lateralTuning.indi.outerLoopGain = 0.96
+      # ret.lateralTuning.indi.timeConstant = 1000.0
+      # ret.lateralTuning.indi.actuatorEffectiveness = 0.9882
+      ret.lateralTuning.indi.innerLoopGain = 3.0
+      ret.lateralTuning.indi.outerLoopGain = 2.0
+      ret.lateralTuning.indi.timeConstant = 1.0
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.5
+      tire_stiffness_factor = 1.125
 
     ret.minSteerSpeed = 3.8  # m/s
     if candidate in (CAR.PACIFICA_2019_HYBRID, CAR.PACIFICA_2020, CAR.JEEP_CHEROKEE_2019):
@@ -65,7 +72,7 @@ class CarInterface(CarInterfaceBase):
 
     # TODO: start from empirically derived lateral slip stiffness for the civic and scale by
     # mass and CG position, so all cars will have approximately similar dyn behaviors
-    ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront)
+    ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,tire_stiffness_factor=tire_stiffness_factor)
 
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
     print("ECU Camera Simulated: {0}".format(ret.enableCamera))
