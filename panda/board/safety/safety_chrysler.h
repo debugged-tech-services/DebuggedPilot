@@ -65,58 +65,58 @@ static int chrysler_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
   controls_allowed = 1;
   return 1;
 
-  bool valid = addr_safety_check(to_push, chrysler_rx_checks, CHRYSLER_RX_CHECK_LEN,
-                                 chrysler_get_checksum, chrysler_compute_checksum,
-                                 chrysler_get_counter);
+  // bool valid = addr_safety_check(to_push, chrysler_rx_checks, CHRYSLER_RX_CHECK_LEN,
+  //                                chrysler_get_checksum, chrysler_compute_checksum,
+  //                                chrysler_get_counter);
 
-  if (valid && (GET_BUS(to_push) == 0)) {
-    int addr = GET_ADDR(to_push);
+  // if (valid && (GET_BUS(to_push) == 0)) {
+  //   int addr = GET_ADDR(to_push);
 
-    // Measured eps torque
-    if (addr == 544) {
-      int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
+  //   // Measured eps torque
+  //   if (addr == 544) {
+  //     int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
 
-      // update array of samples
-      update_sample(&torque_meas, torque_meas_new);
-    }
+  //     // update array of samples
+  //     update_sample(&torque_meas, torque_meas_new);
+  //   }
 
-    // enter controls on rising edge of ACC, exit controls on ACC off
-    if (addr == 500) {
-      int cruise_engaged = ((GET_BYTE(to_push, 2) & 0x38) >> 3) == 7;
-      if (cruise_engaged && !cruise_engaged_prev) {
-        controls_allowed = 1;
-      }
-      if (!cruise_engaged) {
-        controls_allowed = 0;
-      }
-      cruise_engaged_prev = cruise_engaged;
-    }
+  //   // enter controls on rising edge of ACC, exit controls on ACC off
+  //   if (addr == 500) {
+  //     int cruise_engaged = ((GET_BYTE(to_push, 2) & 0x38) >> 3) == 7;
+  //     if (cruise_engaged && !cruise_engaged_prev) {
+  //       controls_allowed = 1;
+  //     }
+  //     if (!cruise_engaged) {
+  //       controls_allowed = 0;
+  //     }
+  //     cruise_engaged_prev = cruise_engaged;
+  //   }
 
-    // update speed
-    if (addr == 514) {
-      int speed_l = (GET_BYTE(to_push, 0) << 4) + (GET_BYTE(to_push, 1) >> 4);
-      int speed_r = (GET_BYTE(to_push, 2) << 4) + (GET_BYTE(to_push, 3) >> 4);
-      vehicle_speed = (speed_l + speed_r) / 2;
-      vehicle_moving = (int)vehicle_speed > CHRYSLER_STANDSTILL_THRSLD;
-    }
+  //   // update speed
+  //   if (addr == 514) {
+  //     int speed_l = (GET_BYTE(to_push, 0) << 4) + (GET_BYTE(to_push, 1) >> 4);
+  //     int speed_r = (GET_BYTE(to_push, 2) << 4) + (GET_BYTE(to_push, 3) >> 4);
+  //     vehicle_speed = (speed_l + speed_r) / 2;
+  //     vehicle_moving = (int)vehicle_speed > CHRYSLER_STANDSTILL_THRSLD;
+  //   }
 
-    // exit controls on rising edge of gas press
-    if (addr == 308) {
-      gas_pressed = ((GET_BYTE(to_push, 5) & 0x7F) != 0) && ((int)vehicle_speed > CHRYSLER_GAS_THRSLD);
-    }
+  //   // exit controls on rising edge of gas press
+  //   if (addr == 308) {
+  //     gas_pressed = ((GET_BYTE(to_push, 5) & 0x7F) != 0) && ((int)vehicle_speed > CHRYSLER_GAS_THRSLD);
+  //   }
 
-    // exit controls on rising edge of brake press
-    if (addr == 320) {
-      brake_pressed = (GET_BYTE(to_push, 0) & 0x7) == 5;
-      if (brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
-        controls_allowed = 0;
-      }
-      brake_pressed_prev = brake_pressed;
-    }
+  //   // exit controls on rising edge of brake press
+  //   if (addr == 320) {
+  //     brake_pressed = (GET_BYTE(to_push, 0) & 0x7) == 5;
+  //     if (brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
+  //       controls_allowed = 0;
+  //     }
+  //     brake_pressed_prev = brake_pressed;
+  //   }
 
-    generic_rx_checks((addr == 0x292));
-  }
-  return valid;
+  //   generic_rx_checks((addr == 0x292));
+  // }
+  // return valid;
 }
 
 static int chrysler_tx_hook(CAN_FIFOMailBox_TypeDef *to_send) {
