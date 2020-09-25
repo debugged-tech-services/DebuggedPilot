@@ -465,7 +465,7 @@ EVENTS = {
       AlertStatus.critical, AlertSize.full,
       Priority.HIGH, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, .1, .1),
   },
-  
+
   EventName.preKeepHandsOnWheel: {
     ET.WARNING: Alert(
       "PLACE HANDS ON WHEEL:",
@@ -882,7 +882,7 @@ EVENTS = {
 }
 
 EVENTSARNE182 = {
-  
+
   EventNameArne182.pcmEnable: {
     ET.ENABLE: EngagementAlert(AudibleAlert.none),
   },
@@ -959,7 +959,7 @@ EVENTSARNE182 = {
     ET.WARNING: Alert(
       "Steer Assist Active",
       "Brake Pressed Acceleration Disabled",
-      AlertStatus.userPrompt, AlertSize.small,
+      AlertStatus.normal, AlertSize.small,
       Priority.LOW, VisualAlert.none, AudibleAlert.none, .4, 2., 0.2),
   },
 
