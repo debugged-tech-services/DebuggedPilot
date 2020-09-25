@@ -47,13 +47,13 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1828.0 + STD_CARGO_KG # 2013 V-6 RWD
       # ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
       ret.steerActuatorDelay =  0.01
-      ret.steerRateCost = 0.02
-      ret.steerLimitTimer = 0.8
-      ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGain = 1.92
-      ret.lateralTuning.indi.outerLoopGain = 0.78
-      ret.lateralTuning.indi.timeConstant = 100.0
-      ret.lateralTuning.indi.actuatorEffectiveness = 0.9872
+      # ret.steerRateCost = 0.02
+      # ret.steerLimitTimer = 0.8
+      # ret.lateralTuning.init('indi')
+      # ret.lateralTuning.indi.innerLoopGain = 1.92
+      # ret.lateralTuning.indi.outerLoopGain = 0.78
+      # ret.lateralTuning.indi.timeConstant = 100.0
+      # ret.lateralTuning.indi.actuatorEffectiveness = 0.9872
 
     ret.minSteerSpeed = 3.8  # m/s
     if candidate in (CAR.PACIFICA_2019_HYBRID, CAR.PACIFICA_2020, CAR.JEEP_CHEROKEE_2019):
