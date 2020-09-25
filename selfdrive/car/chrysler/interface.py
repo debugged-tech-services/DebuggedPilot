@@ -52,8 +52,8 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGain = 2.52
       ret.lateralTuning.indi.outerLoopGain = 1.28
-      ret.lateralTuning.indi.timeConstant = 100.0
-      ret.lateralTuning.indi.actuatorEffectiveness = 1.1821
+      ret.lateralTuning.indi.timeConstant = 1000.0
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.2971
 
     ret.minSteerSpeed = 3.8  # m/s
     if candidate in (CAR.PACIFICA_2019_HYBRID, CAR.PACIFICA_2020, CAR.JEEP_CHEROKEE_2019):
