@@ -3,7 +3,6 @@ from selfdrive.car.chrysler.chryslercan import create_lkas_hud, create_lkas_comm
                                                create_wheel_buttons
 from selfdrive.car.chrysler.values import CAR, SteerLimitParams
 from opendbc.can.packer import CANPacker
-from common.numpy_fast import clip
 
 class CarController():
   def __init__(self, dbc_name, CP, VM):
@@ -27,9 +26,8 @@ class CarController():
     # *** compute control surfaces ***
     # steer torque
     new_steer = actuators.steer * SteerLimitParams.STEER_MAX
-    # apply_steer = apply_toyota_steer_torque_limits(new_steer, self.apply_steer_last,
-    #                                                CS.out.steeringTorqueEps, SteerLimitParams)
-    apply_steer = clip(new_steer, -SteerLimitParams.STEER_MAX, SteerLimitParams.STEER_MAX)
+    apply_steer = apply_toyota_steer_torque_limits(new_steer, self.apply_steer_last,
+                                                   CS.out.steeringTorqueEps, SteerLimitParams)
 
     self.steer_rate_limited = new_steer != apply_steer
 
