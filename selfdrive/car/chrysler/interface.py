@@ -48,14 +48,14 @@ class CarInterface(CarInterfaceBase):
       ret.steerRatio = 15.5 # 2013 V-6 (RWD) — 15.5:1 V-6 (AWD) — 16.5:1 V-8 (RWD) — 15.5:1 V-8 (AWD) — 16.5:1
       ret.mass = 1828.0 + STD_CARGO_KG # 2013 V-6 RWD
       # ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
-      ret.steerActuatorDelay =  0.02
+      ret.steerActuatorDelay =  0.01
       ret.steerRateCost = 0.02
       ret.steerLimitTimer = 0.8
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGain = 2.05
-      ret.lateralTuning.indi.outerLoopGain = 0.86
+      ret.lateralTuning.indi.innerLoopGain = 1.88
+      ret.lateralTuning.indi.outerLoopGain = 0.76
       ret.lateralTuning.indi.timeConstant = 5.5
-      ret.lateralTuning.indi.actuatorEffectiveness = 1.3 
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.5 
       # ret.lateralTuning.indi.innerLoopGain = 3.0
       # ret.lateralTuning.indi.outerLoopGain = 2.0
       # ret.lateralTuning.indi.timeConstant = 1.0
