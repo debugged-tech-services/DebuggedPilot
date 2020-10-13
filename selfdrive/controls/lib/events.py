@@ -468,26 +468,22 @@ EVENTS = {
 
   EventName.preKeepHandsOnWheel: {
     ET.WARNING: Alert(
-      "PLACE HANDS ON WHEEL:",
-      "Hold wheel at all times",
-      AlertStatus.normal, AlertSize.small,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
+      "No hands on steering wheel detected",
+      "",
+      AlertStatus.userPrompt, AlertSize.small,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1, alert_rate=0.75),
   },
 
   EventName.promptKeepHandsOnWheel: {
     ET.WARNING: Alert(
-      "KEEP HANDS ON WHEEL",
-      "Driver must keep hands on wheel",
-      AlertStatus.userPrompt, AlertSize.mid,
-      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2Repeat, .1, .1, .1),
+      "HANDS OFF STEERING WHEEL",
+      "Place hands on steering wheel",
+      AlertStatus.critical, AlertSize.mid,
+      Priority.MID, VisualAlert.steerRequired, AudibleAlert.chimeWarning2Repeat, .1, .1, .1, alert_rate=0.75),
   },
 
   EventName.keepHandsOnWheel: {
-    ET.WARNING: Alert(
-      "DISENGAGE IMMEDIATELY",
-      "Driver must keep hands on steering wheel",
-      AlertStatus.critical, AlertSize.full,
-      Priority.HIGH, VisualAlert.steerRequired, AudibleAlert.chimeWarningRepeat, .1, .1, .1),
+    ET.SOFT_DISABLE: ImmediateDisableAlert("Driver kept hands off sterring wheel"),
   },
 
   EventName.driverMonitorLowAcc: {

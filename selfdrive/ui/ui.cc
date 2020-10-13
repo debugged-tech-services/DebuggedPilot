@@ -502,6 +502,7 @@ void handle_message(UIState *s, SubMaster &sm) {
   }
   if (sm.updated("dMonitoringState")) {
     auto data = sm["dMonitoringState"].getDMonitoringState();
+    scene.dmonitoring_state = data; 
     scene.is_rhd = data.getIsRHD();
     s->preview_started = data.getIsPreview();
   }

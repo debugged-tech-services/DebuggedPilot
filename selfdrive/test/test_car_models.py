@@ -241,6 +241,11 @@ routes = {
     'enableCamera': True,
     'enableDsu': False,
   },
+  #"399f98d4e88eb662|2020-09-29--23-04-42": {
+  #  'carFingerprint': TOYOTA.AVALON_2021,
+  #  'enableCamera': True,
+  #  'enableDsu': False,
+  #},
   "b0f5a01cf604185c|2018-01-26--00-54-32": {
     'carFingerprint': TOYOTA.COROLLA,
     'enableCamera': True,
@@ -270,6 +275,11 @@ routes = {
     'carFingerprint': TOYOTA.PRIUS,
     'enableCamera': True,
     'enableDsu': True,
+  },
+  "0a0de17a1e6a2d15|2020-09-21--21-24-41": {
+    'carFingerprint': TOYOTA.PRIUS_TSS2,
+    'enableCamera': True,
+    'enableDsu': False,
   },
   "b0f5a01cf604185c|2017-12-18--20-32-32": {
     'carFingerprint': TOYOTA.RAV4,
@@ -477,6 +487,7 @@ non_tested_cars = [
   HYUNDAI.KIA_CADENZA_HEV,
   NISSAN.XTRAIL,
   NISSAN.ROGUE,
+  TOYOTA.AVALON_2021,
   TOYOTA.PRIUS_2019,
   TOYOTA.CAMRYH,
   TOYOTA.CHR,
@@ -486,7 +497,6 @@ non_tested_cars = [
   TOYOTA.HIGHLANDERH,
   TOYOTA.HIGHLANDERH_TSS2,
   TOYOTA.LEXUS_UXH_TSS2,
-  TOYOTA.PRIUS_TSS2,
   VOLKSWAGEN.SKODA_SUPERB_B8,
   VOLKSWAGEN.VW_TOURAN,
   VOLKSWAGEN.VW_ATLAS

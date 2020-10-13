@@ -76,7 +76,8 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.GENESIS_G70:
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGain = 3.0
-      ret.lateralTuning.indi.outerLoopGain = 2.0
+      ret.lateralTuning.indi.outerLoopGainBP = [0.0]
+      ret.lateralTuning.indi.outerLoopGainV = [2.0]
       ret.lateralTuning.indi.timeConstant = 1.0
       ret.lateralTuning.indi.actuatorEffectiveness = 1.5
       ret.steerActuatorDelay = 0.08
