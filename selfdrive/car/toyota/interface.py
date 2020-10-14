@@ -206,7 +206,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.18], [0.015]]  # community tuning
       ret.lateralTuning.pid.kfV = [0.00012]  # community tuning
 
-    elif candidate in [CAR.AVALON, CAR.AVALON_2021]:
+    elif candidate in [CAR.AVALON, CAR.AVALON_2021, CAR.AVALONH_2021]:
       stop_and_go = False
       ret.safetyParam = 73
       ret.wheelbase = 2.82

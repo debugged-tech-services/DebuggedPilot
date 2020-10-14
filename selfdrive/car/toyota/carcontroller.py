@@ -271,7 +271,7 @@ class CarController():
         can_sends.append(make_can_msg(addr, vl, bus))
 
     # Enable blindspot debug mode once
-    if frame > 1000 and not (CS.CP.carFingerprint in TSS2_CAR or CS.CP.carFingerprint in [CAR.CAMRY, CAR.CAMRYH, CAR.AVALON_2021]): # 10 seconds after start and not a tss2 car
+    if frame > 1000 and not (CS.CP.carFingerprint in TSS2_CAR or CS.CP.carFingerprint in [CAR.CAMRY, CAR.CAMRYH, CAR.AVALON_2021, CAR.AVALONH_2021]): # 10 seconds after start and not a tss2 car
       if BLINDSPOTALWAYSON:
         self.blindspot_blink_counter_left += 1
         self.blindspot_blink_counter_right += 1
