@@ -5,7 +5,7 @@ from cereal import car
 Ecu = car.CarParams.Ecu
 
 class SteerLimitParams:
-  STEER_MAX = 575         # 262 faults
+  STEER_MAX = 535         # 262 faults
   STEER_DELTA_UP = 1      # 3 is stock. 100 is fine. 200 is too much it seems
   STEER_DELTA_DOWN = 1    # no faults on the way down it seems
   STEER_ERROR_MAX = 80
