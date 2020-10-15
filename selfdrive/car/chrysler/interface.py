@@ -37,7 +37,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.init('indi')
     ret.lateralTuning.indi.innerLoopGain = 0.092
     ret.lateralTuning.indi.outerLoopGain = 0.038
-    ret.lateralTuning.indi.timeConstant = 1.0;1
+    ret.lateralTuning.indi.timeConstant = 1.0
     ret.lateralTuning.indi.actuatorEffectiveness = 20.0
 
     if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
