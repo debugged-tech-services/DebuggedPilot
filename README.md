@@ -50,11 +50,12 @@ Fork is known to work in both US and Europe
 - RAV4 Hybrid 2016-19
 - RAV4 2017-19
 - Corolla 2019-20
-- Prius 2017
+- Prius 2017-2021
 - RX hyrid 2017
 - CT 2018
 - Hyundia is fully supported thank to @xps-genesis
 - Chevrolet Volt 2017
+- Subaru Crosstrek Limited 2019 with 0.8 it will use Eyesight for radar. 
 ### Todo
 
 - [ ] Fix Lag Trafficd
