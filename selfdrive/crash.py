@@ -38,7 +38,7 @@ dirty = not arne_remote
 dirty = dirty or (subprocess.call(["git", "diff-index", "--quiet", branch, "--"]) != 0)
 
 from selfdrive.swaglog import cloudlog
-from common.android import ANDROID
+from common.hardware import ANDROID
 
 def save_exception(exc_text):
   i = 0

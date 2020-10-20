@@ -1,7 +1,7 @@
 # flake8: noqa
 from selfdrive.car import dbc_dict
 
-STEER_THRESHOLD = 1.75
+STEER_THRESHOLD = 1.0
 
 class CAR:
   XTRAIL = "NISSAN X-TRAIL 2017"

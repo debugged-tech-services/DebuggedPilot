@@ -13,8 +13,6 @@ class CarInterface(CarInterfaceBase):
   def get_params(candidate, fingerprint=None, has_relay=False, car_fw=None):
     if fingerprint is None:
       fingerprint = gen_empty_fingerprint()
-    if car_fw is None:
-      car_fw = []
 
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
     ret.carName = "chrysler"
@@ -92,8 +90,6 @@ class CarInterface(CarInterfaceBase):
 
     # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
-
-    ret.buttonEvents = []
 
     # events
 

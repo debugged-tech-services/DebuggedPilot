@@ -294,14 +294,14 @@ class CarState(CarStateBase):
     #self.barriers = cp_cam.vl["LKAS_HUD"]['BARRIERS']
     #self.rightline = cp_cam.vl["LKAS_HUD"]['RIGHT_LINE']
     #self.leftline = cp_cam.vl["LKAS_HUD"]['LEFT_LINE']
-    
+
     self.distance = cp_cam.vl["ACC_CONTROL"]['DISTANCE']
-    
+
     self.tsgn1 = cp_cam.vl["RSA1"]['TSGN1']
     if self.spdval1 != cp_cam.vl["RSA1"]['SPDVAL1']:
       self.rsa_ignored_speed = 0
     self.spdval1 = cp_cam.vl["RSA1"]['SPDVAL1']
-    
+
     self.splsgn1 = cp_cam.vl["RSA1"]['SPLSGN1']
     self.tsgn2 = cp_cam.vl["RSA1"]['TSGN2']
     #self.spdval2 = cp_cam.vl["RSA1"]['SPDVAL2']
@@ -527,7 +527,9 @@ class CarState(CarStateBase):
               ]
 
     # use steering message to check if panda is connected to frc
-    checks = [("STEERING_LKA", 42)]
+    checks = [
+      ("STEERING_LKA", 42)
+    ]
 
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)

@@ -94,7 +94,7 @@ class CarInterface(CarInterfaceBase):
       self.compute_gb = compute_gb_honda_nidec
 
   @staticmethod
-  def compute_gb(accel, speed):
+  def compute_gb(accel, speed): # pylint: disable=method-hidden
     raise NotImplementedError
 
   @staticmethod
@@ -456,11 +456,13 @@ class CarInterface(CarInterfaceBase):
     # ******************* do can recv *******************
     self.cp.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
+    if self.cp_body:
+      self.cp_body.update_strings(can_strings)
 
     ret_arne182 = arne182.CarStateArne182.new_message()
-    ret = self.CS.update(self.cp, self.cp_cam)
+    ret = self.CS.update(self.cp, self.cp_cam, self.cp_body)
 
-    ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
+    ret.canValid = self.cp.can_valid and self.cp_cam.can_valid and (self.cp_body is None or self.cp_body.can_valid)
     ret.yawRate = self.VM.yaw_rate(ret.steeringAngle * CV.DEG_TO_RAD, ret.vEgo)
     # FIXME: read sendcan for brakelights
     brakelights_threshold = 0.02 if self.CS.CP.carFingerprint == CAR.CIVIC else 0.1
@@ -559,9 +561,9 @@ class CarInterface(CarInterfaceBase):
       events.add(EventName.buttonEnable)
 
     ret.events = events.to_msg()
-    
+
     ret_arne182.events = events_arne182.to_msg()
-    
+
     self.CS.out = ret.as_reader()
     return self.CS.out, ret_arne182.as_reader()
 
