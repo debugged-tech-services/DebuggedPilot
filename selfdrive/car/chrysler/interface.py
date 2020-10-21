@@ -37,9 +37,9 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.init('indi')
     ret.lateralTuning.indi.innerLoopGain = 4.0
     ret.lateralTuning.indi.outerLoopGainBP = [9]
-    ret.lateralTuning.indi.outerLoopGainV = [0]
+    ret.lateralTuning.indi.outerLoopGainV = [9]
     ret.lateralTuning.indi.timeConstant = 1.0
-    ret.lateralTuning.indi.actuatorEffectiveness = 45.0;
+    ret.lateralTuning.indi.actuatorEffectiveness = 40.0;
 
     if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
       ret.wheelbase = 2.91  # in meters
@@ -54,7 +54,7 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1828.0 + STD_CARGO_KG # 2013 V-6 RWD
       # ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
       #ret.steerActuatorDelay =  0.1
-      ret.steerRateCost = 0.50
+      ret.steerRateCost = 0.02
       ret.steerLimitTimer = 0.8
       ret.lateralTuning.init('indi')
       ret.lateralTuning.indi.innerLoopGain = 1.92
