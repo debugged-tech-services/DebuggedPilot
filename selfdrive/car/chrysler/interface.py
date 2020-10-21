@@ -38,8 +38,8 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.indi.innerLoopGain = 4.0
     ret.lateralTuning.indi.outerLoopGainBP = [4]
     ret.lateralTuning.indi.outerLoopGainV = [4]
-    ret.lateralTuning.indi.timeConstant = 1.0
-    ret.lateralTuning.indi.actuatorEffectiveness = 40.0;
+    ret.lateralTuning.indi.timeConstant = 1.35
+    ret.lateralTuning.indi.actuatorEffectiveness = 100.0;
 
     if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
       ret.wheelbase = 2.91  # in meters
