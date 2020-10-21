@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+import gc
+
 from cereal import car
 from common.params import Params
-from common.realtime import Priority, config_rt_process
+from common.realtime import set_realtime_priority
 from selfdrive.swaglog import cloudlog
 from selfdrive.controls.lib.planner import Planner
 from selfdrive.controls.lib.vehicle_model import VehicleModel
@@ -10,8 +12,10 @@ import cereal.messaging as messaging
 import cereal.messaging_arne as messaging_arne
 
 def plannerd_thread(sm=None, pm=None, arne_sm=None):
+  gc.disable()
 
-  config_rt_process(2, Priority.CTRL_LOW)
+  # start the loop
+  set_realtime_priority(52)
 
   cloudlog.info("plannerd is waiting for CarParams")
   CP = car.CarParams.from_bytes(Params().get("CarParams", block=True))
@@ -23,8 +27,7 @@ def plannerd_thread(sm=None, pm=None, arne_sm=None):
   VM = VehicleModel(CP)
 
   if sm is None:
-    sm = messaging.SubMaster(['carState', 'controlsState', 'radarState', 'model', 'liveParameters', 'liveMapData'],
-                             poll=['radarState', 'model'])
+    sm = messaging.SubMaster(['carState', 'controlsState', 'radarState', 'model', 'liveParameters', 'liveMapData'])
   if arne_sm is None:
     arne_sm = messaging_arne.SubMaster(['arne182Status', 'latControl', 'modelLongButton'])
   if pm is None:

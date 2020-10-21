@@ -109,7 +109,7 @@ class CarInterface(CarInterfaceBase):
 
     elif candidate in [CAR.COROLLA, CAR.COROLLA_2015]:
       stop_and_go = False
-      ret.safetyParam = 88
+      ret.safetyParam = 100
       ret.wheelbase = 2.70
       ret.steerRatio = 18.27
       tire_stiffness_factor = 0.444  # not optimized yet
@@ -488,10 +488,6 @@ class CarInterface(CarInterfaceBase):
       self.disengage_due_to_slow_speed = False
       ret.cruiseState.enabled = bool(self.CS.main_on)
 
-
-     #do we need the two commented out?
-    #ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
-    #ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
     # events
     events, events_arne182 = self.create_common_events(ret, extra_gears)

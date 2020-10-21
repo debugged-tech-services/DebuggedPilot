@@ -38,7 +38,7 @@ private:
   Thneed *thneed = NULL;
 #endif
 
-#if defined(QCOM) || defined(QCOM2)
+#ifdef QCOM
   zdl::DlSystem::Runtime_t Runtime;
 #endif
 

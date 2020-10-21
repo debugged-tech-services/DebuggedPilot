@@ -1,7 +1,12 @@
 from distutils.core import Extension, setup
+
 from Cython.Build import cythonize
 
 from common.cython_hacks import BuildExtWithoutPlatformSuffix
+from common.basedir import BASEDIR
+import os
+
+PHONELIBS = os.path.join(BASEDIR, 'phonelibs')
 
 libraries = ['can_list_to_can_capnp', 'capnp', 'kj']
 

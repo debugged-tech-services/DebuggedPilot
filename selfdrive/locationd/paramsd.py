@@ -13,6 +13,8 @@ from selfdrive.swaglog import cloudlog
 
 KalmanStatus = log.LiveLocationKalman.Status
 
+CARSTATE_DECIMATION = 5
+
 
 class ParamsLearner:
   def __init__(self, CP, steer_ratio, stiffness_factor, angle_offset):
@@ -30,6 +32,7 @@ class ParamsLearner:
     self.speed = 0
     self.steering_pressed = False
     self.steering_angle = 0
+    self.carstate_counter = 0
 
     self.valid = True
 
@@ -48,16 +51,18 @@ class ParamsLearner:
         self.kf.predict_and_observe(t, ObservationKind.ANGLE_OFFSET_FAST, np.array([[[0]]]))
 
     elif which == 'carState':
-      self.steering_angle = msg.steeringAngle
-      self.steering_pressed = msg.steeringPressed
-      self.speed = msg.vEgo
+      self.carstate_counter += 1
+      if self.carstate_counter % CARSTATE_DECIMATION == 0:
+        self.steering_angle = msg.steeringAngle
+        self.steering_pressed = msg.steeringPressed
+        self.speed = msg.vEgo
 
-      in_linear_region = abs(self.steering_angle) < 45 or not self.steering_pressed
-      self.active = self.speed > 5 and in_linear_region
+        in_linear_region = abs(self.steering_angle) < 45 or not self.steering_pressed
+        self.active = self.speed > 5 and in_linear_region
 
-      if self.active:
-        self.kf.predict_and_observe(t, ObservationKind.STEER_ANGLE, np.array([[[math.radians(msg.steeringAngle)]]]))
-        self.kf.predict_and_observe(t, ObservationKind.ROAD_FRAME_X_SPEED, np.array([[[self.speed]]]))
+        if self.active:
+          self.kf.predict_and_observe(t, ObservationKind.STEER_ANGLE, np.array([[[math.radians(msg.steeringAngle)]]]))
+          self.kf.predict_and_observe(t, ObservationKind.ROAD_FRAME_X_SPEED, np.array([[[self.speed]]]))
 
     if not self.active:
       # Reset time when stopped so uncertainty doesn't grow
@@ -67,7 +72,7 @@ class ParamsLearner:
 
 def main(sm=None, pm=None):
   if sm is None:
-    sm = messaging.SubMaster(['liveLocationKalman', 'carState'], poll=['liveLocationKalman'])
+    sm = messaging.SubMaster(['liveLocationKalman', 'carState'])
   if pm is None:
     pm = messaging.PubMaster(['liveParameters'])
 
@@ -106,11 +111,12 @@ def main(sm=None, pm=None):
     sm.update()
 
     for which, updated in sm.updated.items():
-      if updated:
-        t = sm.logMonoTime[which] * 1e-9
-        learner.handle_log(t, which, sm[which])
+      if not updated:
+        continue
+      t = sm.logMonoTime[which] * 1e-9
+      learner.handle_log(t, which, sm[which])
 
-    if sm.updated['liveLocationKalman']:
+    if sm.updated['carState'] and (learner.carstate_counter % CARSTATE_DECIMATION == 0):
       msg = messaging.new_message('liveParameters')
       msg.logMonoTime = sm.logMonoTime['carState']
 
@@ -129,7 +135,7 @@ def main(sm=None, pm=None):
         min_sr <= msg.liveParameters.steerRatio <= max_sr,
       ))
 
-      if sm.frame % 1200 == 0:  # once a minute
+      if learner.carstate_counter % 6000 == 0:   # once a minute
         params = {
           'carFingerprint': CP.carFingerprint,
           'steerRatio': msg.liveParameters.steerRatio,

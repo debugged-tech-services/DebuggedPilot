@@ -2,8 +2,8 @@
 // Black Panda + Harness //
 // ///////////////////// //
 
-void black_enable_can_transceiver(uint8_t transceiver, bool enabled) {
-  switch (transceiver){
+void black_enable_can_transciever(uint8_t transciever, bool enabled) {
+  switch (transciever){
     case 1U:
       set_gpio_output(GPIOC, 1, !enabled);
       break;
@@ -17,18 +17,18 @@ void black_enable_can_transceiver(uint8_t transceiver, bool enabled) {
       set_gpio_output(GPIOB, 10, !enabled);
       break;
     default:
-      puts("Invalid CAN transceiver ("); puth(transceiver); puts("): enabling failed\n");
+      puts("Invalid CAN transciever ("); puth(transciever); puts("): enabling failed\n");
       break;
   }
 }
 
-void black_enable_can_transceivers(bool enabled) {
+void black_enable_can_transcievers(bool enabled) {
   for(uint8_t i=1U; i<=4U; i++){
     // Leave main CAN always on for CAN-based ignition detection
     if((car_harness_status == HARNESS_STATUS_FLIPPED) ? (i == 3U) : (i == 1U)){
-      black_enable_can_transceiver(i, true);
+      black_enable_can_transciever(i, true);
     } else {
-      black_enable_can_transceiver(i, enabled);
+      black_enable_can_transciever(i, enabled);
     }
   }
 }
@@ -77,24 +77,24 @@ void black_set_usb_power_mode(uint8_t mode) {
   }
 }
 
-void black_set_gps_mode(uint8_t mode) {
+void black_set_esp_gps_mode(uint8_t mode) {
   switch (mode) {
-    case GPS_DISABLED:
+    case ESP_GPS_DISABLED:
       // GPS OFF
       set_gpio_output(GPIOC, 14, 0);
       set_gpio_output(GPIOC, 5, 0);
       break;
-    case GPS_ENABLED:
+    case ESP_GPS_ENABLED:
       // GPS ON
       set_gpio_output(GPIOC, 14, 1);
       set_gpio_output(GPIOC, 5, 1);
       break;
-    case GPS_BOOTMODE:
+    case ESP_GPS_BOOTMODE:
       set_gpio_output(GPIOC, 14, 1);
       set_gpio_output(GPIOC, 5, 0);
       break;
     default:
-      puts("Invalid GPS mode\n");
+      puts("Invalid ESP/GPS mode\n");
       break;
   }
 }
@@ -154,14 +154,6 @@ void black_set_phone_power(bool enabled){
   UNUSED(enabled);
 }
 
-void black_set_clock_source_mode(uint8_t mode){
-  UNUSED(mode);
-}
-
-void black_set_siren(bool enabled){
-  UNUSED(enabled);
-}
-
 void black_init(void) {
   common_init_gpio();
 
@@ -175,7 +167,7 @@ void black_init(void) {
   set_gpio_mode(GPIOC, 3, MODE_ANALOG);
 
   // Set default state of GPS
-  current_board->set_gps_mode(GPS_ENABLED);
+  current_board->set_esp_gps_mode(ESP_GPS_ENABLED);
 
   // C10: OBD_SBU1_RELAY (harness relay driving output)
   // C11: OBD_SBU2_RELAY (harness relay driving output)
@@ -198,8 +190,8 @@ void black_init(void) {
   // Initialize harness
   harness_init();
 
-  // Enable CAN transceivers
-  black_enable_can_transceivers(true);
+  // Enable CAN transcievers
+  black_enable_can_transcievers(true);
 
   // Disable LEDs
   black_set_led(LED_RED, false);
@@ -236,18 +228,16 @@ const board board_black = {
   .board_type = "Black",
   .harness_config = &black_harness_config,
   .init = black_init,
-  .enable_can_transceiver = black_enable_can_transceiver,
-  .enable_can_transceivers = black_enable_can_transceivers,
+  .enable_can_transciever = black_enable_can_transciever,
+  .enable_can_transcievers = black_enable_can_transcievers,
   .set_led = black_set_led,
   .set_usb_power_mode = black_set_usb_power_mode,
-  .set_gps_mode = black_set_gps_mode,
+  .set_esp_gps_mode = black_set_esp_gps_mode,
   .set_can_mode = black_set_can_mode,
   .usb_power_mode_tick = black_usb_power_mode_tick,
   .check_ignition = black_check_ignition,
   .read_current = black_read_current,
   .set_fan_power = black_set_fan_power,
   .set_ir_power = black_set_ir_power,
-  .set_phone_power = black_set_phone_power,
-  .set_clock_source_mode = black_set_clock_source_mode,
-  .set_siren = black_set_siren
+  .set_phone_power = black_set_phone_power
 };

@@ -5,12 +5,10 @@ import time
 from typing import Any
 from tqdm import tqdm
 
-from common.hardware import ANDROID
+from common.android import ANDROID
 os.environ['CI'] = "1"
 if ANDROID:
   os.environ['QCOM_REPLAY'] = "1"
-
-from common.timeout import Timeout
 import selfdrive.manager as manager
 
 from common.spinner import Spinner
@@ -58,8 +56,7 @@ def camera_replay(lr, fr):
         frame_idx += 1
 
         pm.send(msg.which(), f)
-        with Timeout(seconds=15):
-          log_msgs.append(messaging.recv_one(sm.sock['model']))
+        log_msgs.append(messaging.recv_one(sm.sock['model']))
 
         spinner.update("modeld replay %d/%d" % (frame_idx, fr.frame_count))
 
@@ -87,8 +84,6 @@ if __name__ == "__main__":
 
   if update:
     ref_commit = get_git_commit()
-    if ref_commit is None:
-      raise Exception("couldn't get ref commit")
     log_fn = "%s_%s_%s.bz2" % (TEST_ROUTE, "model", ref_commit)
     save_log(log_fn, log_msgs)
     with open("model_replay_ref_commit", "w") as f:
@@ -106,3 +101,4 @@ if __name__ == "__main__":
       f.write(diff2)
 
     sys.exit(int(failed))
+

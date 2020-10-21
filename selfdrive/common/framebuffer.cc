@@ -1,4 +1,3 @@
-#include "util.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
@@ -38,9 +37,13 @@ extern "C" void framebuffer_swap(FramebufferState *s) {
 }
 
 extern "C" bool set_brightness(int brightness) {
-  char bright[64];
-  snprintf(bright, sizeof(bright), "%d", brightness);
-  return 0 == write_file("/sys/class/leds/lcd-backlight/brightness", bright, strlen(bright));
+  FILE *f = fopen("/sys/class/leds/lcd-backlight/brightness", "wb");
+  if (f != NULL) {
+    fprintf(f, "%d", brightness);
+    fclose(f);
+    return true;
+  }
+  return false;
 }
 
 extern "C" void framebuffer_set_power(FramebufferState *s, int mode) {

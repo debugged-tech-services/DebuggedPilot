@@ -20,7 +20,6 @@ FRAMEBUFFER_LIBS = -lutils -lgui -lEGL
 
 OBJS = spinner.o \
        ../../common/framebuffer.o \
-       ../../common/util.o \
        $(PHONELIBS)/nanovg/nanovg.o \
        ../../common/spinner.o \
        opensans_semibold.o \

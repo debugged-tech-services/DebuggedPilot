@@ -1,6 +1,6 @@
 import time
 
-from messaging_pyx import Context, Poller, SubSocket, PubSocket  # pylint: disable=no-name-in-module, import-error
+from messaging_pyx import Context, Poller, SubSocket, PubSocket # pylint: disable=no-name-in-module, import-error
 
 MSGS = 1e5
 
@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
   sub_sock.connect(c, "controlsState")
   pub_sock.connect(c, "controlsState")
+
 
   poller = Poller()
   poller.registerSocket(sub_sock)

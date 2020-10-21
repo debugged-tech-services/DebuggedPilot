@@ -1,30 +1,17 @@
-Import('env', 'qt_env', 'arch', 'common', 'messaging', 'gpucommon', 'visionipc', 'cereal')
+Import('env', 'arch', 'common', 'messaging', 'gpucommon', 'visionipc', 'cereal')
 
 src = ['ui.cc', 'paint.cc', 'sidebar.cc', '#phonelibs/nanovg/nanovg.c']
 libs = [common, 'zmq', 'czmq', 'capnp', 'kj', 'm', cereal, messaging, gpucommon, visionipc]
+linkflags = ['-Wl,-rpath=/system/lib64,-rpath=/system/comma/usr/lib']
 
-
-if qt_env is None:
+if arch == "aarch64":
+  src += ['sound.cc']
   libs += ['EGL', 'GLESv3', 'gnustl_shared', 'log', 'utils', 'gui', 'hardware', 'ui', 'CB', 'gsl', 'adreno_utils', 'OpenSLES', 'cutils', 'uuid', 'OpenCL']
-  linkflags = ['-Wl,-rpath=/system/lib64,-rpath=/system/comma/usr/lib']
-
-  src += ["android/ui.cc", "android/sl_sound.cc"]
-  env.Program('_ui', src,
-    LINKFLAGS=linkflags,
-    LIBS=libs)
-
 else:
-  qt_libs = ["pthread"]
+  src += ['linux.cc']
+  libs += ['pthread', 'glfw']
+  linkflags = []
 
-  if arch == "Darwin":
-    qt_env["FRAMEWORKS"] += ["QtWidgets", "QtGui", "QtCore", "QtDBus", "QtMultimedia"]
-  else:
-    qt_libs += ["Qt5Widgets", "Qt5Gui", "Qt5Core", "Qt5DBus", "Qt5Multimedia"]
-
-  if arch == "larch64":
-    qt_libs += ["GLESv2", "wayland-client"]
-  else:
-    qt_libs += ["GL"]
-
-  qt_src = ["qt/ui.cc", "qt/window.cc", "qt/settings.cc", "qt/qt_sound.cc"] + src
-  qt_env.Program("_ui", qt_src, LIBS=qt_libs + libs)
+env.Program('_ui', src,
+  LINKFLAGS=linkflags,
+  LIBS=libs)

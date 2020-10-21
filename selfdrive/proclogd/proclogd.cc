@@ -38,8 +38,11 @@ int main() {
 
   while (1) {
 
-    MessageBuilder msg;
-    auto procLog = msg.initEvent().initProcLog();
+    capnp::MallocMessageBuilder msg;
+    cereal::Event::Builder event = msg.initRoot<cereal::Event>();
+    event.setLogMonoTime(nanos_since_boot());
+    auto procLog = event.initProcLog();
+
     auto orphanage = msg.getOrphanage();
 
     // stat

@@ -93,13 +93,15 @@ void cloudlog_e(int levelnum, const char* filename, int lineno, const char* func
     {"created", seconds_since_epoch()}
   };
 
-  std::string log_s = log_j.dump();
+  char* log_s = strdup(log_j.dump().c_str());
+  assert(log_s);
 
   free(msg_buf);
 
   char levelnum_c = levelnum;
   zmq_send(s.sock, &levelnum_c, 1, ZMQ_NOBLOCK | ZMQ_SNDMORE);
-  zmq_send(s.sock, log_s.c_str(), log_s.length(), ZMQ_NOBLOCK);
+  zmq_send(s.sock, log_s, strlen(log_s), ZMQ_NOBLOCK);
+  free(log_s);
 
   pthread_mutex_unlock(&s.lock);
 }

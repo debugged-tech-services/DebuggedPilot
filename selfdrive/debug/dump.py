@@ -61,11 +61,4 @@ if __name__ == "__main__":
               print("{} = {}".format(".".join(value), item))
           print("")
         else:
-          try:
-            print(evt)
-          except UnicodeDecodeError:
-            w = evt.which()
-            s = f"( logMonoTime {evt.logMonoTime} \n  {w} = "
-            s += str(evt.__getattr__(w))
-            s += f"\n  valid = {evt.valid} )"
-            print(s)
+          print(evt)

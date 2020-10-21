@@ -90,7 +90,6 @@ int visionstream_init(VisionStream *s, VisionStreamType type, bool tbuffer, Visi
   err = vipc_send(s->ipc_fd, &p);
   if (err < 0) {
     close(s->ipc_fd);
-    s->ipc_fd = -1;
     return -1;
   }
 
@@ -98,7 +97,6 @@ int visionstream_init(VisionStream *s, VisionStreamType type, bool tbuffer, Visi
   err = vipc_recv(s->ipc_fd, &rp);
   if (err <= 0) {
     close(s->ipc_fd);
-    s->ipc_fd = -1;
     return -1;
   }
   assert(rp.type == VIPC_STREAM_BUFS);
@@ -192,5 +190,5 @@ void visionstream_destroy(VisionStream *s) {
     }
   }
   if (s->bufs) free(s->bufs);
-  if (s->ipc_fd >= 0) close(s->ipc_fd);
+  close(s->ipc_fd);
 }

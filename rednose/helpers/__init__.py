@@ -1,5 +1,4 @@
 import os
-import platform
 from cffi import FFI
 
 TEMPLATE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'templates'))
@@ -14,8 +13,7 @@ def write_code(folder, name, code, header):
 
 
 def load_code(folder, name):
-  shared_ext = "dylib" if platform.system() == "Darwin" else "so"
-  shared_fn = os.path.join(folder, f"lib{name}.{shared_ext}")
+  shared_fn = os.path.join(folder, f"lib{name}.so")
   header_fn = os.path.join(folder, f"{name}.h")
 
   with open(header_fn) as f:

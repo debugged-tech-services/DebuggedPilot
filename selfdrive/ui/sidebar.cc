@@ -2,23 +2,25 @@
 #include <string.h>
 #include <math.h>
 #include <map>
-
-#include "paint.hpp"
-#include "sidebar.hpp"
+#include "ui.hpp"
 
 static void ui_draw_sidebar_background(UIState *s) {
   int sbr_x = !s->scene.uilayout_sidebarcollapsed ? 0 : -(sbr_w) + bdr_s * 2;
-  ui_draw_rect(s->vg, sbr_x, 0, sbr_w, s->fb_h, COLOR_BLACK_ALPHA(85));
+  ui_draw_rect(s->vg, sbr_x, 0, sbr_w, vwp_h, COLOR_BLACK_ALPHA(85));
 }
 
 static void ui_draw_sidebar_settings_button(UIState *s) {
-  const float alpha = s->active_app == cereal::UiLayoutState::App::SETTINGS ? 1.0f : 0.65f;
-  ui_draw_image(s->vg, settings_btn.x, settings_btn.y, settings_btn.w, settings_btn.h, s->img_button_settings, alpha);
+  bool settingsActive = s->active_app == cereal::UiLayoutState::App::SETTINGS;
+  const int settings_btn_xr = !s->scene.uilayout_sidebarcollapsed ? settings_btn_x : -(sbr_w);
+
+  ui_draw_image(s->vg, settings_btn_xr, settings_btn_y, settings_btn_w, settings_btn_h, s->img_button_settings, settingsActive ? 1.0f : 0.65f);
 }
 
 static void ui_draw_sidebar_home_button(UIState *s) {
-  const float alpha = s->active_app == cereal::UiLayoutState::App::HOME ? 1.0f : 0.65f;;
-  ui_draw_image(s->vg, home_btn.x, home_btn.y, home_btn.w, home_btn.h, s->img_button_home, alpha);
+  bool homeActive = s->active_app == cereal::UiLayoutState::App::HOME;
+  const int home_btn_xr = !s->scene.uilayout_sidebarcollapsed ? home_btn_x : -(sbr_w);
+
+  ui_draw_image(s->vg, home_btn_xr, home_btn_y, home_btn_w, home_btn_h, s->img_button_home, homeActive ? 1.0f : 0.65f);
 }
 
 static void ui_draw_sidebar_network_strength(UIState *s) {
@@ -30,25 +32,52 @@ static void ui_draw_sidebar_network_strength(UIState *s) {
       {cereal::ThermalData::NetworkStrength::GREAT, 5}};
   const int network_img_h = 27;
   const int network_img_w = 176;
-  const int network_img_x = 58;
+  const int network_img_x = !s->scene.uilayout_sidebarcollapsed ? 58 : -(sbr_w);
   const int network_img_y = 196;
   const int img_idx = s->scene.thermal.getNetworkType() == cereal::ThermalData::NetworkType::NONE ? 0 : network_strength_map[s->scene.thermal.getNetworkStrength()];
   ui_draw_image(s->vg, network_img_x, network_img_y, network_img_w, network_img_h, s->img_network[img_idx], 1.0f);
 }
 
-static void ui_draw_sidebar_battery_icon(UIState *s) {
-  const int battery_img_h = 36;
-  const int battery_img_w = 76;
-  const int battery_img_x = 160;
-  const int battery_img_y = 255;
+// IP  address, thank you @eFini
+static void ui_draw_sidebar_ip_addr(UIState *s) {
+  const int network_ip_w = 176;
+  const int network_ip_x = !s->scene.uilayout_sidebarcollapsed ? 54 : -(sbr_w);
+  const int network_ip_y = 255;
 
-  int battery_img = s->scene.thermal.getBatteryStatus() == "Charging" ? s->img_battery_charging : s->img_battery;
-
-  ui_draw_rect(s->vg, battery_img_x + 6, battery_img_y + 5,
-               ((battery_img_w - 19) * (s->scene.thermal.getBatteryPercent() * 0.01)), battery_img_h - 11, COLOR_WHITE);
-
-  ui_draw_image(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_img_h, battery_img, 1.0f);
+  nvgFillColor(s->vg, COLOR_WHITE);
+  nvgFontSize(s->vg, 34);
+  nvgFontFaceId(s->vg, s->font_sans_regular);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, s->scene.ipAddr.c_str(), NULL);
 }
+
+static void ui_draw_sidebar_battery_text(UIState *s) {
+  const int battery_img_w = 96;
+  const int battery_img_x = !s->scene.uilayout_sidebarcollapsed ? 150 : -(sbr_w);
+  const int battery_img_y = 305;
+
+  char battery_str[7];
+  snprintf(battery_str, sizeof(battery_str), "%d%%%s", s->scene.thermal.getBatteryPercent(), s->scene.thermal.getBatteryStatus() == "Charging" ? "+" : "-");
+  nvgFillColor(s->vg, COLOR_WHITE);
+  nvgFontSize(s->vg, 44);
+  nvgFontFaceId(s->vg, s->font_sans_regular);
+  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
+  nvgTextBox(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_str, NULL);
+}
+
+//static void ui_draw_sidebar_battery_icon(UIState *s) {
+//  const int battery_img_h = 36;
+//  const int battery_img_w = 76;
+//  const int battery_img_x = !s->scene.uilayout_sidebarcollapsed ? 160 : -(sbr_w);
+//  const int battery_img_y = 255;
+
+//  int battery_img = s->scene.thermal.getBatteryStatus() == "Charging" ? s->img_battery_charging : s->img_battery;
+
+//  ui_draw_rect(s->vg, battery_img_x + 6, battery_img_y + 5,
+//               ((battery_img_w - 19) * (s->scene.thermal.getBatteryPercent() * 0.01)), battery_img_h - 11, COLOR_WHITE);
+
+//  ui_draw_image(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_img_h, battery_img, 1.0f);
+//}
 
 static void ui_draw_sidebar_network_type(UIState *s) {
   static std::map<cereal::ThermalData::NetworkType, const char *> network_type_map = {
@@ -58,8 +87,8 @@ static void ui_draw_sidebar_network_type(UIState *s) {
       {cereal::ThermalData::NetworkType::CELL3_G, "3G"},
       {cereal::ThermalData::NetworkType::CELL4_G, "4G"},
       {cereal::ThermalData::NetworkType::CELL5_G, "5G"}};
-  const int network_x = 50;
-  const int network_y = 273;
+  const int network_x = !s->scene.uilayout_sidebarcollapsed ? 50 : -(sbr_w);
+  const int network_y = 303;
   const int network_w = 100;
   const char *network_type = network_type_map[s->scene.thermal.getNetworkType()];
   nvgFillColor(s->vg, COLOR_WHITE);
@@ -70,7 +99,7 @@ static void ui_draw_sidebar_network_type(UIState *s) {
 }
 
 static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char* value_str, const int severity, const int y_offset, const char* message_str) {
-  const int metric_x = 30;
+  const int metric_x = !s->scene.uilayout_sidebarcollapsed ? 30 : -(sbr_w);
   const int metric_y = 338 + y_offset;
   const int metric_w = 240;
   const int metric_h = message_str ? strchr(message_str, '\n') ? 124 : 100 : 148;
@@ -101,13 +130,13 @@ static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char
     nvgTextBox(s->vg, metric_x + 50, metric_y + 50, metric_w - 60, value_str, NULL);
 
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgFontSize(s->vg, 48);
+    nvgFontSize(s->vg, 46);
     nvgFontFaceId(s->vg, s->font_sans_regular);
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 50, metric_y + 50 + 66, metric_w - 60, label_str, NULL);
   } else {
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgFontSize(s->vg, 48);
+    nvgFontSize(s->vg, 46);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 35, metric_y + (strchr(message_str, '\n') ? 40 : 50), metric_w - 50, message_str, NULL);
@@ -120,49 +149,64 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
       {cereal::ThermalData::ThermalStatus::YELLOW, 1},
       {cereal::ThermalData::ThermalStatus::RED, 2},
       {cereal::ThermalData::ThermalStatus::DANGER, 3}};
-  std::string temp_val = std::to_string((int)s->scene.thermal.getAmbient()) + "°C";
-  ui_draw_sidebar_metric(s, "TEMP", temp_val.c_str(), temp_severity_map[s->scene.thermal.getThermalStatus()], 0, NULL);
+  char temp_label_str[32];
+  char temp_value_str[32];
+  char temp_value_unit[32];
+  const int temp_y_offset = 0;
+  snprintf(temp_value_str, sizeof(temp_value_str), "%d", s->scene.thermal.getPa0());
+  snprintf(temp_value_unit, sizeof(temp_value_unit), "%s", "°C");
+  snprintf(temp_label_str, sizeof(temp_label_str), "%s", "TEMP");
+  strcat(temp_value_str, temp_value_unit);
+
+  ui_draw_sidebar_metric(s, temp_label_str, temp_value_str, temp_severity_map[s->scene.thermal.getThermalStatus()], temp_y_offset, NULL);
 }
 
 static void ui_draw_sidebar_panda_metric(UIState *s) {
+  int panda_severity = 2;
+  char panda_message_str[32];
   const int panda_y_offset = 32 + 148;
 
-  int panda_severity = 0;
-  std::string panda_message = "VEHICLE\nONLINE";
   if (s->scene.hwType == cereal::HealthData::HwType::UNKNOWN) {
     panda_severity = 2;
-    panda_message = "NO\nVEHICLE";
-  } else if (s->started) {
-    if (s->scene.satelliteCount < 6) {
-      panda_severity = 1;
-      panda_message = "VEHICLE\nNO GPS";
+    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "VEHICLE\nNO");
+  } else {
+    if (s->started){
+      if (s->scene.satelliteCount < 6) {
+        panda_severity = 1;
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s %d", "VEHICLE\nGPS:", s->scene.satelliteCount);
+      } else if (s->scene.satelliteCount >= 6) {
+        panda_severity = 0;
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s %d", "VEHICLE\nGPS:", s->scene.satelliteCount);
+      }
     } else {
       panda_severity = 0;
-      panda_message = "VEHICLE\nGOOD GPS";
+      snprintf(panda_message_str, sizeof(panda_message_str), "%s", "VEHICLE\nONLINE");
     }
   }
-  ui_draw_sidebar_metric(s, NULL, NULL, panda_severity, panda_y_offset, panda_message.c_str());
+
+  ui_draw_sidebar_metric(s, NULL, NULL, panda_severity, panda_y_offset, panda_message_str);
 }
 
 static void ui_draw_sidebar_connectivity(UIState *s) {
-  static std::map<NetStatus, std::pair<const char *, int>> connectivity_map = {
-    {NET_ERROR, {"CONNECT\nERROR", 2}},
-    {NET_CONNECTED, {"CONNECT\nONLINE", 0}},
-    {NET_DISCONNECTED, {"CONNECT\nOFFLINE", 1}},
-  };
-  auto net_params = connectivity_map[s->scene.athenaStatus];
-  ui_draw_sidebar_metric(s, NULL, NULL, net_params.second, 180+158, net_params.first);
+  if (s->scene.athenaStatus == NET_DISCONNECTED) {
+    ui_draw_sidebar_metric(s, NULL, NULL, 1, 180+158, "CONNECT\nOFFLINE");
+  } else if (s->scene.athenaStatus == NET_CONNECTED) {
+    ui_draw_sidebar_metric(s, NULL, NULL, 0, 180+158, "CONNECT\nONLINE");
+  } else {
+    ui_draw_sidebar_metric(s, NULL, NULL, 2, 180+158, "CONNECT\nERROR");
+  }
 }
 
 void ui_draw_sidebar(UIState *s) {
   ui_draw_sidebar_background(s);
-  if (s->scene.uilayout_sidebarcollapsed) {
+  if (s->scene.uilayout_sidebarcollapsed){
     return;
   }
   ui_draw_sidebar_settings_button(s);
   ui_draw_sidebar_home_button(s);
   ui_draw_sidebar_network_strength(s);
-  ui_draw_sidebar_battery_icon(s);
+  ui_draw_sidebar_ip_addr(s);
+  ui_draw_sidebar_battery_text(s);
   ui_draw_sidebar_network_type(s);
   ui_draw_sidebar_temp_metric(s);
   ui_draw_sidebar_panda_metric(s);

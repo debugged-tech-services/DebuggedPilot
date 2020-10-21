@@ -12,17 +12,22 @@
 
 #include <pthread.h>
 #include <bzlib.h>
-#include "messaging.hpp"
 
 #include "common/swaglog.h"
 
 #include "logger.h"
 
+#include <capnp/serialize.h>
+#include "cereal/gen/cpp/log.capnp.h"
+
 static void log_sentinel(LoggerState *s, cereal::Sentinel::SentinelType type) {
-  MessageBuilder msg;
-  auto sen = msg.initEvent().initSentinel();
+  capnp::MallocMessageBuilder msg;
+  auto event = msg.initRoot<cereal::Event>();
+  event.setLogMonoTime(nanos_since_boot());
+  auto sen = event.initSentinel();
   sen.setType(type);
-  auto bytes = msg.toBytes();
+  auto words = capnp::messageToFlatArray(msg);
+  auto bytes = words.asBytes();
 
   logger_log(s, bytes.begin(), bytes.size(), true);
 }

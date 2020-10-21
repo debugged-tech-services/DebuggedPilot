@@ -1,6 +1,12 @@
 Import('env', 'common', 'cereal', 'messaging')
+loc_objs = [
+  "locationd_yawrate.cc",
+  "params_learner.cc",
+  "paramsd.cc"]
+loc_libs = [cereal, messaging, 'zmq', common, 'capnp', 'kj', 'json11', 'pthread']
 
-loc_libs = [cereal, messaging, 'zmq', common, 'capnp', 'kj', 'pthread']
+env.Program("paramsd", loc_objs, LIBS=loc_libs)
+env.SharedLibrary("locationd", loc_objs, LIBS=loc_libs)
 
 env.Program("ubloxd", [
   "ubloxd.cc",
