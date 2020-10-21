@@ -35,10 +35,10 @@ class CarInterface(CarInterfaceBase):
     ret.steerRateCost = 1.0
     ret.steerLimitTimer = 0.8
     ret.lateralTuning.init('indi')
-    ret.lateralTuning.indi.innerLoopGain = 4.0
-    ret.lateralTuning.indi.outerLoopGainBP = [4]
-    ret.lateralTuning.indi.outerLoopGainV = [4]
-    ret.lateralTuning.indi.timeConstant = 1.35
+    ret.lateralTuning.indi.innerLoopGain = 8.0
+    ret.lateralTuning.indi.outerLoopGainBP = [8]
+    ret.lateralTuning.indi.outerLoopGainV = [8]
+    ret.lateralTuning.indi.timeConstant = 1.00
     ret.lateralTuning.indi.actuatorEffectiveness = 100.0;
 
     if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
