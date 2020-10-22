@@ -41,7 +41,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.indi.outerLoopGainBP = [0, 5, 10] #BP is the vehicle speed in m/sec
     ret.lateralTuning.indi.outerLoopGainV = [1.0, 1.5, 2.0] #V is the gain value to use when at that speed
     ret.lateralTuning.indi.timeConstant = 1.0
-    ret.lateralTuning.indi.actuatorEffectiveness = 50.0
+    ret.lateralTuning.indi.actuatorEffectiveness = 100.0
 
     if candidate in (CAR.JEEP_CHEROKEE_2017, CAR.JEEP_CHEROKEE_2018, CAR.JEEP_CHEROKEE_2019):
       ret.wheelbase = 2.91  # in meters
