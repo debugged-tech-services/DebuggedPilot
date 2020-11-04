@@ -3,6 +3,7 @@ from cereal import car, arne182
 from selfdrive.car.chrysler.values import Ecu, ECU_FINGERPRINT, CAR, FINGERPRINTS
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, is_ecu_disconnected, gen_empty_fingerprint
 from selfdrive.car.interfaces import CarInterfaceBase
+from common.op_params import opParams
 
 class CarInterface(CarInterfaceBase):
   @staticmethod
@@ -19,7 +20,8 @@ class CarInterface(CarInterfaceBase):
     ret = CarInterfaceBase.get_std_params(candidate, fingerprint, has_relay)
     ret.carName = "chrysler"
     ret.safetyModel = car.CarParams.SafetyModel.chrysler
-
+    ret.openpilotLongitudinalControl = True
+    
     tire_stiffness_factor = 1.0;
 
     # Chrysler port is a community feature, since we don't own one to test
@@ -49,19 +51,20 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1828.0 + STD_CARGO_KG # 2013 V-6 RWD
       # ret.lateralTuning.pid.kf = 0.00006   # full torque for 10 deg at 80mph means 0.00007818594
       ret.steerActuatorDelay =  0.01
-      ret.steerRateCost = 0.002
+      ret.steerRateCost = 0.001
       ret.steerLimitTimer = 0.8
       ret.lateralTuning.init('indi')
-      ret.lateralTuning.indi.innerLoopGain = 1.348
-      ret.lateralTuning.indi.outerLoopGainV = [0.231, 0.531, 0.918, 1.229]
-      ret.lateralTuning.indi.outerLoopGainBP = [0, 13, 26, 32]
+      ret.lateralTuning.indi.innerLoopGain = 1.448
+      ret.lateralTuning.indi.outerLoopGainV = [0.231, 0.385, 0.712, 1.198, 1.25]
+      ret.lateralTuning.indi.outerLoopGainBP = [0, 35 * 0.45, 55 * 0.45, 65 * 0.45, 75 * 0.45]
       ret.lateralTuning.indi.timeConstant = 10.0
-      ret.lateralTuning.indi.actuatorEffectiveness = 1.832
+      ret.lateralTuning.indi.actuatorEffectiveness = 1.5
       # ret.lateralTuning.indi.innerLoopGain = 3.0
       # ret.lateralTuning.indi.outerLoopGain = 2.0
       # ret.lateralTuning.indi.timeConstant = 1.0
       # ret.lateralTuning.indi.actuatorEffectiveness = 1.5
       tire_stiffness_factor = 1.0 #0.444
+
 
     ret.minSteerSpeed = 3.8  # m/s
     if candidate in (CAR.PACIFICA_2019_HYBRID, CAR.PACIFICA_2020, CAR.JEEP_CHEROKEE_2019):
