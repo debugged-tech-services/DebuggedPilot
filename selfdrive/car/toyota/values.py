@@ -2,12 +2,17 @@
 
 from selfdrive.car import dbc_dict
 from cereal import car
+from common.op_params import opParams
+
+op_params = opParams()
+steer_up_15 = op_params.get('steer_up_15')
+
 Ecu = car.CarParams.Ecu
 
 # Steer torque limits
 class SteerLimitParams:
   STEER_MAX = 1500
-  STEER_DELTA_UP = 10       # 1.5s time to peak torque
+  STEER_DELTA_UP = 15 if steer_up_15 else 10       # 1.5s time to peak torque
   STEER_DELTA_DOWN = 44     # always lower than 45 otherwise the Rav4 faults (Prius seems ok with 50)
   STEER_ERROR_MAX = 350     # max delta between torque cmd and torque motor
 

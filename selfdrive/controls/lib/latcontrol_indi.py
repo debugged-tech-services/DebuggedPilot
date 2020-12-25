@@ -45,8 +45,8 @@ class LatControlINDI():
 
     self.reset()
     
-  @property
-  def outer_loop_gain(self):
+  @property	
+  def outer_loop_gain(self):	
     return interp(self.v_ego, self.CP.lateralTuning.indi.outerLoopGainBP, self.CP.lateralTuning.indi.outerLoopGainV)
 
   def reset(self):
