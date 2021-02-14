@@ -1,4 +1,4 @@
-## Branches
+# Branches
 `docs`: this is the documentation branch
 
 `fill-me`: fill me
