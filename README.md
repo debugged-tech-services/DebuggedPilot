@@ -24,7 +24,7 @@
 We only have a 2017 Chrysler Pacifica and 2018 Chrysler 300, so we are only able to confirm features using this vehicle.
 
 # Panda Flashing
-This is usaly done automatically but sometimes you need to run it when you first install or when you change values. Run `pkill -f boardd; cd /data/openpilot/panda/board; make; reboot`
+This is usually done automatically but sometimes you need to run it when you first install or when you change values. Run `pkill -f boardd; cd /data/openpilot/panda/board; make; reboot`
 
 ## What is TrafficFlow?
 
