@@ -1,13 +1,19 @@
 # Branches
 `docs`: this is the documentation branch
 
-`fill-me`: fill me
+`arne-stock-release5`: this is Arne's stock release5 branch
 
-`fill-me`: fill me
+`arne-tf-release5`: this is Arne's release5 branch with TrafficFlow integration
 
-`fill-me`: fill me
+`tf-full-steering-release4`: this is Arne's release4 branch with TrafficFlow integration
 
-`fill-me`: fill me
+`chrysler300port`: this is a fork maintained by @andrrocity for the Chrysler 300
+
+`dp-stock-testing`: this is DragonPilot's stock testing branch
+
+`dp-tf-testing-0710`: this is DragonPilot's testing-0710 branch with TrafficFlow integration (0.8 model)
+
+`dp-tf-testing-update-from-0710`: this is DragonPilot's testing branch with TrafficFlow integration
 
 
 # FCA OpenPilot / Trafficflow Alpha Integration
