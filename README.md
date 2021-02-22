@@ -1,19 +1,23 @@
 # Branches
 `docs`: this is the documentation branch
 
-`arne-stock-release5`: this is Arne's stock release5 branch
+`arne-tf-release4`: this is Arne's release4 branch with TrafficFlow integration (0.7.7)
 
-`arne-tf-release5`: this is Arne's release5 branch with TrafficFlow integration
+`arne-stock-release5`: this is Arne's stock release5 branch (0.8.*)
 
-`tf-full-steering-release4`: this is Arne's release4 branch with TrafficFlow integration
+`arne-tf-release5`: this is Arne's release5 branch with TrafficFlow integration (0.8.*)
 
-`dp-stock-testing`: this is DragonPilot's stock testing branch
+`dp-stock-testing`: this is DragonPilot's stock testing branch (0.8.*)
 
-`dp-tf-testing-0710`: this is DragonPilot's testing-0710 branch with TrafficFlow integration (0.8 model)
+`dp-tf-testing`: this is DragonPilot's testing branch with TrafficFlow integration (0.8.*)
 
-`dp-tf-testing-update-from-0710`: this is DragonPilot's testing branch with TrafficFlow integration
+`dp-tf-testing-update-from-0710`: this is DragonPilot's testing branch with TrafficFlow integration (0.8.*)
+
+`dp-tf-testing-0710`: this is DragonPilot's testing-0710 branch with TrafficFlow integration (0.7.10, 0.8.* model) 
 
 `chrysler300port`: this is a fork maintained by @andrrocity for the Chrysler 300
+
+`chrysler-300-port-release4`: this is a fork maintained by @andrrocity for the Chrysler 300 
 
 
 # FCA OpenPilot / Trafficflow Alpha Integration
