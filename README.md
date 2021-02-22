@@ -48,7 +48,7 @@ Presently, FCA vehicles using the Powernet architecture, equipped with LaneSense
 
 Support is planned for the CUSW archiecture which would expand support the Jeep Cherokee (non-Grand).
 
-## What features will I get with this device and OpenPilot?
+## What features will I get with this device and DebuggedPilot?
 
 - Ability for OpenPilot to longitudally control the vehicle, even bringing it to a standstill for stop-and-go scenarios.
 - Lifts the steering torque limit that prevents OpenPilot from making it around some curves without driver input.
