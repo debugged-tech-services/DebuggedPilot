@@ -1,7 +1,7 @@
 from cereal import car
 from common.numpy_fast import clip, interp
 from common.realtime import DT_CTRL
-from selfdrive.controls.lib.pid import PIController
+from selfdrive.controls.lib.pid import PIDLongController
 from selfdrive.controls.lib.drive_helpers import CONTROL_N
 from selfdrive.modeld.constants import T_IDXS
 
@@ -15,7 +15,7 @@ ACCEL_MAX_ISO = 2.0 # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target, v_pid,
-                             output_accel, brake_pressed, cruise_standstill, min_speed_can):
+                             output_accel, brake_pressed, cruise_standstill, min_speed_can, drel):
   """Update longitudinal control state machine"""
   stopping_target_speed = min_speed_can + STOPPING_TARGET_SPEED_OFFSET
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
@@ -23,7 +23,7 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target, v_
                         ((v_pid < stopping_target_speed and v_target < stopping_target_speed) or
                          brake_pressed))
 
-  starting_condition = v_target > CP.vEgoStarting and not cruise_standstill
+  starting_condition = v_target > CP.vEgoStarting and not cruise_standstill and drel > 6
 
   if not active:
     long_control_state = LongCtrlState.off
@@ -53,8 +53,9 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target, v_
 class LongControl():
   def __init__(self, CP):
     self.long_control_state = LongCtrlState.off  # initialized to off
-    self.pid = PIController((CP.longitudinalTuning.kpBP, CP.longitudinalTuning.kpV),
+    self.pid = PIDLongController((CP.longitudinalTuning.kpBP, CP.longitudinalTuning.kpV),
                             (CP.longitudinalTuning.kiBP, CP.longitudinalTuning.kiV),
+                            (CP.longitudinalTuning.kfBP, CP.longitudinalTuning.kfV),
                             rate=1/DT_CTRL,
                             sat_limit=0.8)
     self.v_pid = 0.0
@@ -65,7 +66,7 @@ class LongControl():
     self.pid.reset()
     self.v_pid = v_pid
 
-  def update(self, active, CS, CP, long_plan, accel_limits):
+  def update(self, active, CS, CP, long_plan, accel_limits, drel, vrel, has_lead):
     """Update longitudinal control. This updates the state machine and runs a PID loop"""
     # Interp control trajectory
     # TODO estimate car specific lag, use .15s for now
@@ -95,7 +96,7 @@ class LongControl():
     output_accel = self.last_output_accel
     self.long_control_state = long_control_state_trans(CP, active, self.long_control_state, CS.vEgo,
                                                        v_target_future, self.v_pid, output_accel,
-                                                       CS.brakePressed, CS.cruiseState.standstill, CP.minSpeedCan)
+                                                       CS.brakePressed, CS.cruiseState.standstill, CP.minSpeedCan, drel)
 
     if self.long_control_state == LongCtrlState.off or CS.gasPressed:
       self.reset(CS.vEgo)
@@ -111,7 +112,7 @@ class LongControl():
       deadzone = interp(CS.vEgo, CP.longitudinalTuning.deadzoneBP, CP.longitudinalTuning.deadzoneV)
       freeze_integrator = prevent_overshoot
 
-      output_accel = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=deadzone, feedforward=a_target, freeze_integrator=freeze_integrator)
+      output_accel = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=deadzone, feedforward=a_target, freeze_integrator=freeze_integrator, reset=False)
 
       if prevent_overshoot:
         output_accel = min(output_accel, 0.0)
@@ -121,6 +122,9 @@ class LongControl():
       # Keep applying brakes until the car is stopped
       if not CS.standstill or output_accel > CP.stopAccel:
         output_accel -= CP.stoppingDecelRate * DT_CTRL
+      if CS.standstill:
+        temp_reset = self.pid.update(v_ego_pid, v_ego_pid, speed=v_ego_pid, deadzone=0.0, feedforward=0.0,
+                                    freeze_integrator=0.0, reset=True)
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 
       self.reset(CS.vEgo)

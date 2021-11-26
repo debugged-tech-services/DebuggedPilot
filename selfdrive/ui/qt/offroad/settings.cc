@@ -35,6 +35,36 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "../assets/offroad/icon_openpilot.png",
     },
     {
+      "EndToEndToggle",
+      "e_2_e Toggle",
+      "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMangoLong",
+      "ChryslerMangoLong",
+      "needs WP setup to do op long.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMadGas",
+      "ChryslerMadGas",
+      "Aggressive Gas during op long/ turn off for eco gas.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMangoLat",
+      "ChryslerMangoLat",
+      "needs WP setup to allow high torq.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "LkasFullRangeAvailable",
+      "LkasFullRangeAvailable",
+      "needs WP setup to steer to 0 speed.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
       "IsLdwEnabled",
       "Enable Lane Departure Warnings",
       "Receive alerts to steer back into the lane when your vehicle drifts over a detected lane line without a turn signal activated while driving over 31mph (50kph).",
@@ -71,11 +101,12 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "../assets/offroad/icon_monitoring.png",
     },
     {
-      "EndToEndToggle",
-      "\U0001f96c Disable use of lanelines (Alpha) \U0001f96c",
-      "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
-      "../assets/offroad/icon_road.png",
+      "DisableUpdates",
+      "Disable updates from Git",
+      "If enabled only manual updates possible.",
+      "../assets/offroad/icon_warning.png",
     },
+
 #ifdef ENABLE_MAPS
     {
       "NavSettingTime24h",

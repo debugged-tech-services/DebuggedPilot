@@ -1,6 +1,7 @@
 # functions common among cars
 from cereal import car
 from common.numpy_fast import clip
+from common.params import Params
 
 # kg of standard extra cargo to count for drive, gas, etc...
 STD_CARGO_KG = 136.
@@ -71,6 +72,22 @@ def apply_toyota_steer_torque_limits(apply_torque, apply_torque_last, motor_torq
   min_lim = max(min(motor_torque - LIMITS.STEER_ERROR_MAX, -LIMITS.STEER_ERROR_MAX), -LIMITS.STEER_MAX)
 
   apply_torque = clip(apply_torque, min_lim, max_lim)
+
+  if Params().get_bool('ChryslerMangoLat'):
+    if abs(apply_torque) < 20:
+      LIMITS.STEER_DELTA_UP = 2.2
+    if abs(apply_torque) < 40:
+      LIMITS.STEER_DELTA_UP = 2.
+    elif abs(apply_torque) < 50:
+      LIMITS.STEER_DELTA_UP = 1.8
+    elif abs(apply_torque) < 200:
+      LIMITS.STEER_DELTA_UP = 1.6
+    elif abs(apply_torque) < 350:
+      LIMITS.STEER_DELTA_UP = 1.4
+  else:
+    LIMITS.STEER_DELTA_UP = 3.
+
+  LIMITS.STEER_DELTA_DOWN = LIMITS.STEER_DELTA_UP
 
   # slow rate if steer torque increases in magnitude
   if apply_torque_last > 0:

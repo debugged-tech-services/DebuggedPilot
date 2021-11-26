@@ -4,6 +4,7 @@ from common.numpy_fast import clip, interp
 from common.realtime import DT_MDL
 from selfdrive.config import Conversions as CV
 from selfdrive.modeld.constants import T_IDXS
+from common.params import Params
 
 # kph
 V_CRUISE_MAX = 135
@@ -29,6 +30,8 @@ CRUISE_INTERVAL_SIGN = {
   car.CarState.ButtonEvent.Type.decelCruise: -1,
 }
 
+sadBP = [0., 5., 10., 22., 25., 40.]
+sadV = [.0, .05, .1, .2, .2, .45]
 
 class MPC_COST_LAT:
   PATH = 1.0
@@ -96,13 +99,19 @@ def initialize_v_cruise(v_ego, buttonEvents, v_cruise_last):
 
 
 def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
+
+  if not Params().get_bool('ChryslerMangoLat'):
+    sad = interp(v_ego, sadBP, sadV)
+  else:
+    sad = 0.3
+
   if len(psis) != CONTROL_N:
     psis = [0.0 for i in range(CONTROL_N)]
     curvatures = [0.0 for i in range(CONTROL_N)]
     curvature_rates = [0.0 for i in range(CONTROL_N)]
 
   # TODO this needs more thought, use .2s extra for now to estimate other delays
-  delay = CP.steerActuatorDelay + .2
+  delay = CP.steerActuatorDelay + sad
   current_curvature = curvatures[0]
   psi = interp(delay, T_IDXS[:CONTROL_N], psis)
   desired_curvature_rate = curvature_rates[0]

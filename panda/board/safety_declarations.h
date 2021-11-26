@@ -136,6 +136,7 @@ struct sample_t angle_meas;         // last 3 steer angles
 // If using this flag, make sure to communicate to your users that a stock safety feature is now disabled.
 #define UNSAFE_DISABLE_STOCK_AEB 2
 
+#define UNSAFE_CHRYSLER_MANGO 4
 // If using this flag, be aware that harder braking is more likely to lead to rear endings,
 //   and that alone this flag doesn't make braking compliant because there's also a time element.
 // Setting this flag is used for allowing the full -5.0 to +4.0 m/s^2 at lower speeds
