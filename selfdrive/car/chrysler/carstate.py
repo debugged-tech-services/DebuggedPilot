@@ -54,6 +54,7 @@ class CarState(CarStateBase):
 
     self.acc_on_button_prev = self.acc_on_button
     self.acc_on_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_BUTTON_ON"])
+    self.reg_cc_on_button = bool(cp.vl["WHEEL_BUTTONS"]["REG_CC_BUTTON_ON"])
 
     ret.cruiseState.enabled = bool(cp.vl["ACC_2"]["ACC_ENABLED"])  # ACC is green.
     ret.cruiseState.available = bool(cp.vl["ACC_2"]["ACC_AVAILABLE"])
@@ -98,7 +99,9 @@ class CarState(CarStateBase):
     self.lead_dist = cp.vl["DASHBOARD"]["LEAD_DIST"]
     self.wheel_button_counter = cp.vl["WHEEL_BUTTONS"]["COUNTER"]
 
-    self.acc_cancel_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_CANCEL"])
+    self.tcs_active = bool(cp.vl["ESC_ACC_COPY"]["TCS_ACTIVE"])
+
+    self.acc_cancel_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_CANCEL"]) or self.reg_cc_on_button or self.tcs_active
     self.acc_resume_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_RESUME"])
     self.acc_setplus_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_SPEED_INC"])
     self.acc_setminus_button = bool(cp.vl["WHEEL_BUTTONS"]["ACC_SPEED_DEC"])
@@ -158,6 +161,7 @@ class CarState(CarStateBase):
       ("ACC_FOLLOW_INC", "WHEEL_BUTTONS", 0),
       ("ACC_FOLLOW_DEC", "WHEEL_BUTTONS", 0),
       ("ACC_BUTTON_ON", "WHEEL_BUTTONS", 0),
+      ("REG_CC_BUTTON_ON", "WHEEL_BUTTONS", 0),
       ("ACC_DISTANCE_CONFIG_2", "DASHBOARD", 0),
       ("STANDSTILL", "BRAKE_1", 0),
       ("BRAKE_VAL_TOTAL", "BRAKE_1", 0),
@@ -169,6 +173,7 @@ class CarState(CarStateBase):
       ("ACC_ENG_OK", "ACCEL_RELATED_120", 0),
       ("ACC_ERROR", "ACC_ERROR", 0),
       ("LONG_ACCEL", "INERTIAL_SENSOR", 0),
+      ("ESC_ACC_COPY", "TCS_ACTIVE", 0),
     ]
 
     checks = [
@@ -194,6 +199,7 @@ class CarState(CarStateBase):
       ("ACCEL_RELATED_120", 50),
       ("ACC_ERROR", 0),
       ("INERTIAL_SENSOR", 50),
+      ("ESC_ACC_COPY", 50),
     ]
 
     if CP.enablehybridEcu:

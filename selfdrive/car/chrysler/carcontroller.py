@@ -87,7 +87,7 @@ class CarController():
     else:
       self.timer = 0
 
-    lkas_active = self.timer == 99
+    lkas_active = self.timer == 99 and  (self.ccframe >= 500)
 
     # steer torque
     new_steer = int(round(actuators.steer * CarControllerParams.STEER_MAX))
@@ -118,7 +118,8 @@ class CarController():
             not CS.veh_on or CS.apa_steer_status:
       self.steer_type = int(0)
     
-    if self.steer_type == int(0) and CS.out.gearShifter in (GearShifter.drive, GearShifter.low) and not CS.apaFault and self.mango_lat_active:
+    if (self.ccframe < 500) or \
+            (self.steer_type == int(0) and CS.out.gearShifter in (GearShifter.drive, GearShifter.low) and not CS.apaFault and self.mango_lat_active):
       self.hightorqUnavailable = True
 
     self.apaActive = CS.apasteerOn and self.steer_type == 2
