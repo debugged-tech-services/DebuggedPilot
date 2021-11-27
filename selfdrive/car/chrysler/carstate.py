@@ -173,7 +173,7 @@ class CarState(CarStateBase):
       ("ACC_ENG_OK", "ACCEL_RELATED_120", 0),
       ("ACC_ERROR", "ACC_ERROR", 0),
       ("LONG_ACCEL", "INERTIAL_SENSOR", 0),
-      ("ESC_ACC_COPY", "TCS_ACTIVE", 0),
+      ("TCS_ACTIVE", "ESC_ACC_COPY", 0),
     ]
 
     checks = [
