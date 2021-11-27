@@ -123,7 +123,7 @@ class LongControl():
       if not CS.standstill or output_accel > CP.stopAccel:
         output_accel -= CP.stoppingDecelRate * DT_CTRL
       if CS.standstill:
-        temp_reset = self.pid.update(v_ego_pid, v_ego_pid, speed=v_ego_pid, deadzone=0.0, feedforward=0.0,
+        temp_reset = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=0.0, feedforward=0.0,
                                     freeze_integrator=0.0, reset=True)
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 
