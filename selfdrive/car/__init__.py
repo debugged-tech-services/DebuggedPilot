@@ -76,11 +76,11 @@ def apply_toyota_steer_torque_limits(apply_torque, apply_torque_last, motor_torq
   if Params().get_bool('ChryslerMangoLat'):
     if abs(apply_torque) < 20:
       LIMITS.STEER_DELTA_UP = 2.2
-    if abs(apply_torque) < 40:
+    elif abs(apply_torque) < 40:
       LIMITS.STEER_DELTA_UP = 2.
     elif abs(apply_torque) < 50:
       LIMITS.STEER_DELTA_UP = 1.8
-    elif abs(apply_torque) < 200:
+    elif abs(apply_torque) < 280:
       LIMITS.STEER_DELTA_UP = 1.6
     elif abs(apply_torque) < 350:
       LIMITS.STEER_DELTA_UP = 1.4
