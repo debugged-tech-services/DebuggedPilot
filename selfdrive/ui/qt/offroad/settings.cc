@@ -106,7 +106,6 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "If enabled only manual updates possible.",
       "../assets/offroad/icon_warning.png",
     },
-
 #ifdef ENABLE_MAPS
     {
       "NavSettingTime24h",
