@@ -103,7 +103,7 @@ def get_lag_adjusted_curvature(CP, v_ego, psis, curvatures, curvature_rates):
   if not Params().get_bool('ChryslerMangoLat'):
     sad = interp(v_ego, sadBP, sadV)
   else:
-    sad = 0.3
+    sad = 0.25
 
   if len(psis) != CONTROL_N:
     psis = [0.0 for i in range(CONTROL_N)]
