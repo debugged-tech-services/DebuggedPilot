@@ -14,11 +14,9 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 GearShifter = car.CarState.GearShifter
 EventName = car.CarEvent.EventName
 
-# WARNING: this value was determined based on the model's training distribution,
-#          model predictions above this speed can be unpredictable
-MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS  # 135 + 4 = 86 mph
+MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS
 ACCEL_MAX = 2.0
-ACCEL_MIN = -4.0
+ACCEL_MIN = -3.5
 
 
 # generic car and radar interfaces
@@ -78,6 +76,7 @@ class CarInterfaceBase():
     ret.steerMaxBP = [0.]
     ret.steerMaxV = [1.]
     ret.minSteerSpeed = 0.
+    ret.wheelSpeedFactor = 1.0
 
     ret.pcmCruise = True     # openpilot's state is tied to the PCM's cruise state on most cars
     ret.minEnableSpeed = -1. # enable is done by stock ACC, so ignore this
@@ -140,6 +139,8 @@ class CarInterfaceBase():
       events.add(EventName.speedTooHigh)
     if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
+    if cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
+      events.add(EventName.brakeHold)
 
 
     # Handle permanent and temporary steering faults
@@ -205,10 +206,6 @@ class CarStateBase:
                          A=[[1.0, DT_CTRL], [0.0, 1.0]],
                          C=[1.0, 0.0],
                          K=[[0.12287673], [0.29666309]])
-    self.hill_kf = KF1D(x0=[[0.0], [0.0]],
-                         A=[[1.0, DT_CTRL], [0.0, 1.0]],
-                         C=[1.0, 0.0],
-                         K=[[0.12287673], [0.29666309]])
 
   def update_speed_kf(self, v_ego_raw):
     if abs(v_ego_raw - self.v_ego_kf.x[0][0]) > 2.0:  # Prevent large accelerations when car starts at non zero speed
@@ -217,12 +214,15 @@ class CarStateBase:
     v_ego_x = self.v_ego_kf.update(v_ego_raw)
     return float(v_ego_x[0]), float(v_ego_x[1])
 
-  def update_hill_kf(self, hill_raw):
-    if abs(hill_raw - self.hill_kf.x[0][0]) > 2.0:  # Prevent large accelerations when car starts at non zero speed
-      self.hill_kf.x = [[hill_raw], [0.0]]
+  def get_wheel_speeds(self, fl, fr, rl, rr, unit=CV.KPH_TO_MS):
+    factor = unit * self.CP.wheelSpeedFactor
 
-    hill_x = self.hill_kf.update(hill_raw)
-    return float(hill_x[0]), float(hill_x[1])
+    wheelSpeeds = car.CarState.WheelSpeeds.new_message()
+    wheelSpeeds.fl = fl * factor
+    wheelSpeeds.fr = fr * factor
+    wheelSpeeds.rl = rl * factor
+    wheelSpeeds.rr = rr * factor
+    return wheelSpeeds
 
   def update_blinker_from_lamp(self, blinker_time: int, left_blinker_lamp: bool, right_blinker_lamp: bool):
     """Update blinkers from lights. Enable output when light was seen within the last `blinker_time`

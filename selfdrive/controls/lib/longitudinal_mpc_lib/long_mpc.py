@@ -49,14 +49,15 @@ T_IDXS_LST = [index_function(idx, max_val=MAX_T, max_idx=N+1) for idx in range(N
 T_IDXS = np.array(T_IDXS_LST)
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -3.5
-T_REACT = 0.8
-COMFORT_BRAKE = 2.0
+T_FOLLOW = 1.
+COMFORT_BRAKE = 2.5
+STOP_DISTANCE = 6.0
 
 def get_stopped_equivalence_factor(v_lead):
-  return v_lead**2 / (2 * COMFORT_BRAKE) - T_REACT * v_lead
+  return (v_lead**2) / (2 * COMFORT_BRAKE)
 
 def get_safe_obstacle_distance(v_ego):
-  return (v_ego*v_ego) / (2 * COMFORT_BRAKE) + 6.0
+  return (v_ego**2) / (2 * COMFORT_BRAKE) + T_FOLLOW * v_ego + STOP_DISTANCE
 
 def desired_follow_distance(v_ego, v_lead):
   return get_safe_obstacle_distance(v_ego) - get_stopped_equivalence_factor(v_lead)
@@ -202,7 +203,7 @@ class LongitudinalMpc():
     self.solver = AcadosOcpSolverFast('long', N, EXPORT_DIR)
     self.v_solution = [0.0 for i in range(N+1)]
     self.a_solution = [0.0 for i in range(N+1)]
-    self.prev_a = self.a_solution
+    self.prev_a = np.array(self.a_solution)
     self.j_solution = [0.0 for i in range(N)]
     self.yref = np.zeros((N+1, COST_DIM))
     for i in range(N):
@@ -241,7 +242,7 @@ class LongitudinalMpc():
       self.solver.cost_set(i, 'Zl', Zl)
 
   def set_weights_for_xva_policy(self):
-    W = np.asfortranarray(np.diag([0., 10., 1., 10., 1.]))
+    W = np.asfortranarray(np.diag([0., 10., 1., 10., 0.0, 1.]))
     for i in range(N):
       self.solver.cost_set(i, 'W', W)
     # Setting the slice without the copy make the array not contiguous,
@@ -254,7 +255,7 @@ class LongitudinalMpc():
       self.solver.cost_set(i, 'Zl', Zl)
 
   def set_cur_state(self, v, a):
-    if abs(self.x0[1] - v) > 1.:
+    if abs(self.x0[1] - v) > 2.:
       self.x0[1] = v
       self.x0[2] = a
       for i in range(0, N+1):
@@ -351,7 +352,7 @@ class LongitudinalMpc():
     x_obstacle = 1e5*np.ones((N+1))
     self.params = np.concatenate([self.accel_limit_arr,
                              x_obstacle[:,None],
-                             self.prev_a], axis=1)
+                             self.prev_a[:,None]], axis=1)
     self.run()
 
 
@@ -370,7 +371,7 @@ class LongitudinalMpc():
     self.a_solution = self.x_sol[:,2]
     self.j_solution = self.u_sol[:,0]
 
-    self.prev_a = interp(T_IDXS + 0.05, T_IDXS, self.a_solution)
+    self.prev_a = np.interp(T_IDXS + 0.05, T_IDXS, self.a_solution)
 
     t = sec_since_boot()
     if self.solution_status != 0:

@@ -159,9 +159,10 @@ class PIDLongController():
     self.f = 0.0
     self.sat_count = 0.0
     self.saturated = False
-    self.control = 0
+    self.control = 0.
+    self.error = 0.
 
-  def update(self, setpoint, measurement, speed=0.0, check_saturation=True, override=False, feedforward=0., deadzone=0., freeze_integrator=False, reset=False):
+  def update(self, setpoint, measurement, speed=0.0, check_saturation=True, override=False, feedforward=0., deadzone=0., freeze_integrator=False):
     self.speed = speed
 
     error = float(apply_deadzone(setpoint - measurement, deadzone))
@@ -181,16 +182,14 @@ class PIDLongController():
          not freeze_integrator:
         self.i = i
     
-    if -.5 < error > 1.: # brake controller is very accurate, only needs feed forward
-       control = self.f + self.i/10
+    if error < 0.: # brake controller is very accurate, only needs feed forward
+       control = self.f + max(0.,self.i)
     else:
        control = self.p + self.f + self.i
     self.saturated = self._check_saturation(control, check_saturation, error)
 
     self.control = clip(control, self.neg_limit, self.pos_limit)
-
-    if reset:
-      self.reset()
+    self.error = error
 
     return self.control
 

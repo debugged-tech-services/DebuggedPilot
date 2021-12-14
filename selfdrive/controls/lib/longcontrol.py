@@ -15,7 +15,7 @@ ACCEL_MAX_ISO = 2.0  # m/s^2
 
 
 def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_future, v_pid,
-                             output_accel, brake_pressed, cruise_standstill, min_speed_can, drel):
+                             output_accel, brake_pressed, cruise_standstill, min_speed_can, vrel):
   """Update longitudinal control state machine"""
   stopping_target_speed = min_speed_can + STOPPING_TARGET_SPEED_OFFSET
   stopping_condition = (v_ego < 2.0 and cruise_standstill) or \
@@ -23,7 +23,7 @@ def long_control_state_trans(CP, active, long_control_state, v_ego, v_target_fut
                         ((v_pid < stopping_target_speed and v_target_future < stopping_target_speed) or
                          brake_pressed))
 
-  starting_condition = v_target_future > CP.vEgoStarting and not cruise_standstill and drel > 6
+  starting_condition = v_target_future > CP.vEgoStarting and not cruise_standstill and vrel > 1.1
 
   if not active:
     long_control_state = LongCtrlState.off
@@ -93,7 +93,7 @@ class LongControl():
     output_accel = self.last_output_accel
     self.long_control_state = long_control_state_trans(CP, active, self.long_control_state, CS.vEgo,
                                                        v_target_future, self.v_pid, output_accel,
-                                                       CS.brakePressed, CS.cruiseState.standstill, CP.minSpeedCan, drel)
+                                                       CS.brakePressed, CS.cruiseState.standstill, CP.minSpeedCan, vrel)
 
     if self.long_control_state == LongCtrlState.off or CS.gasPressed:
       self.reset(CS.vEgo)
@@ -109,7 +109,7 @@ class LongControl():
       deadzone = interp(CS.vEgo, CP.longitudinalTuning.deadzoneBP, CP.longitudinalTuning.deadzoneV)
       freeze_integrator = prevent_overshoot
 
-      output_accel = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=deadzone, feedforward=a_target, freeze_integrator=freeze_integrator, reset=False)
+      output_accel = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=deadzone, feedforward=a_target, freeze_integrator=freeze_integrator)
 
       if prevent_overshoot:
         output_accel = min(output_accel, 0.0)
@@ -119,9 +119,6 @@ class LongControl():
       # Keep applying brakes until the car is stopped
       if not CS.standstill or output_accel > CP.stopAccel:
         output_accel -= CP.stoppingDecelRate * DT_CTRL
-      if CS.standstill:
-        temp_reset = self.pid.update(self.v_pid, CS.vEgo, speed=CS.vEgo, deadzone=0.0, feedforward=0.0,
-                                    freeze_integrator=0.0, reset=True)
       output_accel = clip(output_accel, accel_limits[0], accel_limits[1])
 
       self.reset(CS.vEgo)

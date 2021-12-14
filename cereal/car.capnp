@@ -388,7 +388,8 @@ struct CarParams {
   enableDsu @5 :Bool;        # driving support unit
   enableApgs @6 :Bool;       # advanced parking guidance system
   enableBsm @56 :Bool;       # blind spot monitoring
-  enablehybridEcu @63 :Bool; #hydrid ecu
+  flags @64 :UInt32;         # flags for car specific quirks
+  enablehybridEcu @65 :Bool; #hydrid ecu
 
   minEnableSpeed @7 :Float32;
   minSteerSpeed @8 :Float32;
@@ -451,6 +452,8 @@ struct CarParams {
   communityFeature @46: Bool;  # true if a community maintained feature is detected
   fingerprintSource @49: FingerprintSource;
   networkLocation @50 :NetworkLocation;  # Where Panda/C2 is integrated into the car's CAN network
+
+  wheelSpeedFactor @63 :Float32; # Multiplier on wheels speeds to computer actual speeds
 
   struct SafetyConfig {
     safetyModel @0 :SafetyModel;
