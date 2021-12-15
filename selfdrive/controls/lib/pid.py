@@ -183,7 +183,9 @@ class PIDLongController():
         self.i = i
     
     if error < 0.: # brake controller is very accurate, only needs feed forward
-       control = self.f + max(0.,self.i)
+       if self.i < 0.:
+         self.i = 0.
+       control = self.f + self.i
     else:
        control = self.p + self.f + self.i
     self.saturated = self._check_saturation(control, check_saturation, error)
