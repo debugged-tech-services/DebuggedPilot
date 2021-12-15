@@ -241,7 +241,7 @@ class CarController():
 
     self.stop_req = enabled and CS.out.standstill and not CS.out.gasPressed and not self.go_req
     if self.go_req or self.stop_req:
-      #start_accel_max = max(0, CS.hill_accel) * CV.ACCEL_TO_NM
+      start_accel_max = 0. #max(0, CS.hill_accel) * CV.ACCEL_TO_NM
       start_accel_max = max(start_accel_max, (CS.axle_torq_min + 50)/CV.ACCEL_TO_NM)
       accmaxhyb = [start_accel_max, start_accel_max, start_accel_max]
 
