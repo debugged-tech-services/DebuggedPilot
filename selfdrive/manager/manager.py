@@ -18,8 +18,8 @@ from selfdrive.manager.process import ensure_running
 from selfdrive.manager.process_config import managed_processes
 from selfdrive.athena.registration import register, UNREGISTERED_DONGLE_ID
 from selfdrive.swaglog import cloudlog, add_file_handler
-from selfdrive.version import get_dirty, get_commit, get_version, get_origin, get_short_branch, \
-                              terms_version, training_version, get_comma_remote
+from selfdrive.version import is_dirty, get_commit, get_version, get_origin, get_short_branch, \
+                              terms_version, training_version, is_comma_remote
 
 
 sys.path.append(os.path.join(BASEDIR, "pyextra"))

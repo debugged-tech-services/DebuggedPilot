@@ -118,9 +118,9 @@ class CarInterface(CarInterfaceBase):
   # to be called @ 100hz
   def apply(self, c):
 
-    can_sends = self.CC.update(c.enabled, self.CS, c.actuators, c.cruiseControl.cancel,
+    ret = self.CC.update(c.enabled, self.CS, c.actuators, c.cruiseControl.cancel,
                                c.hudControl.visualAlert,
                                c.hudControl.leadvRel,
                                c.hudControl.leadVisible, c.hudControl.leadDistance)
 
-    return can_sends
+    return ret

@@ -64,6 +64,7 @@ class CarController():
     self.stop_req = False
     self.decel_val_prev = 0.
     self.done = False
+    self.accel = 0.
 
     self.packer = CANPacker(dbc_name)
 
@@ -262,6 +263,7 @@ class CarController():
       self.decel_val = apply_accel
       if self.decel_val_prev > self.decel_val and not self.done:
         self.decel_val = accel_rate_limit(self.decel_val, self.decel_val_prev, CS.out.standstill)
+        self.accel = self.decel_val
       else:
         self.done = True
 
@@ -275,6 +277,7 @@ class CarController():
             (apply_accel >= max(START_GAS_THRESHOLD, (CS.axle_torq_min + 20.)/CV.ACCEL_TO_NM)
              or self.accel_active and not self.decel_active and apply_accel > (CS.axle_torq_min - 20.)/CV.ACCEL_TO_NM):
       self.trq_val = apply_accel * CV.ACCEL_TO_NM
+      self.accel = apply_accel
 
       if CS.axle_torq_max > self.trq_val > CS.axle_torq_min:
         self.accel_active = True
@@ -310,5 +313,7 @@ class CarController():
 
     self.ccframe += 1
 
-    return can_sends
-
+    new_actuators = actuators.copy()
+    new_actuators.steer = apply_steer / CarControllerParams.STEER_MAX
+    new_actuators.accel = self.accel
+    return new_actuators, can_sends
