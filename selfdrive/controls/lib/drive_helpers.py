@@ -33,7 +33,6 @@ CRUISE_INTERVAL_SIGN = {
 
 sadBP = [0., 5., 10., 22., 25., 40.]
 sadV = [.0, .05, .1, .2, .2, .45]
-sadMadV = [.0, .05, .1, .2, .2, .45]
 
 class MPC_COST_LAT:
   PATH = 1.0

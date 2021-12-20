@@ -15,6 +15,7 @@ class OnroadHud : public QWidget {
   Q_PROPERTY(QString speedUnit MEMBER speedUnit NOTIFY valueChanged);
   Q_PROPERTY(QString maxSpeed MEMBER maxSpeed NOTIFY valueChanged);
   Q_PROPERTY(bool is_cruise_set MEMBER is_cruise_set NOTIFY valueChanged);
+  Q_PROPERTY(bool is_brake_active MEMBER is_brake_active NOTIFY valueChanged);
   Q_PROPERTY(bool engageable MEMBER engageable NOTIFY valueChanged);
   Q_PROPERTY(bool dmActive MEMBER dmActive NOTIFY valueChanged);
   Q_PROPERTY(bool hideDM MEMBER hideDM NOTIFY valueChanged);
@@ -37,6 +38,7 @@ private:
   QString speedUnit;
   QString maxSpeed;
   bool is_cruise_set = false;
+  bool is_brake_active = false;
   bool engageable = false;
   bool dmActive = false;
   bool hideDM = false;
@@ -96,10 +98,6 @@ private:
   QColor bg = bg_colors[STATUS_DISENGAGED];
   QWidget *map = nullptr;
   QHBoxLayout* split;
-
-signals:
-  void updateStateSignal(const UIState &s);
-  void offroadTransitionSignal(bool offroad);
 
 private slots:
   void offroadTransition(bool offroad);

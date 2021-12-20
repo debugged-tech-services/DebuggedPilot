@@ -92,16 +92,16 @@ def manager_init():
     raise Exception(f"Registration failed for device {serial}")
   os.environ['DONGLE_ID'] = dongle_id  # Needed for swaglog
 
-  if not get_dirty():
+  if not is_dirty():
     os.environ['CLEAN'] = '1'
 
-  cloudlog.bind_global(dongle_id=dongle_id, version=get_version(), dirty=get_dirty(),
+  cloudlog.bind_global(dongle_id=dongle_id, version=get_version(), dirty=is_dirty(),
                        device=HARDWARE.get_device_type())
 
-  if get_comma_remote() and not (os.getenv("NOLOG") or os.getenv("NOCRASH") or PC):
+  if is_comma_remote() and not (os.getenv("NOLOG") or os.getenv("NOCRASH") or PC):
     crash.init()
   crash.bind_user(id=dongle_id)
-  crash.bind_extra(dirty=get_dirty(), origin=get_origin(), branch=get_short_branch(), commit=get_commit(),
+  crash.bind_extra(dirty=is_dirty(), origin=get_origin(), branch=get_short_branch(), commit=get_commit(),
                    device=HARDWARE.get_device_type())
 
 
@@ -123,6 +123,7 @@ def manager_cleanup():
 
 
 def manager_thread():
+  cloudlog.bind(daemon="manager")
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
 
