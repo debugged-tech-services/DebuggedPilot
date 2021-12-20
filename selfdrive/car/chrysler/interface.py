@@ -31,7 +31,6 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kfBP = [0., 5., 10., 20., 30.]
     ret.longitudinalTuning.kfV = [1., 1., 1., 1., .95]
     ret.startAccel = 1.5
-    ret.minSpeedCan = 0.3
     ret.stoppingControl = True
     ret.stoppingDecelRate = 0.3
 
