@@ -256,7 +256,6 @@ void OnroadHud::drawText(QPainter &p, int x, int y, const QString &text, int alp
     p.setPen(QColor(0xff, 0xff, 0xff, alpha));
   }
 
-  p.setPen(QColor(0xff, 0xff, 0xff, alpha));
   p.drawText(real_rect.x(), real_rect.bottom(), text);
 }
 
