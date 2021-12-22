@@ -1,6 +1,8 @@
 from selfdrive.config import Conversions as CV
 from common.numpy_fast import clip
 from numpy import interp
+from selfdrive.car.chrysler.values import CarControllerParams
+
 
 SET_SPEED_MIN = 5 * CV.MPH_TO_MS
 SET_SPEED_MAX = 120 * CV.MPH_TO_MS
@@ -9,8 +11,8 @@ SHORT_PRESS_STEP = 1
 LONG_PRESS_STEP = 5
 # Accel Hard limits
 ACCEL_HYST_GAP = 0.0  # don't change accel command for small oscillations within this value
-ACCEL_MAX = 2.  # m/s2
-ACCEL_MIN = -3.8  # m/s2
+ACCEL_MAX = CarControllerParams.ACCEL_MAX  # m/s2
+ACCEL_MIN = CarControllerParams.ACCEL_MIN  # m/s2
 ACCEL_SCALE = 1.
 
 DEFAULT_DECEL = 4.0 # m/s2
@@ -116,7 +118,7 @@ def accel_rate_limit(accel_lim, prev_accel_lim, stopped):
  # acceleration jerk = 2.0 m/s/s/s
  # brake jerk = 3.8 m/s/s/s
 
-  drBp = [   0., -0.15, -0.50,  -1.0,  -5.0]
+  drBp = [ 0., -0.15, -0.50,  -1.0,  -5.0]
   dra = [ 0.005, 0.007,  0.008, 0.01,  0.04]
 
   decel_rate = interp(accel_lim, drBp, dra)
@@ -156,29 +158,3 @@ def cluster_chime(chime_val, enabled, enabled_prev, chime_timer, gap_timer, mute
       chime_timer = CHIME_TIME
 
   return chime_val, chime_timer, gap_timer
-'''
-def cal_curve_speed(self, sm, v_ego, frame):
-
-  if frame % 10 == 0:
-    md = sm['modelV2']
-    if len(md.position.x) == TRAJECTORY_SIZE and len(md.position.y) == TRAJECTORY_SIZE:
-      x = md.position.x
-      y = md.position.y
-      dy = np.gradient(y, x)
-      d2y = np.gradient(dy, x)
-      curv = d2y / (1 + dy ** 2) ** 1.5
-      curv = curv[5:TRAJECTORY_SIZE - 10]
-      a_y_max = 2.975 - v_ego * 0.0375  # ~1.85 @ 75mph, ~2.6 @ 25mph
-      v_curvature = np.sqrt(a_y_max / np.clip(np.abs(curv), 1e-4, None))
-      model_speed = np.mean(v_curvature) * 0.9 * self.curvature_gain
-
-      if model_speed < v_ego:
-        self.curve_speed_ms = float(max(model_speed, MIN_CURVE_SPEED))
-      else:
-        self.curve_speed_ms = 255.
-
-      if np.isnan(self.curve_speed_ms):
-        self.curve_speed_ms = 255.
-    else:
-      self.curve_speed_ms = 255.
-'''

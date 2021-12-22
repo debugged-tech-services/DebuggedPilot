@@ -22,8 +22,8 @@ class CarInterface(CarInterfaceBase):
     ret.openpilotLongitudinalControl = Params().get_bool('ChryslerMangoLong')
 
     # Long tuning Params -  make individual params for cars, baseline Pacifica Hybrid
-    ret.longitudinalTuning.kpBP = [0., .3, 10., 35.]
-    ret.longitudinalTuning.kpV = [0.8, 0.4, 0.4, 1.]
+    ret.longitudinalTuning.kpBP = [0., 3., 10., 35.]
+    ret.longitudinalTuning.kpV = [0.8, 0.6, 0.4, 1.]
     ret.longitudinalTuning.kiBP = [0., 30.]
     ret.longitudinalTuning.kiV = [.025, .01]
     ret.longitudinalTuning.deadzoneBP = [0., .5]
