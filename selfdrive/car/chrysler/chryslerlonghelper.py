@@ -11,8 +11,8 @@ SHORT_PRESS_STEP = 1
 LONG_PRESS_STEP = 5
 # Accel Hard limits
 ACCEL_HYST_GAP = 0.0  # don't change accel command for small oscillations within this value
-ACCEL_MAX = CarControllerParams.ACCEL_MAX  # m/s2
-ACCEL_MIN = CarControllerParams.ACCEL_MIN  # m/s2
+ACCEL_MAX = 2. # m/s2
+ACCEL_MIN = -3.8  # m/s2
 ACCEL_SCALE = 1.
 
 DEFAULT_DECEL = 4.0 # m/s2
