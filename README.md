@@ -1,6 +1,8 @@
-# Donate
+# Donate to keep the RetroPilot Server a free service!
 
-https://www.paypal.com/donate?hosted_button_id=SGB2R2B68RM2Y
+Monthly: https://donate.debuggedtechservices.com/
+
+One-Time: https://donate1.debuggedtechservices.com/
 
 <form action="https://www.paypal.com/donate" method="post" target="_top">
 <input type="hidden" name="hosted_button_id" value="SGB2R2B68RM2Y" />
@@ -11,23 +13,15 @@ https://www.paypal.com/donate?hosted_button_id=SGB2R2B68RM2Y
 # Branches
 `docs`: this is the documentation branch
 
-`arne-tf-release4`: this is Arne's release4 branch with TrafficFlow integration (0.7.7)
+`xps-debugged`: this is xps's xps_fca branch with TrafficFlow integration
 
-`arne-stock-release5`: this is Arne's stock release5 branch (0.8.*)
+`xps-master-ci-debugged`: this is xps's master-ci branch with TrafficFlow integration
 
-`arne-tf-release5`: this is Arne's release5 branch with TrafficFlow integration (0.8.*)
-
-`dp-stock-testing`: this is DragonPilot's stock testing branch (0.8.*)
-
-`dp-tf-testing`: this is DragonPilot's testing branch with TrafficFlow integration (0.8.*)
-
-`dp-tf-testing-update-from-0710`: this is DragonPilot's testing branch with TrafficFlow integration (0.8.*)
-
-`dp-tf-testing-0710`: this is DragonPilot's testing-0710 branch with TrafficFlow integration (0.7.10, 0.8.* model) 
+`xps_fca-stock`: this is xps's xps_fca branch completely stock
 
 `chrysler300port`: this is a fork maintained by @andrrocity for the Chrysler 300
 
-`chrysler-300-port-release4`: this is a fork maintained by @andrrocity for the Chrysler 300 
+`chrysler-300-port-release4`: this is a fork maintained by @andrrocity for the Chrysler 300
 
 
 # FCA OpenPilot / Trafficflow Alpha Integration
