@@ -22,14 +22,14 @@ class CarInterface(CarInterfaceBase):
     ret.openpilotLongitudinalControl = Params().get_bool('ChryslerMangoLong')
 
     # Long tuning Params -  make individual params for cars, baseline Pacifica Hybrid
-    ret.longitudinalTuning.kpBP = [0., 3., 10., 35.]
-    ret.longitudinalTuning.kpV = [0.8, 0.6, 0.4, 1.]
+    ret.longitudinalTuning.kpBP = [0., 6., 10., 35.]
+    ret.longitudinalTuning.kpV = [1., 1., 0.8, 1.]
     ret.longitudinalTuning.kiBP = [0., 30.]
-    ret.longitudinalTuning.kiV = [.025, .01]
+    ret.longitudinalTuning.kiV = [.01, .01]
     ret.longitudinalTuning.deadzoneBP = [0., .5]
     ret.longitudinalTuning.deadzoneV = [0.00, 0.00]
     ret.longitudinalTuning.kfBP = [0., 5., 10., 20., 30.]
-    ret.longitudinalTuning.kfV = [1., 1., 1., 1., .95]
+    ret.longitudinalTuning.kfV = [1., 1., 1., 1., 1.]
     ret.startAccel = 1.5
     ret.stoppingControl = True
     ret.stoppingDecelRate = 0.3
@@ -41,7 +41,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kfV = [0.00005]   # full torque for 10 deg at 80mph means 0.00007818594
     else:
       ret.lateralTuning.pid.kpBP = [0., 10., 30.]
-      ret.lateralTuning.pid.kpV = [0.03, 0.05, 0.06]
+      ret.lateralTuning.pid.kpV = [0.03, 0.05, 0.055]
 
       ret.lateralTuning.pid.kiBP = [0., 30.]
       ret.lateralTuning.pid.kiV = [0.012, 0.015]
@@ -50,10 +50,10 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kdV = [1.1]
 
       ret.lateralTuning.pid.kfBP = [0., 10., 15., 30.]
-      ret.lateralTuning.pid.kfV = [0.000005, 0.00001, 0.00002, 0.00003]   # full torque for 10 deg at 80mph means 0.00007818594
+      ret.lateralTuning.pid.kfV = [0.000005, 0.000015, 0.000025, 0.000035]   # full torque for 10 deg at 80mph means 0.00007818594
 
-    ret.steerActuatorDelay = 0.3
-    ret.steerRateCost = 0.3
+    ret.steerActuatorDelay = 0.01
+    ret.steerRateCost = 0.1
     ret.steerLimitTimer = 0.7
 
     if candidate in (CAR.JEEP_CHEROKEE, CAR.JEEP_CHEROKEE_2019):
