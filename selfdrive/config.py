@@ -17,7 +17,7 @@ class Conversions:
   LB_TO_KG = 0.453592
   
   #acceltoNm
-  ACCEL_TO_NM = 1200
+  ACCEL_TO_NM = 1500
 
 
 RADAR_TO_CENTER = 2.7   # (deprecated) RADAR is ~ 2.7m ahead from center of car
