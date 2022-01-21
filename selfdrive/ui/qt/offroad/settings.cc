@@ -36,6 +36,36 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "../assets/offroad/icon_openpilot.png",
     },
     {
+      "EndToEndToggle",
+      "e_2_e Toggle",
+      "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMangoLong",
+      "ChryslerMangoLong",
+      "needs WP setup to do op long.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMadGas",
+      "ChryslerMadGas",
+      "Aggressive Gas during op long/ turn off for eco gas.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "ChryslerMangoLat",
+      "ChryslerMangoLat",
+      "needs WP setup to allow high torq.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
+      "LkasFullRangeAvailable",
+      "LkasFullRangeAvailable",
+      "needs WP setup to steer to 0 speed.",
+      "../assets/offroad/icon_road.png",
+    },
+    {
       "IsLdwEnabled",
       "Enable Lane Departure Warnings",
       "Receive alerts to steer back into the lane when your vehicle drifts over a detected lane line without a turn signal activated while driving over 31 mph (50 km/h).",
@@ -60,16 +90,22 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "../assets/offroad/icon_shell.png",
     },
     {
+      "UploadRaw",
+      "Upload Raw Logs",
+      "Upload full logs and full resolution video by default while on Wi-Fi. If not enabled, individual logs can be marked for upload at useradmin.comma.ai.",
+      "../assets/offroad/icon_network.png",
+    },
+    {
       "RecordFront",
       "Record and Upload Driver Camera",
       "Upload data from the driver facing camera and help improve the driver monitoring algorithm.",
       "../assets/offroad/icon_monitoring.png",
     },
     {
-      "EndToEndToggle",
-      "\U0001f96c Disable use of lanelines (Alpha) \U0001f96c",
-      "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
-      "../assets/offroad/icon_road.png",
+      "DisableUpdates",
+      "Disable updates from Git",
+      "If enabled only manual updates possible.",
+      "../assets/offroad/icon_warning.png",
     },
 #ifdef ENABLE_MAPS
     {

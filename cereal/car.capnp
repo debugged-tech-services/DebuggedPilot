@@ -106,6 +106,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     highCpuUsage @105;
     cruiseMismatch @106;
     lkasDisabled @107;
+    hightorqsteerUnavailable @ 108;
 
     driverMonitorLowAccDEPRECATED @68;
     radarCanErrorDEPRECATED @15;
@@ -154,6 +155,8 @@ struct CarState {
   brakePressed @6 :Bool;  # this is user pedal only
   brakeHoldActive @38 :Bool;
 
+  brakeLights @19 :Bool;
+
   # steering wheel
   steeringAngleDeg @7 :Float32;
   steeringAngleOffsetDeg @37 :Float32; # Offset betweens sensors in case there multiple
@@ -167,6 +170,7 @@ struct CarState {
   stockAeb @30 :Bool;
   stockFcw @31 :Bool;
   espDisabled @32 :Bool;
+  hightorqUnavailable @39 :Bool;
 
   # cruise state
   cruiseState @10 :CruiseState;
@@ -247,7 +251,6 @@ struct CarState {
   }
 
   errorsDEPRECATED @0 :List(CarEvent.EventName);
-  brakeLightsDEPRECATED @19 :Bool;
 }
 
 # ******* radar state @ 20hz *******
@@ -345,6 +348,8 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
+    leadDistance @10: Float32;
+    leadvRel @11: Float32;
 
     enum VisualAlert {
       # these are the choices from the Honda
@@ -393,6 +398,7 @@ struct CarParams {
   enableApgs @6 :Bool;       # advanced parking guidance system
   enableBsm @56 :Bool;       # blind spot monitoring
   flags @64 :UInt32;         # flags for car specific quirks
+  enablehybridEcu @65 :Bool; #hydrid ecu
 
   minEnableSpeed @7 :Float32;
   minSteerSpeed @8 :Float32;
@@ -471,6 +477,10 @@ struct CarParams {
     kiBP @2 :List(Float32);
     kiV @3 :List(Float32);
     kf @4 :Float32;
+    kfV @5 :List(Float32);
+    kfBP @6 :List(Float32);
+    kdV @7 :List(Float32);
+    kdBP @8 :List(Float32);
   }
 
   struct LongitudinalPIDTuning {
@@ -480,6 +490,8 @@ struct CarParams {
     kiV @3 :List(Float32);
     deadzoneBP @4 :List(Float32);
     deadzoneV @5 :List(Float32);
+    kfBP @6 :List(Float32);
+    kfV @7 :List(Float32);
   }
 
   struct LateralINDITuning {

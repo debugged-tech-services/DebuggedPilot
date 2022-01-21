@@ -1,16 +1,17 @@
 import math
 
-from selfdrive.controls.lib.pid import PIController
+from selfdrive.controls.lib.pid import PIDLatController
 from selfdrive.controls.lib.drive_helpers import get_steer_max
 from cereal import log
 
 
 class LatControlPID():
   def __init__(self, CP, CI):
-    self.pid = PIController((CP.lateralTuning.pid.kpBP, CP.lateralTuning.pid.kpV),
+    self.pid = PIDLatController((CP.lateralTuning.pid.kpBP, CP.lateralTuning.pid.kpV),
                             (CP.lateralTuning.pid.kiBP, CP.lateralTuning.pid.kiV),
-                            k_f=CP.lateralTuning.pid.kf, pos_limit=1.0, neg_limit=-1.0,
-                            sat_limit=CP.steerLimitTimer)
+                            (CP.lateralTuning.pid.kfBP, CP.lateralTuning.pid.kfV),
+                            (CP.lateralTuning.pid.kfBP, CP.lateralTuning.pid.kfV),
+                             pos_limit=1.0, neg_limit=-1.0, sat_limit=CP.steerLimitTimer)
     self.get_steer_feedforward = CI.get_steer_feedforward_function()
 
   def reset(self):

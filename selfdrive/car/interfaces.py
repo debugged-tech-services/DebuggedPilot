@@ -17,7 +17,7 @@ EventName = car.CarEvent.EventName
 
 MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS
 ACCEL_MAX = 2.0
-ACCEL_MIN = -3.5
+ACCEL_MIN = -3.8
 
 
 # generic car and radar interfaces
@@ -95,6 +95,11 @@ class CarInterfaceBase(ABC):
     ret.longitudinalTuning.kpV = [1.]
     ret.longitudinalTuning.kiBP = [0.]
     ret.longitudinalTuning.kiV = [1.]
+    ret.longitudinalTuning.kfBP = [0.]
+    ret.longitudinalTuning.kfV = [1.]
+
+    ret.lateralTuning.pid.kdBP = [0.]
+    ret.lateralTuning.pid.kdV = [0.00002]
     ret.longitudinalActuatorDelayLowerBound = 0.15
     ret.longitudinalActuatorDelayUpperBound = 0.15
     return ret
@@ -107,7 +112,7 @@ class CarInterfaceBase(ABC):
   def apply(self, c: car.CarControl) -> Tuple[car.CarControl.Actuators, List[bytes]]:
     pass
 
-  def create_common_events(self, cs_out, extra_gears=None, pcm_enable=True):
+  def create_common_events(self, cs_out, extra_gears=None, gas_resume_speed=-1, pcm_enable=True):
     events = Events()
 
     if cs_out.doorOpen:

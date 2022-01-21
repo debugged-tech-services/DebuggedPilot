@@ -497,7 +497,14 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
       Priority.LOW, VisualAlert.steerRequired, AudibleAlert.promptRepeat, 1.),
   },
 
-  # Thrown when the fan is driven at >50% but is not rotating
+  EventName.hightorqsteerUnavailable: {
+    ET.PERMANENT: Alert(
+      "Mango Lat Not Enabled",
+      "Bring the vehicle to stop in fwd gear to re-enable",
+      AlertStatus.normal, AlertSize.mid,
+      Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .2),
+  },
+
   EventName.fanMalfunction: {
     ET.PERMANENT: NormalPermanentAlert("Fan Malfunction", "Contact Support"),
   },
@@ -522,44 +529,44 @@ EVENTS: Dict[int, Dict[str, Union[Alert, AlertCallbackType]]] = {
   # ********** events that affect controls state transitions **********
 
   EventName.pcmEnable: {
-    ET.ENABLE: EngagementAlert(AudibleAlert.engage),
+    ET.ENABLE: EngagementAlert(AudibleAlert.none),
   },
 
   EventName.buttonEnable: {
-    ET.ENABLE: EngagementAlert(AudibleAlert.engage),
+    ET.ENABLE: EngagementAlert(AudibleAlert.none),
   },
 
   EventName.pcmDisable: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
   },
 
   EventName.buttonCancel: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
   },
 
   EventName.brakeHold: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
     ET.NO_ENTRY: NoEntryAlert("Brake Hold Active"),
   },
 
   EventName.parkBrake: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
     ET.NO_ENTRY: NoEntryAlert("Parking Brake Engaged"),
   },
 
   EventName.pedalPressed: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
     ET.NO_ENTRY: NoEntryAlert("Pedal Pressed",
                               visual_alert=VisualAlert.brakePressed),
   },
 
   EventName.wrongCarMode: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
     ET.NO_ENTRY: wrong_car_mode_alert,
   },
 
   EventName.wrongCruiseMode: {
-    ET.USER_DISABLE: EngagementAlert(AudibleAlert.disengage),
+    ET.USER_DISABLE: EngagementAlert(AudibleAlert.none),
     ET.NO_ENTRY: NoEntryAlert("Adaptive Cruise Disabled"),
   },
 
