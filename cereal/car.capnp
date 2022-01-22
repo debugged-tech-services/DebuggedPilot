@@ -171,6 +171,7 @@ struct CarState {
   stockFcw @31 :Bool;
   espDisabled @32 :Bool;
   hightorqUnavailable @39 :Bool;
+  accgasOverride @40 :Bool;
 
   # cruise state
   cruiseState @10 :CruiseState;
