@@ -81,7 +81,7 @@ class CarInterface(CarInterfaceBase):
     # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
-    ret.steerError = self.CC.steerErrorMod
+    ret.steerFaultPermanent = self.CC.steerErrorMod
     ret.hightorqUnavailable = self.CC.hightorqUnavailable
 
     # events
