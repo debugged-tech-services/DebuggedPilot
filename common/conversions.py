@@ -17,3 +17,7 @@ class Conversions:
 
   # Mass
   LB_TO_KG = 0.453592
+  
+    #acceltoNm
+  ACCEL_TO_NM = 1500
+  
