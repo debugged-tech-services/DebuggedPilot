@@ -19,8 +19,6 @@ def _create_radar_can_parser(car_fingerprint):
   #  ('LONG_DIST', 1074),
   #  ('LONG_DIST', 1075),
 
-  # The factor and offset are applied by the dbc parsing library, so the
-  # default values should be after the factor/offset are applied.
   signals = list(zip(['LONG_DIST'] * msg_n +
                 ['LAT_ANGLE'] * msg_n +
                 ['REL_SPEED'] * msg_n +
