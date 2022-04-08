@@ -64,7 +64,7 @@ static uint8_t chrysler_get_counter(CANPacket_t *to_push) {
 
 static int chrysler_rx_hook(CANPacket_t *to_push) {
 
-  bool unsafe_chrysler_mango = unsafe_mode & UNSAFE_CHRYSLER_MANGO;
+  bool unsafe_chrysler_mango = alternative_experience & UNSAFE_CHRYSLER_MANGO;
 
   bool valid = addr_safety_check(to_push, &chrysler_rx_checks,
                                  chrysler_get_checksum, chrysler_compute_checksum,
