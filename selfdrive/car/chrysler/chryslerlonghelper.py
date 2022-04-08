@@ -1,4 +1,4 @@
-from selfdrive.config import Conversions as CV
+from common.conversions import Conversions as CV
 from common.numpy_fast import clip
 from numpy import interp
 from selfdrive.car.chrysler.values import CarControllerParams
