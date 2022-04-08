@@ -8,7 +8,7 @@ from selfdrive.car.chrysler.values import CAR, CarControllerParams
 from opendbc.can.packer import CANPacker
 from selfdrive.car.interfaces import GearShifter
 from common.params import Params
-from selfdrive.config import Conversions as CV
+from common.conversions import Conversions as CV
 from common.numpy_fast import clip
 from selfdrive.car.chrysler.chryslerlonghelper import cluster_chime, accel_hysteresis, accel_rate_limit, \
   cruiseiconlogic, setspeedlogic, SET_SPEED_MIN, DEFAULT_DECEL, STOP_GAS_THRESHOLD, START_BRAKE_THRESHOLD, \
