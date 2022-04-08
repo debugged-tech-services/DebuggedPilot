@@ -38,6 +38,7 @@ private:
   QString speedUnit;
   QString maxSpeed;
   bool is_cruise_set = false;
+  bool is_brake_active = false;
   bool engageable = false;
   bool dmActive = false;
   bool hideDM = false;
