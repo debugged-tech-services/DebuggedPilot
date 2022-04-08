@@ -85,8 +85,8 @@ class CarInterface(CarInterfaceBase):
     ret.hightorqUnavailable = self.CC.hightorqUnavailable
 
     # events
-    events = self.create_common_events(ret, extra_gears=[car.CarState.GearShifter.low],
-                                       gas_resume_speed=2.)
+    events = self.create_common_events(ret, extra_gears=[car.CarState.GearShifter.low])
+
 
     if ret.vEgo < self.CP.minSteerSpeed and not Params().get_bool('ChryslerMangoLat') and not Params().get_bool('LkasFullRangeAvailable'):
       events.add(car.CarEvent.EventName.belowSteerSpeed)
