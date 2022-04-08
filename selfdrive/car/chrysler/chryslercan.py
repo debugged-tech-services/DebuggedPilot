@@ -1,6 +1,6 @@
 from cereal import car
 from selfdrive.car import make_can_msg
-from selfdrive.config import Conversions as CV
+from common.conversions import Conversions as CV
 
 GearShifter = car.CarState.GearShifter
 VisualAlert = car.CarControl.HUDControl.VisualAlert
