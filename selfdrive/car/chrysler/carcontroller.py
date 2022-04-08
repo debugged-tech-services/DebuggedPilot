@@ -234,16 +234,15 @@ class CarController():
     else:
       accmaxhyb = [ACCEL_MAX, 1., .5]
 
-    if not self.go_req and enabled and CS.out.standstill:
-      self.go_req = self.stop_req
+    if long_stopping and CS.out.standstill and not CS.out.gasPressed:
+      self.stop_req = True
     else:
-      self.go_req = CS.out.standstill and enabled
+      self.stop_req = False
 
-    self.stop_req = enabled and CS.out.standstill and not CS.out.gasPressed and not self.go_req
-    if self.go_req or self.stop_req:
-      start_accel_max = 0. #max(0, CS.hill_accel) * CV.ACCEL_TO_NM
-      start_accel_max = max(start_accel_max, (CS.axle_torq_min + 50)/CV.ACCEL_TO_NM)
-      accmaxhyb = [start_accel_max, start_accel_max, start_accel_max]
+    if not self.stop_req and CS.out.standstill and enabled:
+      self.go_req = True
+    else:
+      self.go_req = False
 
     apply_accel, self.accel_steady = accel_hysteresis(apply_accel, self.accel_steady)
     accel_max_tbl = interp(CS.hybrid_power_meter, accmaxBp, accmaxhyb)
@@ -280,7 +279,6 @@ class CarController():
 
       if CS.axle_torq_max > self.trq_val > CS.axle_torq_min:
         self.accel_active = True
-        self.stop_req = False
       else:
         self.trq_val = CS.axle_torq_min
         self.accel_active = False
