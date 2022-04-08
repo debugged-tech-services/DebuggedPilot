@@ -17,7 +17,7 @@ EventName = car.CarEvent.EventName
 
 MAX_CTRL_SPEED = (V_CRUISE_MAX + 4) * CV.KPH_TO_MS
 ACCEL_MAX = 2.0
-ACCEL_MIN = -3.5
+ACCEL_MIN = -3.8
 
 
 # generic car and radar interfaces
@@ -74,6 +74,8 @@ class CarInterfaceBase(ABC):
 
     # standard ALC params
     ret.steerControlType = car.CarParams.SteerControlType.torque
+    ret.steerMaxBP = [0.]
+    ret.steerMaxV = [1.]
     ret.minSteerSpeed = 0.
     ret.wheelSpeedFactor = 1.0
 
@@ -84,7 +86,7 @@ class CarInterfaceBase(ABC):
     ret.stopAccel = -2.0
     ret.stoppingDecelRate = 0.8 # brake_travel/s while trying to stop
     ret.vEgoStopping = 0.5
-    ret.vEgoStarting = 0.5
+    ret.vEgoStarting = 1.
     ret.stoppingControl = True
     ret.longitudinalTuning.deadzoneBP = [0.]
     ret.longitudinalTuning.deadzoneV = [0.]

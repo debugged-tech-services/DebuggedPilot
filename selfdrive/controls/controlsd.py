@@ -207,13 +207,11 @@ class Controls:
       return
 
     # Disable on rising edge of accelerator or brake. Also disable on brake when speed > 0
-    if (CS.gasPressed and not self.CS_prev.gasPressed and self.disengage_on_accelerator) or \
-      (CS.brakePressed and (not self.CS_prev.brakePressed or not CS.standstill)):
+    if (CS.brakePressed and (not self.CS_prev.brakePressed or not CS.standstill)):
       self.events.add(EventName.pedalPressed)
 
     if CS.gasPressed:
-      self.events.add(EventName.pedalPressedPreEnable if self.disengage_on_accelerator else
-                      EventName.gasPressedOverride)
+      self.events.add(EventName.gasPressedOverride)
 
     self.events.add_from_msg(CS.events)
 
@@ -640,7 +638,9 @@ class Controls:
     hudControl.setSpeed = float(self.v_cruise_kph * CV.KPH_TO_MS)
     hudControl.speedVisible = self.enabled
     hudControl.lanesVisible = self.enabled
+    CC.hudControl.leadvRel = self.sm['radarState'].leadOne.vRel
     hudControl.leadVisible = self.sm['longitudinalPlan'].hasLead
+    CC.hudControl.leadDistance = self.sm['radarState'].leadOne.dRel
 
     hudControl.rightLaneVisible = True
     hudControl.leftLaneVisible = True

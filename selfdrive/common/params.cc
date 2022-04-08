@@ -91,6 +91,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"CarParams", CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON},
     {"CarParamsCache", CLEAR_ON_MANAGER_START},
     {"CarVin", CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON},
+    {"CommunityFeaturesToggle", PERSISTENT},
     {"CompletedTrainingVersion", PERSISTENT},
     {"ControlsReady", CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON},
     {"CurrentRoute", CLEAR_ON_MANAGER_START | CLEAR_ON_IGNITION_ON},
@@ -158,6 +159,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"TrainingVersion", PERSISTENT},
     {"UpdateAvailable", CLEAR_ON_MANAGER_START},
     {"UpdateFailedCount", CLEAR_ON_MANAGER_START},
+    {"UploadRaw", PERSISTENT},
     {"Version", PERSISTENT},
     {"VisionRadarToggle", PERSISTENT},
     {"ApiCache_Device", PERSISTENT},
@@ -177,6 +179,10 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"Offroad_TemperatureTooHigh", CLEAR_ON_MANAGER_START},
     {"Offroad_UnofficialHardware", CLEAR_ON_MANAGER_START},
     {"Offroad_UpdateFailed", CLEAR_ON_MANAGER_START},
+    {"LkasFullRangeAvailable", PERSISTENT},
+    {"ChryslerMangoLat", PERSISTENT},
+    {"ChryslerMangoLong", PERSISTENT},
+    {"ChryslerMadGas", PERSISTENT},
 };
 
 } // namespace

@@ -3,9 +3,11 @@ const int CHRYSLER_MAX_RT_DELTA = 112;        // max delta torque allowed for re
 const uint32_t CHRYSLER_RT_INTERVAL = 250000;  // 250ms between real time checks
 const int CHRYSLER_MAX_RATE_UP = 3;
 const int CHRYSLER_MAX_RATE_DOWN = 3;
-const int CHRYSLER_MAX_TORQUE_ERROR = 80;    // max torque cmd in excess of torque motor
+const int CHRYSLER_MAX_TORQUE_ERROR = 320;    // max torque cmd in excess of torque motor
+const int CHRYSLER_GAS_THRSLD = 30;  // 7% more than 2m/s
 const int CHRYSLER_STANDSTILL_THRSLD = 10;  // about 1m/s
-const CanMsg CHRYSLER_TX_MSGS[] = {{571, 0, 3}, {658, 0, 6}, {678, 0, 8}};
+const CanMsg CHRYSLER_TX_MSGS[] = {{571, 0, 3}, {658, 0, 6}, {678, 0, 8},
+                                   {502, 0, 8}, {503, 0, 8}, {626, 0, 8}, {838, 0, 2}};  //OP long msgs to WP
 
 AddrCheckStruct chrysler_addr_checks[] = {
   {.msg = {{544, 0, 8, .check_checksum = true, .max_counter = 15U, .expected_timestep = 10000U}, { 0 }, { 0 }}},
@@ -62,6 +64,8 @@ static uint8_t chrysler_get_counter(CANPacket_t *to_push) {
 
 static int chrysler_rx_hook(CANPacket_t *to_push) {
 
+  bool unsafe_chrysler_mango = unsafe_mode & UNSAFE_CHRYSLER_MANGO;
+
   bool valid = addr_safety_check(to_push, &chrysler_rx_checks,
                                  chrysler_get_checksum, chrysler_compute_checksum,
                                  chrysler_get_counter);
@@ -72,7 +76,9 @@ static int chrysler_rx_hook(CANPacket_t *to_push) {
     // Measured eps torque
     if (addr == 544) {
       int torque_meas_new = ((GET_BYTE(to_push, 4) & 0x7U) << 8) + GET_BYTE(to_push, 5) - 1024U;
-
+      if (unsafe_chrysler_mango) {
+        torque_meas_new = torque_meas_new/4;
+      }
       // update array of samples
       update_sample(&torque_meas, torque_meas_new);
     }
@@ -99,12 +105,16 @@ static int chrysler_rx_hook(CANPacket_t *to_push) {
 
     // exit controls on rising edge of gas press
     if (addr == 308) {
-      gas_pressed = ((GET_BYTE(to_push, 5) & 0x7FU) != 0U);
+      gas_pressed = ((GET_BYTE(to_push, 5) & 0x7FU) != 0U) && ((int)vehicle_speed > CHRYSLER_GAS_THRSLD);
     }
 
     // exit controls on rising edge of brake press
     if (addr == 320) {
       brake_pressed = (GET_BYTE(to_push, 0) & 0x7U) == 5U;
+      if (brake_pressed && (!brake_pressed_prev || vehicle_moving)) {
+        controls_allowed = 0;
+      }
+      brake_pressed_prev = brake_pressed;
     }
 
     generic_rx_checks((addr == 0x292));
@@ -169,8 +179,9 @@ static int chrysler_tx_hook(CANPacket_t *to_send, bool longitudinal_allowed) {
   }
 
   // FORCE CANCEL: only the cancel button press is allowed
-  if (addr == 571) {
-    if ((GET_BYTE(to_send, 0) != 1U) || ((GET_BYTE(to_send, 1) & 1U) == 1U)) {
+  else if (addr == 571) {
+    if (((GET_BYTE(to_send, 0) != 1U) && (GET_BYTE(to_send, 0) != 16U)) // ACC_CANCEL && ACC_RESUME
+        || ((GET_BYTE(to_send, 1) & 1) == 1U)) {
       tx = 0;
     }
   }

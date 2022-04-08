@@ -109,6 +109,7 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     highCpuUsage @105;
     cruiseMismatch @106;
     lkasDisabled @107;
+    hightorqsteerUnavailable @ 112;
     canBusMissing @111;
 
     radarCanErrorDEPRECATED @15;
@@ -160,6 +161,8 @@ struct CarState {
   parkingBrake @39 :Bool;
   brakeHoldActive @38 :Bool;
 
+  brakeLights @19 :Bool;
+
   # steering wheel
   steeringAngleDeg @7 :Float32;
   steeringAngleOffsetDeg @37 :Float32; # Offset betweens sensors in case there multiple
@@ -173,6 +176,8 @@ struct CarState {
   stockAeb @30 :Bool;
   stockFcw @31 :Bool;
   espDisabled @32 :Bool;
+  hightorqUnavailable @40 :Bool;
+  accgasOverride @41 :Bool;
 
   # cruise state
   cruiseState @10 :CruiseState;
@@ -352,6 +357,8 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
+    leadDistance @10: Float32;
+    leadvRel @11: Float32;
 
     enum VisualAlert {
       # these are the choices from the Honda
