@@ -22,9 +22,10 @@ def _create_radar_can_parser(car_fingerprint):
 
   signals = list(zip(['LONG_DIST'] * msg_c_n +
                      ['LAT_ANGLE'] * msg_c_n +
-                     ['REL_SPEED'] * msg_d_n,
+                     ['REL_SPEED'] * msg_d_n +
+                     ['MEASURED'] * msg_d_n,
                      RADAR_MSGS_C * 2 +  # LONG_DIST, LAT_DIST
-                     RADAR_MSGS_D))  # REL_SPEED
+                     RADAR_MSGS_D * 2))  # REL_SPEED, MEASURED
 
   checks = list(zip(RADAR_MSGS_C +
                     RADAR_MSGS_D,
@@ -69,7 +70,7 @@ class RadarInterface(RadarInterfaceBase):
         self.pts[trackId].trackId = trackId
         self.pts[trackId].aRel = float('nan')
         self.pts[trackId].yvRel = float('nan')
-        self.pts[trackId].measured = True
+        
         #self.pts[trackId].yRel = float('nan')
 
       if 'LONG_DIST' in cpt:  # c_* message
@@ -80,9 +81,10 @@ class RadarInterface(RadarInterfaceBase):
         #self.pts[trackId].yRel = math.tan(azimuth) * cpt['LONG_DIST']
       else:  # d_* message
         self.pts[trackId].vRel = cpt['REL_SPEED']
+        self.pts[trackId].measured = cpt['MEASURED']
 
     # We want a list, not a dictionary. Filter out LONG_DIST==0 because that means it's not valid.
-    ret.points = [x for x in self.pts.values() if x.dRel != 0]
+    ret.points = [x for x in self.pts.values() if measured and (255 > x.dRel > 0)]
 
     self.updated_messages.clear()
     return ret
