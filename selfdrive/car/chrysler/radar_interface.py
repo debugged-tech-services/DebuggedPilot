@@ -70,11 +70,12 @@ class RadarInterface(RadarInterfaceBase):
         self.pts[trackId].aRel = float('nan')
         self.pts[trackId].yvRel = float('nan')
         self.pts[trackId].measured = True
+        self.pts[trackId].yRel = float('nan')
 
       if 'LONG_DIST' in cpt:  # c_* message
         azimuth = (cpt['LAT_ANGLE'])
         self.pts[trackId].dRel = cpt['LONG_DIST']
-        self.pts[trackId].yRel = math.tan(azimuth) * cpt['LONG_DIST']
+        #self.pts[trackId].yRel = math.tan(azimuth) * cpt['LONG_DIST']
       else:  # d_* message
         self.pts[trackId].vRel = cpt['REL_SPEED']
 
