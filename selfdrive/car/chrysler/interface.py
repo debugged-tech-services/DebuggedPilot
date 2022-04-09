@@ -36,7 +36,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kpV = [0.04, 0.06, 0.07]
 
       ret.lateralTuning.pid.kiBP = [0., 30.]
-      ret.lateralTuning.pid.kiV = [0.002, 0.0038]
+      ret.lateralTuning.pid.kiV = [0.002, 0.003]
 
       ret.lateralTuning.pid.kf = 0.00004   # full torque for 10 deg at 80mph means 0.00007818594
 
