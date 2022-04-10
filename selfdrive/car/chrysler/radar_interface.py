@@ -26,7 +26,7 @@ def _create_radar_can_parser(car_fingerprint):
                      ['MEASURED'] * msg_d_n +
                      [PROBABILITY'] * msg_d_n,
                      RADAR_MSGS_C * 2 +  # LONG_DIST, LAT_DIST
-                     RADAR_MSGS_D * 3⁰ppl p))  # REL_SPEED, MEASURED
+                     RADAR_MSGS_D * 3))  # REL_SPEED, MEASURED
 
   checks = list(zip(RADAR_MSGS_C +
                     RADAR_MSGS_D,
