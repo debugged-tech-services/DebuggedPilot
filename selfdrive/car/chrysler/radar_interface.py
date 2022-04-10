@@ -77,12 +77,12 @@ class RadarInterface(RadarInterfaceBase):
       if 'LONG_DIST' in cpt:  # c_* message
         azimuth = (cpt['LAT_ANGLE'])
         self.pts[trackId].dRel = math.cos(azimuth) * cpt['LONG_DIST']
-        self.pts[trackId].yRel = 0.5 * math.sin(azimuth) * cpt['LONG_DIST']
+        self.pts[trackId].yRel = 0.5 * -math.sin(azimuth) * cpt['LONG_DIST']
         #self.pts[trackId].dRel = cpt['LONG_DIST']
         #self.pts[trackId].yRel = math.tan(azimuth) * cpt['LONG_DIST']
       else:  # d_* message
         self.pts[trackId].vRel = cpt['REL_SPEED']
-        self.pts[trackId].measured = bool(cpt['MEASURED']) and (cpt['PROBABILITY'] > 245)
+        self.pts[trackId].measured = bool(cpt['MEASURED']) and (cpt['PROBABILITY'] > 250)
 
     # We want a list, not a dictionary. Filter out LONG_DIST==0 because that means it's not valid.
     ret.points = [x for x in self.pts.values() if x.measured and (255 > x.dRel > 0)]
