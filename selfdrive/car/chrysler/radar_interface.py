@@ -24,7 +24,7 @@ def _create_radar_can_parser(car_fingerprint):
                      ['LAT_ANGLE'] * msg_c_n +
                      ['REL_SPEED'] * msg_d_n +
                      ['MEASURED'] * msg_d_n +
-                     [PROBABILITY'] * msg_d_n,
+                     ['PROBABILITY'] * msg_d_n,
                      RADAR_MSGS_C * 2 +  # LONG_DIST, LAT_DIST
                      RADAR_MSGS_D * 3))  # REL_SPEED, MEASURED
 
