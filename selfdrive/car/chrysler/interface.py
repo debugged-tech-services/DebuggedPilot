@@ -40,7 +40,20 @@ class CarInterface(CarInterfaceBase):
 
       ret.lateralTuning.pid.kf = 0.00004   # full torque for 10 deg at 80mph means 0.00007818594
 
-    ret.steerActuatorDelay = 0.2
+    # BP is in m/s
+    # m/s	mph
+    # 5	  11
+    # 10	22
+    # 15	34
+    # 20	45
+    # 25	56
+    # 30	67
+    # 35	78
+    # 40	89
+
+    # https://github.com/commaai/openpilot/wiki/Tuning
+
+    ret.steerActuatorDelay = 0.2 # don't change
     ret.steerRateCost = 0.55
     ret.steerLimitTimer = 0.4
 
