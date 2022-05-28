@@ -55,7 +55,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.steerActuatorDelay = 0.2 # don't change
     ret.steerRateCost = 0.55
-    ret.steerLimitTimer = 0.4
+    ret.steerLimitTimer = 0.4 # no need to change, doesn't affect anything
 
     if candidate in (CAR.JEEP_CHEROKEE, CAR.JEEP_CHEROKEE_2019):
       ret.wheelbase = 2.91  # in meters
