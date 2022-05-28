@@ -15,7 +15,7 @@ class CarInterface(CarInterfaceBase):
     # Speed conversion:              20, 45 mph
     ret.wheelbase = 3.089  # in meters for Pacifica Hybrid 2017
     ret.steerRatio = 16.2  # Pacifica Hybrid 2017
-    ret.mass = 2242. + STD_CARGO_KG  # kg curb weight Pacifica Hybrid 2017
+    ret.mass = 1964. + STD_CARGO_KG  # kg curb weight Pacifica Hybrid 2017
     ret.openpilotLongitudinalControl = Params().get_bool('ChryslerMangoLong')
 
     # Long tuning Params -  make individual params for cars, baseline Pacifica Hybrid
