@@ -19,10 +19,6 @@ One-Time: https://donate1.debuggedtechservices.com/
 
 `xps_fca-stock`: this is xps's xps_fca branch completely stock
 
-`chrysler300port`: this is a fork maintained by @andrrocity for the Chrysler 300
-
-`chrysler-300-port-release4`: this is a fork maintained by @andrrocity for the Chrysler 300
-
 
 # FCA OpenPilot / Trafficflow Alpha Integration
 We only have a 2017 Chrysler Pacifica and 2018 Chrysler 300, so we are only able to confirm features using this vehicle.
