@@ -53,7 +53,7 @@ class CarInterface(CarInterfaceBase):
 
     # https://github.com/commaai/openpilot/wiki/Tuning
 
-    ret.steerActuatorDelay = 0.2 # don't change
+    ret.steerActuatorDelay = 0.3 # stock was 0.2 # TINY Adjustments! Lower delay "waits to turn longer", higher delay "starts the turn sooner"
     ret.steerRateCost = 0.55
     ret.steerLimitTimer = 0.4 # no need to change, doesn't affect anything
 
