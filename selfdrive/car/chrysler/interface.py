@@ -29,8 +29,8 @@ class CarInterface(CarInterfaceBase):
     if not Params().get_bool('ChryslerMangoLat'):
       ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kiBP = [[9., 20.], [9., 20.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.1, 0.15], [0.02, 0.03]]
-
-      ret.lateralTuning.pid.kf = 0.00005   # full torque for 10 deg at 80mph means 0.00007818594
+      ret.lateralTuning.pid.kfBP = [0.]
+      ret.lateralTuning.pid.kfV = [0.00005]   # full torque for 10 deg at 80mph means 0.00007818594
     else:
       ret.lateralTuning.pid.kpBP = [0., 10., 30.]
       ret.lateralTuning.pid.kpV = [0.012, 0.015, 0.02] # stock values [0.05, 0.07, 0.075]
