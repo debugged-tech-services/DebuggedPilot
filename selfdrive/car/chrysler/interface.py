@@ -39,7 +39,7 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.pid.kiBP = [0., 15., 30.]
       ret.lateralTuning.pid.kiV = [0.0025, 0.0028, 0.003] # [0.002, 0.003, 0.0035]
 
-      ret.lateralTuning.pid.kf = 0.00005 # stock was 0.00004 # full torque for 10 deg at 80mph means 0.00007818594
+      ret.lateralTuning.pid.kf = 0.00004 # stock was 0.00004 # full torque for 10 deg at 80mph means 0.00007818594
 
     # BP is in m/s
     # m/s	mph
@@ -54,7 +54,7 @@ class CarInterface(CarInterfaceBase):
 
     # https://github.com/commaai/openpilot/wiki/Tuning
 
-    ret.steerActuatorDelay = 0.17 # stock was 0.2 # TINY Adjustments! Lower delay "waits to turn longer", higher delay "starts the turn sooner"
+    ret.steerActuatorDelay = 0.18 # stock was 0.2 # TINY Adjustments! Lower delay "waits to turn longer", higher delay "starts the turn sooner"
     ret.steerRateCost = 0.65 # stock was 0.55
     ret.steerLimitTimer = 0.7 # stock was 0.4 # no need to change, doesn't affect anything
 
