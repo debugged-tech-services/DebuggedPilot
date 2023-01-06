@@ -283,7 +283,7 @@ class CarController():
         self.trq_val = CS.axle_torq_min
         self.accel_active = False
       if not self.hybridEcu:
-        self.trq_val /= 15.5  # GEAR_RATO guess for non hybrid?
+        self.trq_val /= 65.5  # GEAR_RATO guess for non hybrid? # was 15.5
     else:
       self.accel_active = False
 
