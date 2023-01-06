@@ -92,13 +92,6 @@ class CarInterface(CarInterfaceBase):
 
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
 
-  # disable_ecu test code
-
-  #@staticmethod
-  #def init(CP, logcan, sendcan):
-   # if CP.openpilotLongitudinalControl:
-    #  disable_ecu(logcan, sendcan, addr=0x7d0, com_cont_req=b'\x28\x83\x01')
-
     # speeds
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
