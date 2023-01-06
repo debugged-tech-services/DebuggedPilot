@@ -4,8 +4,8 @@ from numpy import interp
 from selfdrive.car.chrysler.values import CarControllerParams
 
 
-SET_SPEED_MIN = 5 * CV.MPH_TO_MS
-SET_SPEED_MAX = 120 * CV.MPH_TO_MS
+SET_SPEED_MIN = 1 * CV.MPH_TO_MS
+SET_SPEED_MAX = 85 * CV.MPH_TO_MS
 LONG_PRESS_TIME = 50  # 500msec
 SHORT_PRESS_STEP = 1
 LONG_PRESS_STEP = 5
