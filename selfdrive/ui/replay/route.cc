@@ -44,7 +44,7 @@ bool Route::loadFromServer() {
 
     loop.exit(success ? loadFromJson(json) : 0);
   });
-  http.sendRequest("https://api.retropilot.org/v1/route/" + route_.str + "/files");
+  http.sendRequest("https://https://openpilotapi.phnet.xyz/v1/route/" + route_.str + "/files");
   return loop.exec();
 }
 
