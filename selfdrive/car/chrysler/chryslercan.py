@@ -17,6 +17,7 @@ def create_mango_hud(packer, apa_active, apa_fault, enabled, steer_type):
   # had color = 1 and lines = 1 but trying 2017 hybrid style for now.
   if enabled and apa_active:
       color = 2  # control active, display green.
+      lines = 7 # both
   if apa_fault:
     color = 3
   values = {
