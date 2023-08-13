@@ -36,7 +36,7 @@ def create_lkas_hud(packer, gear, lkas_active, hud_count, steer_type):
   if gear in (GearShifter.drive, GearShifter.reverse, GearShifter.low):
     if lkas_active:
       color = 2  # control active, display green.
-      lines = 1 #6
+      lines = 2 #6
     else:
       color = 1  # control off, display white.
       lines = 1
