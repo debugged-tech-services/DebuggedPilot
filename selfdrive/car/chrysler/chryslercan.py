@@ -26,9 +26,9 @@ def create_mango_hud(packer, apa_active, apa_fault, enabled, steer_type):
 def create_lkas_hud(packer, gear, lkas_active, hud_count, steer_type):
   # LKAS_HUD 0x2a6 (678) Controls what lane-keeping icon is displayed.
 
-  color = 1  # default values are for park or neutral in 2017 are 0 0, but trying 1 1 for 2019
-  lines = 1
-  alerts = 0
+  color = 0 #1  # default values are for park or neutral in 2017 are 0 0, but trying 1 1 for 2019
+  lines = 0 #1
+  alerts = 1 #0
 
   if hud_count < (1 * 4):  # first 3 seconds, 4Hz
     alerts = 1
