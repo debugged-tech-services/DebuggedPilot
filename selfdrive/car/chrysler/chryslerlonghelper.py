@@ -32,12 +32,6 @@ def setspeedlogic(set_speed, acc_enabled, acc_enabled_prev, setplus, setminus, r
     if not acc_enabled and acc_enabled_prev:
       ressetspeed = set_speed
 
-    if not gas or (gas_timer > 200 and setminus):
-      gas_set = False
-      gas_timer = 0
-    elif gas_set:
-      gas_timer += 1
-
     if acc_enabled_prev and acc_enabled:
       if setplus:
         if not short_press:
@@ -79,6 +73,12 @@ def setspeedlogic(set_speed, acc_enabled, acc_enabled_prev, setplus, setminus, r
     else:
       short_press = False
       timer = 0
+
+    if not gas or gas_timer > 200:
+      gas_set = False
+      gas_timer = 0
+    elif gas_set:
+      gas_timer += 1
 
     set_speed = set_speed * CV.MPH_TO_MS
     set_speed = clip(set_speed, SET_SPEED_MIN, SET_SPEED_MAX)
